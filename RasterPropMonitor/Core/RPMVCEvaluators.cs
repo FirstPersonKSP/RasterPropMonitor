@@ -67,18 +67,18 @@ namespace JSI
                         Vector3 bodyLift = p.transform.rotation * (p.bodyLiftScalar * p.DragCubes.LiftForce);
                         bodyLift = Vector3.ProjectOnPlane(bodyLift, -p.dragVectorDir);
                         pureLiftV += bodyLift;
+                    }
 
-                        for (int m = 0; m < p.Modules.Count; m++)
+                    for (int m = 0; m < p.Modules.Count; m++)
+                    {
+                        PartModule pm = p.Modules[m];
+                        if (pm.isEnabled && pm is ModuleLiftingSurface)
                         {
-                            PartModule pm = p.Modules[m];
-                            if (pm.isEnabled && pm is ModuleLiftingSurface)
+                            ModuleLiftingSurface liftingSurface = pm as ModuleLiftingSurface;
+                            if (!p.ShieldedFromAirstream)
                             {
-                                ModuleLiftingSurface liftingSurface = pm as ModuleLiftingSurface;
-                                if (!p.ShieldedFromAirstream)
-                                {
-                                    pureLiftV += liftingSurface.liftForce;
-                                    pureDragV += liftingSurface.dragForce;
-                                }
+                                pureLiftV += liftingSurface.liftForce;
+                                pureDragV += liftingSurface.dragForce;
                             }
                         }
                     }
@@ -129,18 +129,18 @@ namespace JSI
                         Vector3 bodyLift = p.transform.rotation * (p.bodyLiftScalar * p.DragCubes.LiftForce);
                         bodyLift = Vector3.ProjectOnPlane(bodyLift, -p.dragVectorDir);
                         pureLiftV += bodyLift;
+                    }
 
-                        for (int m = 0; m < p.Modules.Count; m++)
+                    for (int m = 0; m < p.Modules.Count; m++)
+                    {
+                        PartModule pm = p.Modules[m];
+                        if (pm.isEnabled && pm is ModuleLiftingSurface)
                         {
-                            PartModule pm = p.Modules[m];
-                            if (pm.isEnabled && pm is ModuleLiftingSurface)
+                            ModuleLiftingSurface liftingSurface = pm as ModuleLiftingSurface;
+                            if (!p.ShieldedFromAirstream)
                             {
-                                ModuleLiftingSurface liftingSurface = pm as ModuleLiftingSurface;
-                                if (!p.ShieldedFromAirstream)
-                                {
-                                    pureLiftV += liftingSurface.liftForce;
-                                    pureDragV += liftingSurface.dragForce;
-                                }
+                                pureLiftV += liftingSurface.liftForce;
+                                pureDragV += liftingSurface.dragForce;
                             }
                         }
                     }
@@ -175,23 +175,23 @@ namespace JSI
                     Vector3 bodyLift = p.transform.rotation * (p.bodyLiftScalar * p.DragCubes.LiftForce);
                     bodyLift = Vector3.ProjectOnPlane(bodyLift, -p.dragVectorDir);
                     pureLiftV += bodyLift;
+                }
 
-                    for (int m = 0; m < p.Modules.Count; m++)
+                for (int m = 0; m < p.Modules.Count; m++)
+                {
+                    PartModule pm = p.Modules[m];
+                    if (!pm.isEnabled)
                     {
-                        PartModule pm = p.Modules[m];
-                        if (!pm.isEnabled)
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        if (pm is ModuleLiftingSurface)
-                        {
-                            ModuleLiftingSurface liftingSurface = (ModuleLiftingSurface)pm;
-                            if (p.ShieldedFromAirstream)
-                                continue;
-                            pureLiftV += liftingSurface.liftForce;
-                            pureDragV += liftingSurface.dragForce;
-                        }
+                    if (pm is ModuleLiftingSurface)
+                    {
+                        ModuleLiftingSurface liftingSurface = (ModuleLiftingSurface)pm;
+                        if (p.ShieldedFromAirstream)
+                            continue;
+                        pureLiftV += liftingSurface.liftForce;
+                        pureDragV += liftingSurface.dragForce;
                     }
                 }
             }
