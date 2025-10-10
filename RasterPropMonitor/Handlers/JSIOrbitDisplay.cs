@@ -184,7 +184,6 @@ namespace JSI
             double midTA = (startTA + endTA) / 2.0;
             Vector3 midVertex = ScreenPositionFromOrbitAtTA(o, referenceBody, screenTransform, midTA, now);
             Vector3 midStraight = (startVertex + endVertex) * 0.5f;
-            // Debug.Log($"startTA: {startTA}, endTA: {endTA}, startVertex: {startVertex}, endVertex: {endVertex}, midVertex: {midVertex}, midStraight: {midStraight}");
 
             if (Math.Abs(startTA - endTA) <  0.01 || (midStraight - midVertex).sqrMagnitude < 16.0)
             {
