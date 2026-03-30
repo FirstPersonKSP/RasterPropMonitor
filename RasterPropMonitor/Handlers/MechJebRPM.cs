@@ -197,7 +197,7 @@ namespace JSI
             }
             else if (buttonID == buttonHome)
             {
-                if (currentMenu == MJMenu.RootMenu && activeMenu.currentSelection == 5 && smartassAvailable)
+                if (currentMenu == MJMenu.RootMenu && activeMenu.currentSelection == 6 && smartassAvailable)
                 {
                     // If Force Roll is highlighted, the Home key will increment the
                     // roll value.
@@ -426,7 +426,8 @@ namespace JSI
             item = activeMenu.Find(x => x.id == (int)MJMenu.AscentGuidanceMenu);
             if (item != null)
             {
-                if (!GetModuleExists("MechJebModuleAscentAutopilot"))
+                // MJ 2.15.1: AscentAutopilot is now accessed via AscentSettings
+                if (!GetModuleExists("MechJebModuleAscentSettings"))
                 {
                     item.isSelected = false;
                     item.isDisabled = true;
