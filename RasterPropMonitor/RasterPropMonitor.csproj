@@ -7,8 +7,9 @@
     <TargetFramework>net4.8</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
-    <KSPBT_ModRoot>$(MSBuildProjectDirectory)/../GameData/JSI/RasterPropMonitor/</KSPBT_ModRoot>
-    <KSPBT_ModPluginFolder>Plugins</KSPBT_ModPluginFolder>
+    <BinariesOutputRelativePath>GameData\JSI\RasterPropMonitor\Plugins</BinariesOutputRelativePath>
+    <GenerateKSPAssemblyAttribute>true</GenerateKSPAssemblyAttribute>
+    <GenerateKSPAssemblyDependencyAttributes>true</GenerateKSPAssemblyDependencyAttributes>
   </PropertyGroup>
   <ItemGroup>
     <KSPVersionFile Include="$(RepoRootPath)\GameData\JSI\RasterPropMonitor\RasterPropMonitor.version">
@@ -20,7 +21,7 @@
     <Publicize Include="Assembly-CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="KSPBuildTools" Version="0.0.4" />
     <PackageReference Include="Krafs.Publicizer" Version="1.0.3" />
-    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
   </ItemGroup>
 </Project>
