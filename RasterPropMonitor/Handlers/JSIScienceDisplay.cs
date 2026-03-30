@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace JSI.Handlers
+namespace JSI
 {
-    class ExperimentDetailsMenu : TextMenu
+    public class ExperimentDetailsMenu : TextMenu
     {
         public ExperimentDetailsMenu(ModuleScienceExperiment experimentModule)
         {
@@ -103,7 +103,7 @@ namespace JSI.Handlers
         }
     }
 
-    class JSIScienceDisplay : InternalModule
+    public class JSIScienceDisplay : InternalModule
     {
         [KSPField]
         public string pageTitle;

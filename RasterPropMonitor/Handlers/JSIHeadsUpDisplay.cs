@@ -31,7 +31,7 @@ namespace JSI
      * are displayed with a "ladder" (texture).  Strips also provide heading
      * information.
      ************************************************************************/
-    class JSIHeadsUpDisplay : InternalModule
+    public class JSIHeadsUpDisplay : InternalModule
     {
         [KSPField]
         public string cameraTransform = string.Empty;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace JSI
 {
-    class MechJebRPM : InternalModule
+    public class MechJebRPM : InternalModule
     {
         [KSPField]
         public string pageTitle = string.Empty;

@@ -138,7 +138,6 @@ namespace JSI
             // note strangely, the stock RelativeInclination function is already in degrees
             return Orbit.RelativeInclination(a, b);
         }
-#if false
 
         // These "Swapped" functions translate preexisting Orbit class functions into world
         // space. For some reason, Orbit class functions seem to use a coordinate system
@@ -450,6 +449,5 @@ namespace JSI
                 Vector3d.Dot(-o.NormalPlus(UT), dV),
                 Vector3d.Dot(o.Prograde(UT), dV));
         }
-#endif
     }
 }

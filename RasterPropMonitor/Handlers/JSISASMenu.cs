@@ -70,7 +70,7 @@ namespace JSI
         }
     }
 
-    class JSISASMenu : InternalModule
+    public class JSISASMenu : InternalModule
     {
         [KSPField]
         public string pageTitle = string.Empty;
