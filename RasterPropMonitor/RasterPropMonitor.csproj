@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="RasterPropMonitor.version.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>JSI</RootNamespace>
     <AssemblyName>RasterPropMonitor</AssemblyName>
     <TargetFramework>net4.8</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
-    <BinariesOutputRelativePath>GameData\JSI\RasterPropMonitor\Plugins</BinariesOutputRelativePath>
-    <GenerateKSPAssemblyAttribute>true</GenerateKSPAssemblyAttribute>
-    <GenerateKSPAssemblyDependencyAttributes>true</GenerateKSPAssemblyDependencyAttributes>
   </PropertyGroup>
   <ItemGroup>
     <KSPVersionFile Include="$(RepoRootPath)\GameData\JSI\RasterPropMonitor\RasterPropMonitor.version">

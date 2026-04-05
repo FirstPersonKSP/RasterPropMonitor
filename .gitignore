@@ -220,6 +220,7 @@ pip-log.txt
 .mr.developer.cfg
 GameData/JSI/RasterPropMonitor/Plugins/RasterPropMonitor.dll
 GameData/JSI/RasterPropMonitor/Plugins/MechJebRPM.dll
+GameData/JSI/RasterPropMonitor/Plugins/MechJebRPM.pdb
 dev_README.txt
 GameData/ModuleManager.*.dll
 GameData/JSI/JSIAdvTransparentPods/Plugins/JSIAdvTransparentPods.dll

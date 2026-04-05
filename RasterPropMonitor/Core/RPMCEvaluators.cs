@@ -3223,16 +3223,13 @@ namespace JSI
         {
             Func<double> accessor = null;
 
-            if (JSIMechJeb.IsInstalled)
+            accessor = (Func<double>)GetInternalMethod("JSIMechJeb:GetDeltaV", typeof(Func<double>));
+            if (accessor != null)
             {
-                accessor = (Func<double>)GetInternalMethod("JSIMechJeb:GetDeltaV", typeof(Func<double>));
-                if (accessor != null)
+                double value = accessor();
+                if (double.IsNaN(value))
                 {
-                    double value = accessor();
-                    if (double.IsNaN(value))
-                    {
-                        accessor = null;
-                    }
+                    accessor = null;
                 }
             }
 
@@ -3483,10 +3480,7 @@ namespace JSI
         {
             Func<bool> accessor = null;
 
-            if (JSIMechJeb.IsInstalled)
-            {
-                accessor = (Func<bool>)GetInternalMethod("JSIMechJeb:GetMechJebAvailable", typeof(Func<bool>));
-            }
+            accessor = (Func<bool>)GetInternalMethod("JSIMechJeb:GetMechJebAvailable", typeof(Func<bool>));
 
             if (accessor == null)
             {
@@ -3547,11 +3541,11 @@ namespace JSI
                     }
                 }
 
-                if (accessor == null && JSIMechJeb.IsInstalled)
+                if (accessor == null)
                 {
                     accessor = (Func<double>)GetInternalMethod("JSIMechJeb:GetTerminalVelocity", typeof(Func<double>));
-                    double value = accessor();
-                    if (double.IsNaN(value))
+                    
+                    if (accessor != null && double.IsNaN(accessor()))
                     {
                         accessor = null;
                     }
@@ -3575,31 +3569,22 @@ namespace JSI
         {
             double timeToImpact = double.NaN;
 
-            if (JSIMechJeb.IsInstalled)
+            if (evaluateTimeToImpactReady == false)
             {
-                if (evaluateTimeToImpactReady == false)
+                Func<double> accessor = (Func<double>)GetInternalMethod("JSIMechJeb:GetLandingTime", typeof(Func<double>));
+
+                if (accessor != null && double.IsNaN(accessor()))
                 {
-                    Func<double> accessor = null;
-
-                    if (accessor == null)
-                    {
-                        accessor = (Func<double>)GetInternalMethod("JSIMechJeb:GetLandingTime", typeof(Func<double>));
-                        double value = accessor();
-                        if (double.IsNaN(value))
-                        {
-                            accessor = null;
-                        }
-                    }
-
-                    evaluateTimeToImpact = accessor;
-
-                    evaluateTimeToImpactReady = true;
+                    accessor = null;
                 }
 
-                if (evaluateTimeToImpact != null)
-                {
-                    timeToImpact = evaluateTimeToImpact();
-                }
+                evaluateTimeToImpact = accessor;
+                evaluateTimeToImpactReady = true;
+            }
+
+            if (evaluateTimeToImpact != null)
+            {
+                timeToImpact = evaluateTimeToImpact();
             }
             else
             {

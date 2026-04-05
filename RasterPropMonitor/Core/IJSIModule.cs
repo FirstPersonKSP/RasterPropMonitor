@@ -77,7 +77,6 @@ namespace JSI
             if (JSIChatterer.chattererFound) RegisterModule(typeof(JSIChatterer));
             if (JSIFAR.farFound) RegisterModule(typeof(JSIFAR));
             if (JSIKAC.kacFound) RegisterModule(typeof(JSIKAC));
-            if (JSIMechJeb.IsInstalled) RegisterModule(typeof(JSIMechJeb));
             if (JSIPilotAssistant.paFound) RegisterModule(typeof(JSIPilotAssistant));
         }
 

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MechJebRPM</RootNamespace>
+    <AssemblyName>MechJebRPM</AssemblyName>
+    <TargetFramework>net4.8</TargetFramework>
+	  <FileVersion>1.0.0</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MechJeb2">
+      <HintPath>$(KSPRoot)\GameData\MechJeb2\Plugins\MechJeb2.dll</HintPath>
+      <Private>False</Private>
+      <CKANIdentifier>MechJeb2</CKANIdentifier>
+      <KSPAssemblyVersion>2.5</KSPAssemblyVersion>
+    </Reference>
+    <ProjectReference Include="..\RasterPropMonitor\RasterPropMonitor.csproj">
+      <Name>RasterPropMonitor</Name>
+      <!-- this isn't working yet, not sure why.  It's meant to add the ksp assembly dependency attribute, but we'll just do it manually for now
+      <KSPAssemblyName>RasterPropMonitor</KSPAssemblyName>
+      -->
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="KSPBuildTools" Version="0.0.4" />
+    <PackageReference Include="Krafs.Publicizer" Version="1.0.3" />
+  </ItemGroup>
+</Project>
