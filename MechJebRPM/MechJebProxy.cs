@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using MuMech;
 
 namespace JSI
 {
@@ -156,7 +157,7 @@ namespace JSI
         // SmartASS
         private static FieldInfo f_SmartASS_Target;
         private static FieldInfo f_SmartASS_Mode;
-        private static FieldInfo f_SmartASS_ForceRol;
+        internal static FieldInfo f_SmartASS_ForceRol;
         private static FieldInfo f_SmartASS_Rol;
         private static FieldInfo f_SmartASS_SrfHdg;
         private static FieldInfo f_SmartASS_SrfPit;
@@ -196,25 +197,25 @@ namespace JSI
         private static PropertyInfo p_Ascent_AscentAutopilot;
         private static FieldInfo f_Ascent_WarpCountDown;
         private static FieldInfo f_Ascent_SkipCircularization;
-        private static FieldInfo f_Ascent_ForceRoll;
+        internal static FieldInfo f_Ascent_ForceRoll;
         private static FieldInfo f_Ascent_VerticalRoll;
         private static FieldInfo f_Ascent_TurnRoll;
         private static FieldInfo f_Ascent_RollAltitude;
-        private static FieldInfo f_Ascent_LimitAoA;
+        internal static FieldInfo f_Ascent_LimitAoA;
         private static FieldInfo f_Ascent_MaxAoA;
         private static FieldInfo f_Ascent_AOALimitFadeoutPressure;
-        private static FieldInfo f_Ascent_CorrectiveSteering;
+        internal static FieldInfo f_Ascent_CorrectiveSteering;
         private static FieldInfo f_Ascent_CorrectiveSteeringGain;
         private static FieldInfo f_Ascent_TurnStartAltitude;
         private static FieldInfo f_Ascent_TurnStartVelocity;
         private static FieldInfo f_Ascent_TurnEndAltitude;
         private static FieldInfo f_Ascent_TurnEndAngle;
         private static FieldInfo f_Ascent_TurnShapeExponent;
-        private static FieldInfo f_Ascent_AutoPath;
+        internal static FieldInfo f_Ascent_AutoPath;
         private static FieldInfo f_Ascent_AutoTurnPerc;
         private static FieldInfo f_Ascent_AutoTurnSpdFactor;
         private static PropertyInfo p_Ascent_Autostage;
-        private static FieldInfo f_Ascent_Autostage;
+        internal static FieldInfo f_Ascent_Autostage;
         
         // AscentBaseAutopilot
         private static PropertyInfo p_AscentAP_Status;
@@ -225,11 +226,11 @@ namespace JSI
         private static MethodInfo m_Landing_LandUntargeted;
         private static MethodInfo m_Landing_StopLanding;
         private static FieldInfo f_Landing_TouchdownSpeed;
-        private static FieldInfo f_Landing_DeployGears;
-        private static FieldInfo f_Landing_DeployChutes;
+        internal static FieldInfo f_Landing_DeployGears;
+        internal static FieldInfo f_Landing_DeployChutes;
         private static FieldInfo f_Landing_LimitGearsStage;
         private static FieldInfo f_Landing_LimitChutesStage;
-        private static FieldInfo f_Landing_UseRCS;
+        internal static FieldInfo f_Landing_UseRCS;
         private static PropertyInfo p_Landing_Status;
         
         // LandingPredictions
@@ -243,25 +244,25 @@ namespace JSI
         private static FieldInfo f_Result_MaxDragGees;
         
         // ThrustController
-        private static FieldInfo f_Thrust_LimitToPreventOverheats;
-        private static FieldInfo f_Thrust_LimitToTerminalVelocity;
-        private static FieldInfo f_Thrust_LimitToMaxDynamicPressure;
+        internal static FieldInfo f_Thrust_LimitToPreventOverheats;
+        internal static FieldInfo f_Thrust_LimitToTerminalVelocity;
+        internal static FieldInfo f_Thrust_LimitToMaxDynamicPressure;
         private static FieldInfo f_Thrust_MaxDynamicPressure;
-        private static FieldInfo f_Thrust_LimitAcceleration;
+        internal static FieldInfo f_Thrust_LimitAcceleration;
         private static FieldInfo f_Thrust_MaxAcceleration;
-        private static FieldInfo f_Thrust_LimitThrottle;
+        internal static FieldInfo f_Thrust_LimitThrottle;
         private static FieldInfo f_Thrust_MaxThrottle;
         private static FieldInfo f_Thrust_LimiterMinThrottle;
         private static FieldInfo f_Thrust_MinThrottle;
-        private static FieldInfo f_Thrust_LimitToPreventFlameout;
+        internal static FieldInfo f_Thrust_LimitToPreventFlameout;
         private static FieldInfo f_Thrust_FlameoutSafetyPct;
-        private static FieldInfo f_Thrust_SmoothThrottle;
-        private static FieldInfo f_Thrust_ManageIntakes;
-        private static FieldInfo f_Thrust_DifferentialThrottle;
+        internal static FieldInfo f_Thrust_SmoothThrottle;
+        internal static FieldInfo f_Thrust_ManageIntakes;
+        internal static FieldInfo f_Thrust_DifferentialThrottle;
         private static FieldInfo f_Thrust_DifferentialThrottleSuccess;
         
         // StagingController
-        private static FieldInfo f_Staging_Autostage;
+        internal static FieldInfo f_Staging_Autostage;
         private static FieldInfo f_Staging_AutostageLimit;
         private static FieldInfo f_Staging_AutostagePreDelay;
         private static FieldInfo f_Staging_AutostagePostDelay;
@@ -270,7 +271,7 @@ namespace JSI
         private static FieldInfo f_Staging_FairingMaxDynamicPressure;
         private static FieldInfo f_Staging_FairingMinAltitude;
         private static FieldInfo f_Staging_HotStagingLeadTime;
-        private static FieldInfo f_Staging_DropSolids;
+        internal static FieldInfo f_Staging_DropSolids;
         private static FieldInfo f_Staging_DropSolidsLeadTime;
         private static MethodInfo m_Staging_AutostageOnce;
         
@@ -307,29 +308,29 @@ namespace JSI
         
         // DockingAutopilot
         private static FieldInfo f_Docking_SpeedLimit;
-        private static FieldInfo f_Docking_ForceRoll;
+        internal static FieldInfo f_Docking_ForceRoll;
         private static FieldInfo f_Docking_Roll;
-        private static FieldInfo f_Docking_OverrideSafeDistance;
+        internal static FieldInfo f_Docking_OverrideSafeDistance;
         private static FieldInfo f_Docking_OverridenSafeDistance;
-        private static FieldInfo f_Docking_OverrideTargetSize;
+        internal static FieldInfo f_Docking_OverrideTargetSize;
         private static FieldInfo f_Docking_OverridenTargetSize;
-        private static FieldInfo f_Docking_DrawBoundingBox;
+        internal static FieldInfo f_Docking_DrawBoundingBox;
         private static PropertyInfo p_Docking_Status;
         private static PropertyInfo p_Docking_SASCalc_X;
         private static PropertyInfo p_Docking_SASCalc_Y;
         private static PropertyInfo p_Docking_SASCalc_Z;
         
         // RoverController
-        private static FieldInfo f_Rover_ControlHeading;
-        private static FieldInfo f_Rover_ControlSpeed;
-        private static FieldInfo f_Rover_Heading;
+        internal static FieldInfo f_Rover_ControlHeading;
+        internal static FieldInfo f_Rover_ControlSpeed;
+        internal static FieldInfo f_Rover_Heading;
         private static FieldInfo f_Rover_Speed;
         private static FieldInfo f_Rover_HeadingError;
         private static FieldInfo f_Rover_SpeedError;
-        private static FieldInfo f_Rover_StabilityControl;
-        private static FieldInfo f_Rover_BrakeOnEject;
-        private static FieldInfo f_Rover_BrakeOnEnergyDepletion;
-        private static FieldInfo f_Rover_WarpToDaylight;
+        internal static FieldInfo f_Rover_StabilityControl;
+        internal static FieldInfo f_Rover_BrakeOnEject;
+        internal static FieldInfo f_Rover_BrakeOnEnergyDepletion;
+        internal static FieldInfo f_Rover_WarpToDaylight;
         private static MethodInfo m_Rover_DriveToTarget;
         private static MethodInfo m_Rover_Stop;
         private static MethodInfo m_Rover_AddWaypoint;
@@ -342,7 +343,7 @@ namespace JSI
         private static FieldInfo f_Airplane_VertSpeedTarget;
         private static FieldInfo f_Airplane_HeadingHold;
         private static FieldInfo f_Airplane_HeadingTarget;
-        private static FieldInfo f_Airplane_RollHold;
+        internal static FieldInfo f_Airplane_RollHold;
         private static FieldInfo f_Airplane_RollTarget;
         private static FieldInfo f_Airplane_RollMax;
         private static FieldInfo f_Airplane_SpeedHold;
@@ -356,7 +357,6 @@ namespace JSI
         private static FieldInfo f_Airplane_RolKp;
         private static FieldInfo f_Airplane_RolKi;
         private static FieldInfo f_Airplane_RolKd;
-        private static FieldInfo f_Airplane_YawKp;
         private static FieldInfo f_Airplane_YawKi;
         private static FieldInfo f_Airplane_YawKd;
         
@@ -394,9 +394,10 @@ namespace JSI
         private static FieldInfo f_ManeuverPlanner_operation;  // static Operation[] _operation
         private static FieldInfo f_ManeuverPlanner_operationId;  // [Persistent] int _operationId
 
-        // Cached static Operation array (from MechJeb's ManeuverPlanner)
-        private static object[] cachedOperations;
-        private static string[] cachedOperationNames;
+        public static OperationAdvancedTransfer OpAdvancedTransfer { get; private set; }
+        public static OperationCircularize OpCircularize { get; private set; }
+        private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
+
 
         // TimeSelector for operation timing options
         private static Type t_TimeSelector;
@@ -445,33 +446,6 @@ namespace JSI
         #endregion
 
         #region Public Enum Copies
-        /// <summary>SmartASS target modes (copied from MechJeb for reflection-free access)</summary>
-        public enum Target
-        {
-            OFF,
-            KILLROT,
-            NODE,
-            SURFACE,
-            PROGRADE,
-            RETROGRADE,
-            NORMAL_PLUS,
-            NORMAL_MINUS,
-            RADIAL_PLUS,
-            RADIAL_MINUS,
-            RELATIVE_PLUS,
-            RELATIVE_MINUS,
-            TARGET_PLUS,
-            TARGET_MINUS,
-            PARALLEL_PLUS,
-            PARALLEL_MINUS,
-            ADVANCED,
-            AUTO,
-            SURFACE_PROGRADE,
-            SURFACE_RETROGRADE,
-            HORIZONTAL_PLUS,
-            HORIZONTAL_MINUS,
-            VERTICAL_PLUS,
-        }
 
         /// <summary>SmartASS mode categories</summary>
         public enum Mode
@@ -599,6 +573,16 @@ namespace JSI
                 {
                     initError = "MechJeb2 assembly not found";
                     return;
+                }
+
+                // cache references to operations
+                foreach (var op in Operation.GetAvailableOperations())
+                {
+                    if (op is OperationAdvancedTransfer opAdvancedTransfer) OpAdvancedTransfer = opAdvancedTransfer;
+                    else if (op is OperationCircularize opCircularize) OpCircularize = opCircularize;
+
+
+                    operationsByName[op.GetName()] = op; // review: GetName is localized, so this needs to change.  Maybe the type name?
                 }
 
                 // Initialize all types and members
@@ -1232,26 +1216,11 @@ namespace JSI
         #endregion
 
         #region Core Access Methods
-        /// <summary>
-        /// Get the master MechJeb core for a vessel
-        /// </summary>
-        public static object GetMasterMechJeb(Vessel vessel)
-        {
-            if (!mjAvailable || vessel == null || m_GetMasterMechJeb == null) return null;
-            try
-            {
-                return m_GetMasterMechJeb.Invoke(null, new object[] { vessel });
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Get a computer module by name from the core
         /// </summary>
-        public static object GetComputerModule(object core, string moduleName)
+        public static object GetComputerModule(MechJebCore core, string moduleName)
         {
             if (core == null || m_GetComputerModule == null) return null;
             try
@@ -1262,14 +1231,6 @@ namespace JSI
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Check if a module exists on this core
-        /// </summary>
-        public static bool ModuleExists(object core, string moduleName)
-        {
-            return GetComputerModule(core, moduleName) != null;
         }
 
         /// <summary>
@@ -1345,224 +1306,7 @@ namespace JSI
         #endregion
 
         #region Editable Value Helpers
-        /// <summary>
-        /// Get value from an EditableDouble
-        /// </summary>
-        public static double GetEditableDouble(object editable)
-        {
-            if (editable == null || p_EditableDouble_Val == null) return 0;
-            try
-            {
-                return (double)p_EditableDouble_Val.GetValue(editable, null);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set value on an EditableDouble
-        /// </summary>
-        public static void SetEditableDouble(object editable, double value)
-        {
-            if (editable == null || p_EditableDouble_Val == null) return;
-            try
-            {
-                p_EditableDouble_Val.SetValue(editable, value, null);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get value from an EditableDoubleMult
-        /// </summary>
-        public static double GetEditableDoubleMult(object editable)
-        {
-            if (editable == null || p_EditableDoubleMult_Val == null) return 0;
-            try
-            {
-                return (double)p_EditableDoubleMult_Val.GetValue(editable, null);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set value on an EditableDoubleMult
-        /// </summary>
-        public static void SetEditableDoubleMult(object editable, double value)
-        {
-            if (editable == null || p_EditableDoubleMult_Val == null) return;
-            try
-            {
-                p_EditableDoubleMult_Val.SetValue(editable, value, null);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get value from an EditableInt
-        /// </summary>
-        public static int GetEditableInt(object editable)
-        {
-            if (editable == null || p_EditableInt_Val == null) return 0;
-            try
-            {
-                return (int)p_EditableInt_Val.GetValue(editable, null);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set value on an EditableInt
-        /// </summary>
-        public static void SetEditableInt(object editable, int value)
-        {
-            if (editable == null || p_EditableInt_Val == null) return;
-            try
-            {
-                p_EditableInt_Val.SetValue(editable, value, null);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Convert an EditableAngle to double
-        /// </summary>
-        public static double GetEditableAngle(object editable)
-        {
-            if (editable == null || m_EditableAngle_ToDouble == null) return 0;
-            try
-            {
-                return (double)m_EditableAngle_ToDouble.Invoke(null, new object[] { editable });
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Get a field value of type EditableDouble and return its double value
-        /// </summary>
-        public static double GetEditableDoubleField(object obj, FieldInfo field)
-        {
-            if (obj == null || field == null) return 0;
-            try
-            {
-                object editable = field.GetValue(obj);
-                return GetEditableDouble(editable);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set a field value of type EditableDouble
-        /// </summary>
-        public static void SetEditableDoubleField(object obj, FieldInfo field, double value)
-        {
-            if (obj == null || field == null) return;
-            try
-            {
-                object editable = field.GetValue(obj);
-                SetEditableDouble(editable, value);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get a field value of type EditableDoubleMult and return its double value
-        /// </summary>
-        public static double GetEditableDoubleMultField(object obj, FieldInfo field)
-        {
-            if (obj == null || field == null) return 0;
-            try
-            {
-                object editable = field.GetValue(obj);
-                return GetEditableDoubleMult(editable);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set a field value of type EditableDoubleMult
-        /// </summary>
-        public static void SetEditableDoubleMultField(object obj, FieldInfo field, double value)
-        {
-            if (obj == null || field == null) return;
-            try
-            {
-                object editable = field.GetValue(obj);
-                SetEditableDoubleMult(editable, value);
-            }
-            catch { }
-        }
-
-        private static void SetMemberDouble(object target, MemberInfo member, double value)
-        {
-            if (target == null || member == null) return;
-            try
-            {
-                object memberValue = null;
-                Type memberType = null;
-
-                FieldInfo field = member as FieldInfo;
-                if (field != null)
-                {
-                    memberValue = field.GetValue(target);
-                    memberType = field.FieldType;
-                }
-                else
-                {
-                    PropertyInfo prop = member as PropertyInfo;
-                    if (prop != null)
-                    {
-                        memberValue = prop.GetValue(target, null);
-                        memberType = prop.PropertyType;
-                    }
-                }
-
-                if (memberValue != null)
-                {
-                    if (t_EditableDouble != null && t_EditableDouble.IsInstanceOfType(memberValue))
-                    {
-                        SetEditableDouble(memberValue, value);
-                        return;
-                    }
-                    if (t_EditableDoubleMult != null && t_EditableDoubleMult.IsInstanceOfType(memberValue))
-                    {
-                        SetEditableDoubleMult(memberValue, value);
-                        return;
-                    }
-                }
-
-                if (memberType == typeof(double))
-                {
-                    if (field != null) field.SetValue(target, value);
-                    else if (member is PropertyInfo) ((PropertyInfo)member).SetValue(target, value, null);
-                    return;
-                }
-
-                if (memberType == typeof(float))
-                {
-                    if (field != null) field.SetValue(target, (float)value);
-                    else if (member is PropertyInfo) ((PropertyInfo)member).SetValue(target, (float)value, null);
-                }
-            }
-            catch { }
-        }
+       
 
         private static object CreateAbsoluteVector(CelestialBody body, double latitude, double longitude, double altitude)
         {
@@ -1596,23 +1340,16 @@ namespace JSI
         /// <summary>
         /// Get the Target controller from the core
         /// </summary>
-        public static object GetTargetController(object core)
+        public static MechJebModuleTargetController GetTargetController(MechJebCore core)
         {
             if (core == null || f_Core_Target == null) return null;
-            try
-            {
-                return f_Core_Target.GetValue(core);
-            }
-            catch
-            {
-                return null;
-            }
+            return core.GetComponent<MechJebModuleTargetController>();
         }
 
         /// <summary>
         /// Get the Node executor from the core
         /// </summary>
-        public static object GetNodeExecutor(object core)
+        public static object GetNodeExecutor(MechJebCore core)
         {
             if (core == null || f_Core_Node == null) return null;
             try
@@ -1625,42 +1362,11 @@ namespace JSI
             }
         }
 
-        /// <summary>
-        /// Get the Attitude controller from the core
-        /// </summary>
-        public static object GetAttitudeController(object core)
-        {
-            if (core == null || f_Core_Attitude == null) return null;
-            try
-            {
-                return f_Core_Attitude.GetValue(core);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the Thrust controller from the core
-        /// </summary>
-        public static object GetThrustController(object core)
-        {
-            if (core == null || f_Core_Thrust == null) return null;
-            try
-            {
-                return f_Core_Thrust.GetValue(core);
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Get the Staging controller from the core
         /// </summary>
-        public static object GetStagingController(object core)
+        public static object GetStagingController(MechJebCore core)
         {
             if (core == null || f_Core_Staging == null) return null;
             try
@@ -1673,183 +1379,11 @@ namespace JSI
             }
         }
 
-        /// <summary>
-        /// Get the VesselState from the core
-        /// </summary>
-        public static object GetVesselState(object core)
-        {
-            if (core == null || f_Core_VesselState == null) return null;
-            try
-            {
-                return f_Core_VesselState.GetValue(core);
-            }
-            catch
-            {
-                return null;
-            }
-        }
         #endregion
 
         #region SmartASS Methods
-        /// <summary>
-        /// Get the SmartASS module
-        /// </summary>
-        public static object GetSmartASS(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleSmartASS");
-        }
+      
 
-        /// <summary>
-        /// Get the current SmartASS target
-        /// </summary>
-        public static int GetSmartASSTarget(object smartass)
-        {
-            if (smartass == null || f_SmartASS_Target == null) return 0;
-            try
-            {
-                return (int)f_SmartASS_Target.GetValue(smartass);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set SmartASS target and engage
-        /// </summary>
-        public static void SetSmartASSTarget(object smartass, Target target)
-        {
-            if (smartass == null) return;
-            try
-            {
-                if (f_SmartASS_Target != null)
-                {
-                    // Convert our Target enum to MechJeb's enum
-                    object mjTarget = Enum.ToObject(t_SmartASSTarget, (int)target);
-                    f_SmartASS_Target.SetValue(smartass, mjTarget);
-                }
-                if (m_SmartASS_Engage != null)
-                {
-                    m_SmartASS_Engage.Invoke(smartass, new object[] { true });
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get force roll state
-        /// </summary>
-        public static bool GetSmartASSForceRoll(object smartass)
-        {
-            if (smartass == null || f_SmartASS_ForceRol == null) return false;
-            try
-            {
-                return (bool)f_SmartASS_ForceRol.GetValue(smartass);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set force roll state
-        /// </summary>
-        public static void SetSmartASSForceRoll(object smartass, bool force)
-        {
-            if (smartass == null || f_SmartASS_ForceRol == null) return;
-            try
-            {
-                f_SmartASS_ForceRol.SetValue(smartass, force);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get roll angle
-        /// </summary>
-        public static double GetSmartASSRoll(object smartass)
-        {
-            if (smartass == null || f_SmartASS_Rol == null) return 0;
-            return GetEditableDoubleField(smartass, f_SmartASS_Rol);
-        }
-
-        /// <summary>
-        /// Set roll angle
-        /// </summary>
-        public static void SetSmartASSRoll(object smartass, double roll)
-        {
-            if (smartass == null || f_SmartASS_Rol == null) return;
-            SetEditableDoubleField(smartass, f_SmartASS_Rol, roll);
-        }
-
-        /// <summary>
-        /// Get surface heading
-        /// </summary>
-        public static double GetSmartASSSurfaceHeading(object smartass)
-        {
-            if (smartass == null || f_SmartASS_SrfHdg == null) return 0;
-            return GetEditableDoubleField(smartass, f_SmartASS_SrfHdg);
-        }
-
-        /// <summary>
-        /// Set surface heading
-        /// </summary>
-        public static void SetSmartASSSurfaceHeading(object smartass, double heading)
-        {
-            if (smartass == null || f_SmartASS_SrfHdg == null) return;
-            SetEditableDoubleField(smartass, f_SmartASS_SrfHdg, heading);
-        }
-
-        /// <summary>
-        /// Get surface pitch
-        /// </summary>
-        public static double GetSmartASSSurfacePitch(object smartass)
-        {
-            if (smartass == null || f_SmartASS_SrfPit == null) return 0;
-            return GetEditableDoubleField(smartass, f_SmartASS_SrfPit);
-        }
-
-        /// <summary>
-        /// Set surface pitch
-        /// </summary>
-        public static void SetSmartASSSurfacePitch(object smartass, double pitch)
-        {
-            if (smartass == null || f_SmartASS_SrfPit == null) return;
-            SetEditableDoubleField(smartass, f_SmartASS_SrfPit, pitch);
-        }
-
-        /// <summary>
-        /// Get surface roll
-        /// </summary>
-        public static double GetSmartASSSurfaceRoll(object smartass)
-        {
-            if (smartass == null || f_SmartASS_SrfRol == null) return 0;
-            return GetEditableDoubleField(smartass, f_SmartASS_SrfRol);
-        }
-
-        /// <summary>
-        /// Set surface roll
-        /// </summary>
-        public static void SetSmartASSSurfaceRoll(object smartass, double roll)
-        {
-            if (smartass == null || f_SmartASS_SrfRol == null) return;
-            SetEditableDoubleField(smartass, f_SmartASS_SrfRol, roll);
-        }
-
-        /// <summary>
-        /// Engage SmartASS with current settings
-        /// </summary>
-        public static void EngageSmartASS(object smartass)
-        {
-            if (smartass == null || m_SmartASS_Engage == null) return;
-            try
-            {
-                m_SmartASS_Engage.Invoke(smartass, new object[] { true });
-            }
-            catch { }
-        }
 
         public static string GetSmartASSAdvancedReferenceName(object smartass)
         {
@@ -1910,7 +1444,7 @@ namespace JSI
         /// <summary>
         /// Execute one maneuver node
         /// </summary>
-        public static void ExecuteOneNode(object core, object controller)
+        public static void ExecuteOneNode(MechJebCore core, object controller)
         {
             object node = GetNodeExecutor(core);
             if (node == null || m_NodeExecutor_ExecuteOneNode == null) return;
@@ -1922,23 +1456,9 @@ namespace JSI
         }
 
         /// <summary>
-        /// Execute all maneuver nodes
-        /// </summary>
-        public static void ExecuteAllNodes(object core, object controller)
-        {
-            object node = GetNodeExecutor(core);
-            if (node == null || m_NodeExecutor_ExecuteAllNodes == null) return;
-            try
-            {
-                m_NodeExecutor_ExecuteAllNodes.Invoke(node, new object[] { controller });
-            }
-            catch { }
-        }
-
-        /// <summary>
         /// Abort node execution
         /// </summary>
-        public static void AbortNode(object core)
+        public static void AbortNode(MechJebCore core)
         {
             object node = GetNodeExecutor(core);
             if (node == null || m_NodeExecutor_Abort == null) return;
@@ -1952,7 +1472,7 @@ namespace JSI
         /// <summary>
         /// Check if node executor is running
         /// </summary>
-        public static bool IsNodeExecutorRunning(object core)
+        public static bool IsNodeExecutorRunning(MechJebCore core)
         {
             object node = GetNodeExecutor(core);
             return GetModuleEnabled(node);
@@ -1961,7 +1481,7 @@ namespace JSI
         /// <summary>
         /// Get node executor autowarp setting
         /// </summary>
-        public static bool GetNodeAutowarp(object core)
+        public static bool GetNodeAutowarp(MechJebCore core)
         {
             object node = GetNodeExecutor(core);
             if (node == null || f_NodeExecutor_Autowarp == null) return false;
@@ -1978,7 +1498,7 @@ namespace JSI
         /// <summary>
         /// Set node executor autowarp setting
         /// </summary>
-        public static void SetNodeAutowarp(object core, bool autowarp)
+        public static void SetNodeAutowarp(MechJebCore core, bool autowarp)
         {
             object node = GetNodeExecutor(core);
             if (node == null || f_NodeExecutor_Autowarp == null) return;
@@ -1989,45 +1509,13 @@ namespace JSI
             catch { }
         }
 
-        /// <summary>
-        /// Get node executor lead time
-        /// </summary>
-        public static double GetNodeLeadTime(object core)
-        {
-            object node = GetNodeExecutor(core);
-            if (node == null || f_NodeExecutor_LeadTime == null) return 3.0;
-            try
-            {
-                object editable = f_NodeExecutor_LeadTime.GetValue(node);
-                return GetEditableDouble(editable);
-            }
-            catch
-            {
-                return 3.0;
-            }
-        }
-
-        /// <summary>
-        /// Set node executor lead time
-        /// </summary>
-        public static void SetNodeLeadTime(object core, double leadTime)
-        {
-            object node = GetNodeExecutor(core);
-            if (node == null || f_NodeExecutor_LeadTime == null) return;
-            try
-            {
-                object editable = f_NodeExecutor_LeadTime.GetValue(node);
-                SetEditableDouble(editable, leadTime);
-            }
-            catch { }
-        }
         #endregion
 
         #region Target Controller Methods
         /// <summary>
         /// Check if a position target exists
         /// </summary>
-        public static bool PositionTargetExists(object core)
+        public static bool PositionTargetExists(MechJebCore core)
         {
             object target = GetTargetController(core);
             if (target == null || p_Target_PositionTargetExists == null) return false;
@@ -2041,79 +1529,26 @@ namespace JSI
             }
         }
 
-        /// <summary>
-        /// Check if a normal (vessel) target exists
-        /// </summary>
-        public static bool NormalTargetExists(object core)
-        {
-            object target = GetTargetController(core);
-            if (target == null || p_Target_NormalTargetExists == null) return false;
-            try
-            {
-                return (bool)p_Target_NormalTargetExists.GetValue(target, null);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Get the target orbit
-        /// </summary>
-        public static Orbit GetTargetOrbit(object core)
-        {
-            object target = GetTargetController(core);
-            if (target == null || p_Target_TargetOrbit == null) return null;
-            try
-            {
-                return (Orbit)p_Target_TargetOrbit.GetValue(target, null);
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Get target latitude
         /// </summary>
-        public static double GetTargetLatitude(object core)
+        public static double GetTargetLatitude(MechJebCore core)
         {
-            object target = GetTargetController(core);
-            if (target == null || f_Target_TargetLatitude == null) return 0;
-            try
-            {
-                object latObj = f_Target_TargetLatitude.GetValue(target);
-                return GetEditableAngle(latObj);
-            }
-            catch
-            {
-                return 0;
-            }
+            return core.Target.targetLatitude;
         }
 
         /// <summary>
         /// Get target longitude
         /// </summary>
-        public static double GetTargetLongitude(object core)
+        public static double GetTargetLongitude(MechJebCore core)
         {
-            object target = GetTargetController(core);
-            if (target == null || f_Target_TargetLongitude == null) return 0;
-            try
-            {
-                object lonObj = f_Target_TargetLongitude.GetValue(target);
-                return GetEditableAngle(lonObj);
-            }
-            catch
-            {
-                return 0;
-            }
+            return core.Target.targetLongitude;
         }
         /// <summary>
         /// Set target latitude using existing longitude
         /// </summary>
-        public static void SetTargetLatitude(object core, CelestialBody body, double latitude)
+        public static void SetTargetLatitude(MechJebCore core, CelestialBody body, double latitude)
         {
             if (body == null) return;
             double lon = GetTargetLongitude(core);
@@ -2123,7 +1558,7 @@ namespace JSI
         /// <summary>
         /// Set target longitude using existing latitude
         /// </summary>
-        public static void SetTargetLongitude(object core, CelestialBody body, double longitude)
+        public static void SetTargetLongitude(MechJebCore core, CelestialBody body, double longitude)
         {
             if (body == null) return;
             double lat = GetTargetLatitude(core);
@@ -2133,7 +1568,7 @@ namespace JSI
         /// <summary>
         /// Set position target
         /// </summary>
-        public static void SetPositionTarget(object core, CelestialBody body, double latitude, double longitude)
+        public static void SetPositionTarget(MechJebCore core, CelestialBody body, double latitude, double longitude)
         {
             object target = GetTargetController(core);
             if (target == null || m_Target_SetPositionTarget == null) return;
@@ -2147,7 +1582,7 @@ namespace JSI
         /// <summary>
         /// Open the map to pick a position target
         /// </summary>
-        public static void PickPositionTargetOnMap(object core)
+        public static void PickPositionTargetOnMap(MechJebCore core)
         {
             object target = GetTargetController(core);
             if (target == null || m_Target_PickPositionTargetOnMap == null) return;
@@ -2163,7 +1598,7 @@ namespace JSI
         /// <summary>
         /// Get ascent settings module
         /// </summary>
-        public static object GetAscentSettings(object core)
+        public static object GetAscentSettings(MechJebCore core)
         {
             return GetComputerModule(core, "MechJebModuleAscentSettings");
         }
@@ -2171,7 +1606,7 @@ namespace JSI
         /// <summary>
         /// Get the ascent autopilot from settings
         /// </summary>
-        public static object GetAscentAutopilot(object core)
+        public static object GetAscentAutopilot(MechJebCore core)
         {
             object settings = GetAscentSettings(core);
             if (settings == null || p_Ascent_AscentAutopilot == null) return null;
@@ -2186,63 +1621,9 @@ namespace JSI
         }
 
         /// <summary>
-        /// Get desired orbit altitude (km)
-        /// </summary>
-        public static double GetAscentAltitude(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredOrbitAltitude == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_DesiredOrbitAltitude);
-        }
-
-        /// <summary>
-        /// Set desired orbit altitude (km)
-        /// </summary>
-        public static void SetAscentAltitude(object core, double altitude)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredOrbitAltitude == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_DesiredOrbitAltitude, altitude);
-        }
-
-        public static double GetAscentApoapsis(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredApoapsis == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_DesiredApoapsis);
-        }
-
-        public static void SetAscentApoapsis(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredApoapsis == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_DesiredApoapsis, value);
-        }
-
-        /// <summary>
-        /// Get desired inclination
-        /// </summary>
-        public static double GetAscentInclination(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredInclination == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_DesiredInclination);
-        }
-
-        /// <summary>
-        /// Set desired inclination
-        /// </summary>
-        public static void SetAscentInclination(object core, double inclination)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredInclination == null) return;
-            SetEditableDoubleField(settings, f_Ascent_DesiredInclination, inclination);
-        }
-
-        /// <summary>
         /// Check if ascent autopilot is engaged
         /// </summary>
-        public static bool IsAscentAutopilotEngaged(object core)
+        public static bool IsAscentAutopilotEngaged(MechJebCore core)
         {
             object autopilot = GetAscentAutopilot(core);
             return GetModuleEnabled(autopilot);
@@ -2251,7 +1632,7 @@ namespace JSI
         /// <summary>
         /// Engage/disengage the ascent autopilot
         /// </summary>
-        public static void SetAscentAutopilotEngaged(object core, bool engaged, object controller = null)
+        public static void SetAscentAutopilotEngaged(MechJebCore core, bool engaged, object controller = null)
         {
             object autopilot = GetAscentAutopilot(core);
             if (autopilot == null) return;
@@ -2272,26 +1653,9 @@ namespace JSI
         }
 
         /// <summary>
-        /// Get ascent autopilot status string
-        /// </summary>
-        public static string GetAscentStatus(object core)
-        {
-            object autopilot = GetAscentAutopilot(core);
-            if (autopilot == null || p_AscentAP_Status == null) return "";
-            try
-            {
-                return (string)p_AscentAP_Status.GetValue(autopilot, null);
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
-        /// <summary>
         /// Get ascent autowarp setting
         /// </summary>
-        public static bool GetAscentAutowarp(object core)
+        public static bool GetAscentAutowarp(MechJebCore core)
         {
             return GetNodeAutowarp(core);
         }
@@ -2299,53 +1663,12 @@ namespace JSI
         /// <summary>
         /// Set ascent autowarp
         /// </summary>
-        public static void SetAscentAutowarp(object core, bool autowarp)
+        public static void SetAscentAutowarp(MechJebCore core, bool autowarp)
         {
             SetNodeAutowarp(core, autowarp);
         }
 
-        public static bool GetAscentAutostage(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null) return false;
-
-            try
-            {
-                if (p_Ascent_Autostage != null)
-                {
-                    return (bool)p_Ascent_Autostage.GetValue(settings, null);
-                }
-                if (f_Ascent_Autostage != null)
-                {
-                    return (bool)f_Ascent_Autostage.GetValue(settings);
-                }
-            }
-            catch { }
-
-            return false;
-        }
-
-        public static void SetAscentAutostage(object core, bool enabled)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null) return;
-
-            try
-            {
-                if (p_Ascent_Autostage != null)
-                {
-                    p_Ascent_Autostage.SetValue(settings, enabled, null);
-                    return;
-                }
-                if (f_Ascent_Autostage != null)
-                {
-                    f_Ascent_Autostage.SetValue(settings, enabled);
-                }
-            }
-            catch { }
-        }
-
-        public static bool GetAscentAutoPath(object core)
+        public static bool GetAscentAutoPath(MechJebCore core)
         {
             object settings = GetAscentSettings(core);
             if (settings == null || f_Ascent_AutoPath == null) return false;
@@ -2356,196 +1679,7 @@ namespace JSI
             catch { return false; }
         }
 
-        public static void SetAscentAutoPath(object core, bool enabled)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AutoPath == null) return;
-            try
-            {
-                f_Ascent_AutoPath.SetValue(settings, enabled);
-            }
-            catch { }
-        }
-
-        public static double GetAscentTurnStartAltitude(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnStartAltitude == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_TurnStartAltitude);
-        }
-
-        public static void SetAscentTurnStartAltitude(object core, double altitude)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnStartAltitude == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_TurnStartAltitude, altitude);
-        }
-
-        public static double GetAscentTurnStartVelocity(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnStartVelocity == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_TurnStartVelocity);
-        }
-
-        public static void SetAscentTurnStartVelocity(object core, double velocity)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnStartVelocity == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_TurnStartVelocity, velocity);
-        }
-
-        public static double GetAscentTurnEndAltitude(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnEndAltitude == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_TurnEndAltitude);
-        }
-
-        public static void SetAscentTurnEndAltitude(object core, double altitude)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnEndAltitude == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_TurnEndAltitude, altitude);
-        }
-
-        public static double GetAscentTurnEndAngle(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnEndAngle == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_TurnEndAngle);
-        }
-
-        public static void SetAscentTurnEndAngle(object core, double angle)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnEndAngle == null) return;
-            SetEditableDoubleField(settings, f_Ascent_TurnEndAngle, angle);
-        }
-
-        public static double GetAscentTurnShapeExponent(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnShapeExponent == null) return 0;
-            return GetEditableDoubleMultField(settings, f_Ascent_TurnShapeExponent);
-        }
-
-        public static void SetAscentTurnShapeExponent(object core, double exponent)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnShapeExponent == null) return;
-            SetEditableDoubleMultField(settings, f_Ascent_TurnShapeExponent, exponent);
-        }
-
-        public static double GetAscentAutoTurnPerc(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AutoTurnPerc == null) return 0;
-            try
-            {
-                return (float)f_Ascent_AutoTurnPerc.GetValue(settings);
-            }
-            catch { return 0; }
-        }
-
-        public static void SetAscentAutoTurnPerc(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AutoTurnPerc == null) return;
-            try
-            {
-                f_Ascent_AutoTurnPerc.SetValue(settings, (float)value);
-            }
-            catch { }
-        }
-
-        public static double GetAscentAutoTurnSpdFactor(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AutoTurnSpdFactor == null) return 0;
-            try
-            {
-                return (float)f_Ascent_AutoTurnSpdFactor.GetValue(settings);
-            }
-            catch { return 0; }
-        }
-
-        public static void SetAscentAutoTurnSpdFactor(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AutoTurnSpdFactor == null) return;
-            try
-            {
-                f_Ascent_AutoTurnSpdFactor.SetValue(settings, (float)value);
-            }
-            catch { }
-        }
-
-        public static double GetAscentLAN(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredLAN == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_DesiredLAN);
-        }
-
-        public static void SetAscentLAN(object core, double lan)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_DesiredLAN == null) return;
-            SetEditableDoubleField(settings, f_Ascent_DesiredLAN, lan);
-        }
-
-        public static double GetAscentLaunchPhaseAngle(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LaunchPhaseAngle == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_LaunchPhaseAngle);
-        }
-
-        public static void SetAscentLaunchPhaseAngle(object core, double angle)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LaunchPhaseAngle == null) return;
-            SetEditableDoubleField(settings, f_Ascent_LaunchPhaseAngle, angle);
-        }
-
-        public static double GetAscentLaunchLANDifference(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LaunchLANDifference == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_LaunchLANDifference);
-        }
-
-        public static void SetAscentLaunchLANDifference(object core, double diff)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LaunchLANDifference == null) return;
-            SetEditableDoubleField(settings, f_Ascent_LaunchLANDifference, diff);
-        }
-
-        public static int GetAscentWarpCountdown(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_WarpCountDown == null) return 0;
-            try
-            {
-                return GetEditableInt(f_Ascent_WarpCountDown.GetValue(settings));
-            }
-            catch { return 0; }
-        }
-
-        public static void SetAscentWarpCountdown(object core, int value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_WarpCountDown == null) return;
-            try
-            {
-                SetEditableInt(f_Ascent_WarpCountDown.GetValue(settings), value);
-            }
-            catch { }
-        }
-
-        public static bool GetAscentSkipCircularization(object core)
+        public static bool GetAscentSkipCircularization(MechJebCore core)
         {
             object settings = GetAscentSettings(core);
             if (settings == null || f_Ascent_SkipCircularization == null) return false;
@@ -2553,7 +1687,7 @@ namespace JSI
             catch { return false; }
         }
 
-        public static void SetAscentSkipCircularization(object core, bool value)
+        public static void SetAscentSkipCircularization(MechJebCore core, bool value)
         {
             object settings = GetAscentSettings(core);
             if (settings == null || f_Ascent_SkipCircularization == null) return;
@@ -2561,160 +1695,30 @@ namespace JSI
             catch { }
         }
 
-        public static bool GetAscentForceRoll(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_ForceRoll == null) return false;
-            try { return (bool)f_Ascent_ForceRoll.GetValue(settings); }
-            catch { return false; }
-        }
 
-        public static void SetAscentForceRoll(object core, bool value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_ForceRoll == null) return;
-            try { f_Ascent_ForceRoll.SetValue(settings, value); }
-            catch { }
-        }
-
-        public static double GetAscentVerticalRoll(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_VerticalRoll == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_VerticalRoll);
-        }
-
-        public static void SetAscentVerticalRoll(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_VerticalRoll == null) return;
-            SetEditableDoubleField(settings, f_Ascent_VerticalRoll, value);
-        }
-
-        public static double GetAscentTurnRoll(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnRoll == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_TurnRoll);
-        }
-
-        public static void SetAscentTurnRoll(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_TurnRoll == null) return;
-            SetEditableDoubleField(settings, f_Ascent_TurnRoll, value);
-        }
-
-        public static double GetAscentRollAltitude(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_RollAltitude == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_RollAltitude);
-        }
-
-        public static void SetAscentRollAltitude(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_RollAltitude == null) return;
-            SetEditableDoubleField(settings, f_Ascent_RollAltitude, value);
-        }
-
-        public static bool GetAscentLimitAoA(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LimitAoA == null) return false;
-            try { return (bool)f_Ascent_LimitAoA.GetValue(settings); }
-            catch { return false; }
-        }
-
-        public static void SetAscentLimitAoA(object core, bool value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_LimitAoA == null) return;
-            try { f_Ascent_LimitAoA.SetValue(settings, value); }
-            catch { }
-        }
-
-        public static double GetAscentMaxAoA(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_MaxAoA == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_MaxAoA);
-        }
-
-        public static void SetAscentMaxAoA(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_MaxAoA == null) return;
-            SetEditableDoubleField(settings, f_Ascent_MaxAoA, value);
-        }
-
-        public static double GetAscentAoAFadeoutPressure(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AOALimitFadeoutPressure == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_AOALimitFadeoutPressure);
-        }
-
-        public static void SetAscentAoAFadeoutPressure(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_AOALimitFadeoutPressure == null) return;
-            SetEditableDoubleField(settings, f_Ascent_AOALimitFadeoutPressure, value);
-        }
-
-        public static bool GetAscentCorrectiveSteering(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_CorrectiveSteering == null) return false;
-            try { return (bool)f_Ascent_CorrectiveSteering.GetValue(settings); }
-            catch { return false; }
-        }
-
-        public static void SetAscentCorrectiveSteering(object core, bool value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_CorrectiveSteering == null) return;
-            try { f_Ascent_CorrectiveSteering.SetValue(settings, value); }
-            catch { }
-        }
-
-        public static double GetAscentCorrectiveSteeringGain(object core)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_CorrectiveSteeringGain == null) return 0;
-            return GetEditableDoubleField(settings, f_Ascent_CorrectiveSteeringGain);
-        }
-
-        public static void SetAscentCorrectiveSteeringGain(object core, double value)
-        {
-            object settings = GetAscentSettings(core);
-            if (settings == null || f_Ascent_CorrectiveSteeringGain == null) return;
-            SetEditableDoubleField(settings, f_Ascent_CorrectiveSteeringGain, value);
-        }
         #endregion
 
         #region Landing Methods
         /// <summary>
         /// Get landing autopilot module
         /// </summary>
-        public static object GetLandingAutopilot(object core)
+        public static MechJebModuleLandingAutopilot GetLandingAutopilot(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleLandingAutopilot");
+            return core.Landing;
         }
 
         /// <summary>
         /// Get landing predictions module
         /// </summary>
-        public static object GetLandingPredictions(object core)
+        public static MechJebModuleLandingPredictions GetLandingPredictions(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleLandingPredictions");
+            return core.GetComputerModule<MechJebModuleLandingPredictions>();
         }
 
         /// <summary>
         /// Start landing at position target
         /// </summary>
-        public static void LandAtPositionTarget(object core, object controller = null)
+        public static void LandAtPositionTarget(MechJebCore core, object controller = null)
         {
             object landing = GetLandingAutopilot(core);
             if (landing == null || m_Landing_LandAtPositionTarget == null) return;
@@ -2734,7 +1738,7 @@ namespace JSI
         /// <summary>
         /// Start landing untargeted
         /// </summary>
-        public static void LandUntargeted(object core, object controller = null)
+        public static void LandUntargeted(MechJebCore core, object controller = null)
         {
             object landing = GetLandingAutopilot(core);
             if (landing == null || m_Landing_LandUntargeted == null) return;
@@ -2754,7 +1758,7 @@ namespace JSI
         /// <summary>
         /// Stop landing
         /// </summary>
-        public static void StopLanding(object core)
+        public static void StopLanding(MechJebCore core)
         {
             object landing = GetLandingAutopilot(core);
             if (landing == null || m_Landing_StopLanding == null) return;
@@ -2768,7 +1772,7 @@ namespace JSI
         /// <summary>
         /// Check if landing autopilot is engaged
         /// </summary>
-        public static bool IsLandingAutopilotEngaged(object core)
+        public static bool IsLandingAutopilotEngaged(MechJebCore core)
         {
             object landing = GetLandingAutopilot(core);
             return GetModuleEnabled(landing);
@@ -2777,79 +1781,27 @@ namespace JSI
         /// <summary>
         /// Get landing prediction result
         /// </summary>
-        public static object GetLandingPredictionResult(object core)
+        public static ReentrySimulation.Result GetLandingPredictionResult(MechJebCore core)
         {
-            object predictions = GetLandingPredictions(core);
-            if (predictions == null || m_Predictions_GetResult == null) return null;
-            try
-            {
-                return m_Predictions_GetResult.Invoke(predictions, null);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get landing prediction outcome
-        /// </summary>
-        public static LandingOutcome GetLandingOutcome(object result)
-        {
-            if (result == null || f_Result_Outcome == null) return LandingOutcome.ERROR;
-            try
-            {
-                object outcome = f_Result_Outcome.GetValue(result);
-                string outcomeStr = outcome.ToString();
-                LandingOutcome parsed;
-                if (Enum.TryParse(outcomeStr, out parsed))
-                {
-                    return parsed;
-                }
-                return LandingOutcome.ERROR;
-            }
-            catch
-            {
-                return LandingOutcome.ERROR;
-            }
+            var predictions = GetLandingPredictions(core);
+            return predictions.Result;
         }
 
         /// <summary>
         /// Get landing prediction end position
         /// </summary>
-        public static void GetLandingEndPosition(object result, out double latitude, out double longitude)
+        public static void GetLandingEndPosition(ReentrySimulation.Result result, out double latitude, out double longitude)
         {
-            latitude = 0;
-            longitude = 0;
-            if (result == null || f_Result_EndPosition == null) return;
-            try
-            {
-                object endPos = f_Result_EndPosition.GetValue(result);
-                if (endPos != null && f_AbsoluteVector_Latitude != null && f_AbsoluteVector_Longitude != null)
-                {
-                    object latObj = f_AbsoluteVector_Latitude.GetValue(endPos);
-                    object lonObj = f_AbsoluteVector_Longitude.GetValue(endPos);
-                    latitude = GetEditableAngle(latObj);
-                    longitude = GetEditableAngle(lonObj);
-                }
-            }
-            catch { }
+            latitude = result.EndPosition.Latitude;
+            longitude = result.EndPosition.Longitude;
         }
 
         /// <summary>
         /// Get landing prediction end UT
         /// </summary>
-        public static double GetLandingEndUT(object result)
+        public static double GetLandingEndUT(ReentrySimulation.Result result)
         {
-            if (result == null || f_Result_EndUT == null) return 0;
-            try
-            {
-                return (double)f_Result_EndUT.GetValue(result);
-            }
-            catch
-            {
-                return 0;
-            }
+            return result.EndUT;
         }
 
         /// <summary>
@@ -2868,7 +1820,7 @@ namespace JSI
             }
         }
 
-        public static bool GetLandingShowTrajectory(object core)
+        public static bool GetLandingShowTrajectory(MechJebCore core)
         {
             object predictions = GetLandingPredictions(core);
             if (predictions == null || p_Predictions_ShowTrajectory == null) return false;
@@ -2882,7 +1834,7 @@ namespace JSI
             }
         }
 
-        public static void SetLandingShowTrajectory(object core, bool show)
+        public static void SetLandingShowTrajectory(MechJebCore core, bool show)
         {
             object predictions = GetLandingPredictions(core);
             if (predictions == null || p_Predictions_ShowTrajectory == null) return;
@@ -2893,142 +1845,13 @@ namespace JSI
             catch { }
         }
 
-        /// <summary>
-        /// Get touchdown speed setting
-        /// </summary>
-        public static double GetLandingTouchdownSpeed(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_TouchdownSpeed == null) return 0;
-            return GetEditableDoubleField(landing, f_Landing_TouchdownSpeed);
-        }
-
-        /// <summary>
-        /// Set touchdown speed
-        /// </summary>
-        public static void SetLandingTouchdownSpeed(object core, double speed)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_TouchdownSpeed == null) return;
-            SetEditableDoubleField(landing, f_Landing_TouchdownSpeed, speed);
-        }
-
-        /// <summary>
-        /// Get deploy gears setting
-        /// </summary>
-        public static bool GetLandingDeployGears(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_DeployGears == null) return false;
-            try
-            {
-                return (bool)f_Landing_DeployGears.GetValue(landing);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set deploy gears
-        /// </summary>
-        public static void SetLandingDeployGears(object core, bool deploy)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_DeployGears == null) return;
-            try
-            {
-                f_Landing_DeployGears.SetValue(landing, deploy);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get deploy chutes setting
-        /// </summary>
-        public static bool GetLandingDeployChutes(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_DeployChutes == null) return false;
-            try
-            {
-                return (bool)f_Landing_DeployChutes.GetValue(landing);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set deploy chutes
-        /// </summary>
-        public static void SetLandingDeployChutes(object core, bool deploy)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_DeployChutes == null) return;
-            try
-            {
-                f_Landing_DeployChutes.SetValue(landing, deploy);
-            }
-            catch { }
-        }
-
-        public static int GetLandingLimitGearsStage(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_LimitGearsStage == null) return 0;
-            try { return GetEditableInt(f_Landing_LimitGearsStage.GetValue(landing)); }
-            catch { return 0; }
-        }
-
-        public static void SetLandingLimitGearsStage(object core, int value)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_LimitGearsStage == null) return;
-            try { SetEditableInt(f_Landing_LimitGearsStage.GetValue(landing), value); }
-            catch { }
-        }
-
-        public static int GetLandingLimitChutesStage(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_LimitChutesStage == null) return 0;
-            try { return GetEditableInt(f_Landing_LimitChutesStage.GetValue(landing)); }
-            catch { return 0; }
-        }
-
-        public static void SetLandingLimitChutesStage(object core, int value)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_LimitChutesStage == null) return;
-            try { SetEditableInt(f_Landing_LimitChutesStage.GetValue(landing), value); }
-            catch { }
-        }
-
-        public static bool GetLandingUseRCS(object core)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_UseRCS == null) return false;
-            try { return (bool)f_Landing_UseRCS.GetValue(landing); }
-            catch { return false; }
-        }
-
-        public static void SetLandingUseRCS(object core, bool value)
-        {
-            object landing = GetLandingAutopilot(core);
-            if (landing == null || f_Landing_UseRCS == null) return;
-            try { f_Landing_UseRCS.SetValue(landing, value); }
-            catch { }
-        }
         #endregion
 
         #region Stage Stats Methods
         /// <summary>
         /// Get the stage stats module
         /// </summary>
-        public static object GetStageStats(object core)
+        public static object GetStageStats(MechJebCore core)
         {
             return GetComputerModule(core, "MechJebModuleStageStats");
         }
@@ -3036,7 +1859,7 @@ namespace JSI
         /// <summary>
         /// Request an update of stage stats
         /// </summary>
-        public static void RequestStageStatsUpdate(object core, object controller = null)
+        public static void RequestStageStatsUpdate(MechJebCore core, object controller = null)
         {
             object stats = GetStageStats(core);
             if (stats == null || m_StageStats_RequestUpdate == null) return;
@@ -3050,7 +1873,7 @@ namespace JSI
         /// <summary>
         /// Get vacuum stage stats list
         /// </summary>
-        public static System.Collections.IList GetVacuumStageStats(object core)
+        public static System.Collections.IList GetVacuumStageStats(MechJebCore core)
         {
             object stats = GetStageStats(core);
             if (stats == null || f_StageStats_VacStats == null) return null;
@@ -3067,7 +1890,7 @@ namespace JSI
         /// <summary>
         /// Get atmospheric stage stats list
         /// </summary>
-        public static System.Collections.IList GetAtmoStageStats(object core)
+        public static System.Collections.IList GetAtmoStageStats(MechJebCore core)
         {
             object stats = GetStageStats(core);
             if (stats == null || f_StageStats_AtmoStats == null) return null;
@@ -3100,7 +1923,7 @@ namespace JSI
         /// <summary>
         /// Get total vacuum delta-V
         /// </summary>
-        public static double GetTotalVacuumDeltaV(object core)
+        public static double GetTotalVacuumDeltaV(MechJebCore core)
         {
             var stats = GetVacuumStageStats(core);
             if (stats == null) return 0;
@@ -3116,7 +1939,7 @@ namespace JSI
         /// <summary>
         /// Get total atmospheric delta-V
         /// </summary>
-        public static double GetTotalAtmoDeltaV(object core)
+        public static double GetTotalAtmoDeltaV(MechJebCore core)
         {
             var stats = GetAtmoStageStats(core);
             if (stats == null) return 0;
@@ -3130,470 +1953,14 @@ namespace JSI
         }
         #endregion
 
-        #region Thrust Controller Methods
-        /// <summary>
-        /// Get limit to prevent overheats
-        /// </summary>
-        public static bool GetLimitToPreventOverheats(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToPreventOverheats == null) return false;
-            try
-            {
-                return (bool)f_Thrust_LimitToPreventOverheats.GetValue(thrust);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set limit to prevent overheats
-        /// </summary>
-        public static void SetLimitToPreventOverheats(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToPreventOverheats == null) return;
-            try
-            {
-                f_Thrust_LimitToPreventOverheats.SetValue(thrust, limit);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get limit to max dynamic pressure
-        /// </summary>
-        public static bool GetLimitToMaxDynamicPressure(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToMaxDynamicPressure == null) return false;
-            try
-            {
-                return (bool)f_Thrust_LimitToMaxDynamicPressure.GetValue(thrust);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set limit to max dynamic pressure
-        /// </summary>
-        public static void SetLimitToMaxDynamicPressure(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToMaxDynamicPressure == null) return;
-            try
-            {
-                f_Thrust_LimitToMaxDynamicPressure.SetValue(thrust, limit);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get max dynamic pressure value
-        /// </summary>
-        public static double GetMaxDynamicPressure(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxDynamicPressure == null) return 0;
-            return GetEditableDoubleField(thrust, f_Thrust_MaxDynamicPressure);
-        }
-
-        /// <summary>
-        /// Set max dynamic pressure value
-        /// </summary>
-        public static void SetMaxDynamicPressure(object core, double pressure)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxDynamicPressure == null) return;
-            SetEditableDoubleField(thrust, f_Thrust_MaxDynamicPressure, pressure);
-        }
-
-        /// <summary>
-        /// Get limit acceleration
-        /// </summary>
-        public static bool GetLimitAcceleration(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitAcceleration == null) return false;
-            try
-            {
-                return (bool)f_Thrust_LimitAcceleration.GetValue(thrust);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set limit acceleration
-        /// </summary>
-        public static void SetLimitAcceleration(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitAcceleration == null) return;
-            try
-            {
-                f_Thrust_LimitAcceleration.SetValue(thrust, limit);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get max acceleration value
-        /// </summary>
-        public static double GetMaxAcceleration(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxAcceleration == null) return 0;
-            return GetEditableDoubleField(thrust, f_Thrust_MaxAcceleration);
-        }
-
-        /// <summary>
-        /// Set max acceleration value
-        /// </summary>
-        public static void SetMaxAcceleration(object core, double accel)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxAcceleration == null) return;
-            SetEditableDoubleField(thrust, f_Thrust_MaxAcceleration, accel);
-        }
-
-        public static bool GetLimitToTerminalVelocity(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToTerminalVelocity == null) return false;
-            try { return (bool)f_Thrust_LimitToTerminalVelocity.GetValue(thrust); }
-            catch { return false; }
-        }
-
-        public static void SetLimitToTerminalVelocity(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToTerminalVelocity == null) return;
-            try { f_Thrust_LimitToTerminalVelocity.SetValue(thrust, limit); }
-            catch { }
-        }
-
-        public static bool GetLimitToPreventFlameout(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToPreventFlameout == null) return false;
-            try { return (bool)f_Thrust_LimitToPreventFlameout.GetValue(thrust); }
-            catch { return false; }
-        }
-
-        public static void SetLimitToPreventFlameout(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitToPreventFlameout == null) return;
-            try { f_Thrust_LimitToPreventFlameout.SetValue(thrust, limit); }
-            catch { }
-        }
-
-        public static double GetFlameoutSafetyPct(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_FlameoutSafetyPct == null) return 0;
-            return GetEditableDoubleField(thrust, f_Thrust_FlameoutSafetyPct);
-        }
-
-        public static void SetFlameoutSafetyPct(object core, double value)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_FlameoutSafetyPct == null) return;
-            SetEditableDoubleField(thrust, f_Thrust_FlameoutSafetyPct, value);
-        }
-
-        public static bool GetSmoothThrottle(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_SmoothThrottle == null) return false;
-            try { return (bool)f_Thrust_SmoothThrottle.GetValue(thrust); }
-            catch { return false; }
-        }
-
-        public static void SetSmoothThrottle(object core, bool value)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_SmoothThrottle == null) return;
-            try { f_Thrust_SmoothThrottle.SetValue(thrust, value); }
-            catch { }
-        }
-
-        public static bool GetManageIntakes(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_ManageIntakes == null) return false;
-            try { return (bool)f_Thrust_ManageIntakes.GetValue(thrust); }
-            catch { return false; }
-        }
-
-        public static void SetManageIntakes(object core, bool value)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_ManageIntakes == null) return;
-            try { f_Thrust_ManageIntakes.SetValue(thrust, value); }
-            catch { }
-        }
-
-        public static bool GetDifferentialThrottle(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_DifferentialThrottle == null) return false;
-            try { return (bool)f_Thrust_DifferentialThrottle.GetValue(thrust); }
-            catch { return false; }
-        }
-
-        public static void SetDifferentialThrottle(object core, bool value)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_DifferentialThrottle == null) return;
-            try { f_Thrust_DifferentialThrottle.SetValue(thrust, value); }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get limit throttle
-        /// </summary>
-        public static bool GetLimitThrottle(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitThrottle == null) return false;
-            try
-            {
-                return (bool)f_Thrust_LimitThrottle.GetValue(thrust);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Set limit throttle
-        /// </summary>
-        public static void SetLimitThrottle(object core, bool limit)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_LimitThrottle == null) return;
-            try
-            {
-                f_Thrust_LimitThrottle.SetValue(thrust, limit);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get max throttle value
-        /// </summary>
-        public static double GetMaxThrottle(object core)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxThrottle == null) return 100;
-            return GetEditableDoubleField(thrust, f_Thrust_MaxThrottle);
-        }
-
-        /// <summary>
-        /// Set max throttle value
-        /// </summary>
-        public static void SetMaxThrottle(object core, double throttle)
-        {
-            object thrust = GetThrustController(core);
-            if (thrust == null || f_Thrust_MaxThrottle == null) return;
-            SetEditableDoubleField(thrust, f_Thrust_MaxThrottle, throttle);
-        }
-        #endregion
 
         #region Staging Controller Methods
-        /// <summary>
-        /// Get autostage enabled
-        /// </summary>
-        public static bool GetAutostage(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_Autostage == null) return false;
-            try
-            {
-                return (bool)f_Staging_Autostage.GetValue(staging);
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
-        /// <summary>
-        /// Set autostage enabled
-        /// </summary>
-        public static void SetAutostage(object core, bool autostage)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_Autostage == null) return;
-            try
-            {
-                f_Staging_Autostage.SetValue(staging, autostage);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get autostage limit
-        /// </summary>
-        public static int GetAutostageLimit(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostageLimit == null) return 0;
-            return GetEditableInt(f_Staging_AutostageLimit.GetValue(staging));
-        }
-
-        /// <summary>
-        /// Set autostage limit
-        /// </summary>
-        public static void SetAutostageLimit(object core, int limit)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostageLimit == null) return;
-            SetEditableInt(f_Staging_AutostageLimit.GetValue(staging), limit);
-        }
-
-        public static double GetAutostagePreDelay(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostagePreDelay == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_AutostagePreDelay);
-        }
-
-        public static void SetAutostagePreDelay(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostagePreDelay == null) return;
-            SetEditableDoubleField(staging, f_Staging_AutostagePreDelay, value);
-        }
-
-        public static double GetAutostagePostDelay(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostagePostDelay == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_AutostagePostDelay);
-        }
-
-        public static void SetAutostagePostDelay(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_AutostagePostDelay == null) return;
-            SetEditableDoubleField(staging, f_Staging_AutostagePostDelay, value);
-        }
-
-        public static double GetClampAutoStageThrustPct(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_ClampAutoStageThrustPct == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_ClampAutoStageThrustPct);
-        }
-
-        public static void SetClampAutoStageThrustPct(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_ClampAutoStageThrustPct == null) return;
-            SetEditableDoubleField(staging, f_Staging_ClampAutoStageThrustPct, value);
-        }
-
-        public static double GetFairingMaxAerothermalFlux(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMaxAerothermalFlux == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_FairingMaxAerothermalFlux);
-        }
-
-        public static void SetFairingMaxAerothermalFlux(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMaxAerothermalFlux == null) return;
-            SetEditableDoubleField(staging, f_Staging_FairingMaxAerothermalFlux, value);
-        }
-
-        public static double GetFairingMaxDynamicPressure(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMaxDynamicPressure == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_FairingMaxDynamicPressure);
-        }
-
-        public static void SetFairingMaxDynamicPressure(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMaxDynamicPressure == null) return;
-            SetEditableDoubleField(staging, f_Staging_FairingMaxDynamicPressure, value);
-        }
-
-        public static double GetFairingMinAltitude(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMinAltitude == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_FairingMinAltitude);
-        }
-
-        public static void SetFairingMinAltitude(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_FairingMinAltitude == null) return;
-            SetEditableDoubleField(staging, f_Staging_FairingMinAltitude, value);
-        }
-
-        public static double GetHotStagingLeadTime(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_HotStagingLeadTime == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_HotStagingLeadTime);
-        }
-
-        public static void SetHotStagingLeadTime(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_HotStagingLeadTime == null) return;
-            SetEditableDoubleField(staging, f_Staging_HotStagingLeadTime, value);
-        }
-
-        public static bool GetDropSolids(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_DropSolids == null) return false;
-            try { return (bool)f_Staging_DropSolids.GetValue(staging); }
-            catch { return false; }
-        }
-
-        public static void SetDropSolids(object core, bool value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_DropSolids == null) return;
-            try { f_Staging_DropSolids.SetValue(staging, value); }
-            catch { }
-        }
-
-        public static double GetDropSolidsLeadTime(object core)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_DropSolidsLeadTime == null) return 0;
-            return GetEditableDoubleField(staging, f_Staging_DropSolidsLeadTime);
-        }
-
-        public static void SetDropSolidsLeadTime(object core, double value)
-        {
-            object staging = GetStagingController(core);
-            if (staging == null || f_Staging_DropSolidsLeadTime == null) return;
-            SetEditableDoubleField(staging, f_Staging_DropSolidsLeadTime, value);
-        }
 
         /// <summary>
         /// Autostage once
         /// </summary>
-        public static void AutostageOnce(object core, object controller = null)
+        public static void AutostageOnce(MechJebCore core, object controller = null)
         {
             object staging = GetStagingController(core);
             if (staging == null || m_Staging_AutostageOnce == null) return;
@@ -3609,23 +1976,16 @@ namespace JSI
         /// <summary>
         /// Get docking autopilot module
         /// </summary>
-        public static object GetDockingAutopilot(object core)
+        public static MechJebModuleDockingAutopilot GetDockingAutopilot(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleDockingAutopilot");
+            return core.GetComputerModule<MechJebModuleDockingAutopilot>();
         }
 
-        /// <summary>
-        /// Get docking guidance module
-        /// </summary>
-        public static object GetDockingGuidance(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleDockingGuidance");
-        }
 
         /// <summary>
         /// Check if docking autopilot is engaged
         /// </summary>
-        public static bool IsDockingAutopilotEngaged(object core)
+        public static bool IsDockingAutopilotEngaged(MechJebCore core)
         {
             object docking = GetDockingAutopilot(core);
             return GetModuleEnabled(docking);
@@ -3634,7 +1994,7 @@ namespace JSI
         /// <summary>
         /// Set docking autopilot engaged
         /// </summary>
-        public static void SetDockingAutopilotEngaged(object core, bool engaged)
+        public static void SetDockingAutopilotEngaged(MechJebCore core, bool engaged)
         {
             object docking = GetDockingAutopilot(core);
             if (docking == null) return;
@@ -3643,29 +2003,9 @@ namespace JSI
         }
 
         /// <summary>
-        /// Get docking speed limit
-        /// </summary>
-        public static double GetDockingSpeedLimit(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_SpeedLimit == null) return 0;
-            return GetEditableDoubleField(docking, f_Docking_SpeedLimit);
-        }
-
-        /// <summary>
-        /// Set docking speed limit
-        /// </summary>
-        public static void SetDockingSpeedLimit(object core, double speed)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_SpeedLimit == null) return;
-            SetEditableDoubleField(docking, f_Docking_SpeedLimit, speed);
-        }
-
-        /// <summary>
         /// Get docking status
         /// </summary>
-        public static string GetDockingStatus(object core)
+        public static string GetDockingStatus(MechJebCore core)
         {
             object docking = GetDockingAutopilot(core);
             if (docking == null || p_Docking_Status == null) return "";
@@ -3679,134 +2019,21 @@ namespace JSI
             }
         }
 
-        public static bool GetDockingForceRoll(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_ForceRoll == null) return false;
-            try { return (bool)f_Docking_ForceRoll.GetValue(docking); }
-            catch { return false; }
-        }
-
-        public static void SetDockingForceRoll(object core, bool value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_ForceRoll == null) return;
-            try { f_Docking_ForceRoll.SetValue(docking, value); }
-            catch { }
-        }
-
-        public static double GetDockingRoll(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_Roll == null) return 0;
-            return GetEditableDoubleField(docking, f_Docking_Roll);
-        }
-
-        public static void SetDockingRoll(object core, double value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_Roll == null) return;
-            SetEditableDoubleField(docking, f_Docking_Roll, value);
-        }
-
-        public static bool GetDockingOverrideSafeDistance(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverrideSafeDistance == null) return false;
-            try { return (bool)f_Docking_OverrideSafeDistance.GetValue(docking); }
-            catch { return false; }
-        }
-
-        public static void SetDockingOverrideSafeDistance(object core, bool value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverrideSafeDistance == null) return;
-            try { f_Docking_OverrideSafeDistance.SetValue(docking, value); }
-            catch { }
-        }
-
-        public static double GetDockingOverridenSafeDistance(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverridenSafeDistance == null) return 0;
-            return GetEditableDoubleField(docking, f_Docking_OverridenSafeDistance);
-        }
-
-        public static void SetDockingOverridenSafeDistance(object core, double value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverridenSafeDistance == null) return;
-            SetEditableDoubleField(docking, f_Docking_OverridenSafeDistance, value);
-        }
-
-        public static bool GetDockingOverrideTargetSize(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverrideTargetSize == null) return false;
-            try { return (bool)f_Docking_OverrideTargetSize.GetValue(docking); }
-            catch { return false; }
-        }
-
-        public static void SetDockingOverrideTargetSize(object core, bool value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverrideTargetSize == null) return;
-            try { f_Docking_OverrideTargetSize.SetValue(docking, value); }
-            catch { }
-        }
-
-        public static double GetDockingOverridenTargetSize(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverridenTargetSize == null) return 0;
-            return GetEditableDoubleField(docking, f_Docking_OverridenTargetSize);
-        }
-
-        public static void SetDockingOverridenTargetSize(object core, double value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_OverridenTargetSize == null) return;
-            SetEditableDoubleField(docking, f_Docking_OverridenTargetSize, value);
-        }
-
-        public static bool GetDockingDrawBoundingBox(object core)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_DrawBoundingBox == null) return false;
-            try { return (bool)f_Docking_DrawBoundingBox.GetValue(docking); }
-            catch { return false; }
-        }
-
-        public static void SetDockingDrawBoundingBox(object core, bool value)
-        {
-            object docking = GetDockingAutopilot(core);
-            if (docking == null || f_Docking_DrawBoundingBox == null) return;
-            try { f_Docking_DrawBoundingBox.SetValue(docking, value); }
-            catch { }
-        }
         #endregion
 
         #region Rendezvous Methods
         /// <summary>
         /// Get rendezvous autopilot module
         /// </summary>
-        public static object GetRendezvousAutopilot(object core)
+        public static MechJebModuleRendezvousAutopilot GetRendezvousAutopilot(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleRendezvousAutopilot");
-        }
-
-        /// <summary>
-        /// Get rendezvous guidance module
-        /// </summary>
-        public static object GetRendezvousGuidance(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleRendezvousGuidance");
+            return core.GetComputerModule<MechJebModuleRendezvousAutopilot>();
         }
 
         /// <summary>
         /// Check if rendezvous autopilot is engaged
         /// </summary>
-        public static bool IsRendezvousAutopilotEngaged(object core)
+        public static bool IsRendezvousAutopilotEngaged(MechJebCore core)
         {
             object rendezvous = GetRendezvousAutopilot(core);
             return GetModuleEnabled(rendezvous);
@@ -3815,7 +2042,7 @@ namespace JSI
         /// <summary>
         /// Set rendezvous autopilot engaged
         /// </summary>
-        public static void SetRendezvousAutopilotEngaged(object core, bool engaged, object controller = null)
+        public static void SetRendezvousAutopilotEngaged(MechJebCore core, bool engaged, object controller = null)
         {
             object rendezvous = GetRendezvousAutopilot(core);
             if (rendezvous == null) return;
@@ -3840,30 +2067,11 @@ namespace JSI
             }
         }
 
-        /// <summary>
-        /// Get desired distance
-        /// </summary>
-        public static double GetRendezvousDesiredDistance(object core)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_DesiredDistance == null) return 0;
-            return GetEditableDoubleField(rendezvous, f_Rendezvous_DesiredDistance);
-        }
-
-        /// <summary>
-        /// Set desired distance
-        /// </summary>
-        public static void SetRendezvousDesiredDistance(object core, double distance)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_DesiredDistance == null) return;
-            SetEditableDoubleField(rendezvous, f_Rendezvous_DesiredDistance, distance);
-        }
 
         /// <summary>
         /// Get rendezvous status
         /// </summary>
-        public static string GetRendezvousStatus(object core)
+        public static string GetRendezvousStatus(MechJebCore core)
         {
             object rendezvous = GetRendezvousAutopilot(core);
             if (rendezvous == null || p_Rendezvous_Status == null) return "";
@@ -3877,50 +2085,21 @@ namespace JSI
             }
         }
 
-        public static int GetRendezvousMaxPhasingOrbits(object core)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_MaxPhasingOrbits == null) return 0;
-            try { return GetEditableInt(f_Rendezvous_MaxPhasingOrbits.GetValue(rendezvous)); }
-            catch { return 0; }
-        }
-
-        public static void SetRendezvousMaxPhasingOrbits(object core, int value)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_MaxPhasingOrbits == null) return;
-            try { SetEditableInt(f_Rendezvous_MaxPhasingOrbits.GetValue(rendezvous), value); }
-            catch { }
-        }
-
-        public static double GetRendezvousMaxClosingSpeed(object core)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_MaxClosingSpeed == null) return 0;
-            return GetEditableDoubleField(rendezvous, f_Rendezvous_MaxClosingSpeed);
-        }
-
-        public static void SetRendezvousMaxClosingSpeed(object core, double value)
-        {
-            object rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null || f_Rendezvous_MaxClosingSpeed == null) return;
-            SetEditableDoubleField(rendezvous, f_Rendezvous_MaxClosingSpeed, value);
-        }
         #endregion
 
         #region Translatron Methods
         /// <summary>
         /// Get translatron module
         /// </summary>
-        public static object GetTranslatron(object core)
+        public static MechJebModuleTranslatron GetTranslatron(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleTranslatron");
+            return core.GetComputerModule<MechJebModuleTranslatron>();
         }
 
         /// <summary>
         /// Set translatron mode
         /// </summary>
-        public static void SetTranslatronMode(object core, TranslatronMode mode)
+        public static void SetTranslatronMode(MechJebCore core, TranslatronMode mode)
         {
             object translatron = GetTranslatron(core);
             if (translatron == null || m_Translatron_SetMode == null) return;
@@ -3932,43 +2111,11 @@ namespace JSI
             catch { }
         }
 
-        /// <summary>
-        /// Get translatron speed
-        /// </summary>
-        public static double GetTranslatronSpeed(object core)
-        {
-            object translatron = GetTranslatron(core);
-            if (translatron == null || p_Translatron_TransSpd == null) return 0;
-            try
-            {
-                object spd = p_Translatron_TransSpd.GetValue(translatron, null);
-                return GetEditableDouble(spd);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Set translatron speed
-        /// </summary>
-        public static void SetTranslatronSpeed(object core, double speed)
-        {
-            object translatron = GetTranslatron(core);
-            if (translatron == null || p_Translatron_TransSpd == null) return;
-            try
-            {
-                object spd = p_Translatron_TransSpd.GetValue(translatron, null);
-                SetEditableDouble(spd, speed);
-            }
-            catch { }
-        }
 
         /// <summary>
         /// Get kill horizontal velocity setting
         /// </summary>
-        public static bool GetTranslatronKillH(object core)
+        public static bool GetTranslatronKillH(MechJebCore core)
         {
             object translatron = GetTranslatron(core);
             if (translatron == null || p_Translatron_TransKillH == null) return false;
@@ -3985,7 +2132,7 @@ namespace JSI
         /// <summary>
         /// Set kill horizontal velocity
         /// </summary>
-        public static void SetTranslatronKillH(object core, bool killH)
+        public static void SetTranslatronKillH(MechJebCore core, bool killH)
         {
             object translatron = GetTranslatron(core);
             if (translatron == null || p_Translatron_TransKillH == null) return;
@@ -3999,7 +2146,7 @@ namespace JSI
         /// <summary>
         /// Trigger PANIC button
         /// </summary>
-        public static void PanicSwitch(object core)
+        public static void PanicSwitch(MechJebCore core)
         {
             object translatron = GetTranslatron(core);
             if (translatron == null || m_Translatron_PanicSwitch == null) return;
@@ -4012,154 +2159,27 @@ namespace JSI
         #endregion
 
         #region Rover Methods
-        public static object GetRoverController(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleRoverController");
-        }
 
-        public static bool GetRoverControlHeading(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_ControlHeading == null) return false;
-            try { return (bool)f_Rover_ControlHeading.GetValue(rover); }
-            catch { return false; }
-        }
 
-        public static void SetRoverControlHeading(object core, bool enabled)
+        public static void DriveToTarget(MechJebCore core)
         {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_ControlHeading == null) return;
-            try { f_Rover_ControlHeading.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static bool GetRoverControlSpeed(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_ControlSpeed == null) return false;
-            try { return (bool)f_Rover_ControlSpeed.GetValue(rover); }
-            catch { return false; }
-        }
-
-        public static void SetRoverControlSpeed(object core, bool enabled)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_ControlSpeed == null) return;
-            try { f_Rover_ControlSpeed.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static double GetRoverHeading(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_Heading == null) return 0;
-            return GetEditableDoubleField(rover, f_Rover_Heading);
-        }
-
-        public static void SetRoverHeading(object core, double heading)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_Heading == null) return;
-            SetEditableDoubleField(rover, f_Rover_Heading, heading);
-        }
-
-        public static double GetRoverSpeed(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_Speed == null) return 0;
-            return GetEditableDoubleField(rover, f_Rover_Speed);
-        }
-
-        public static void SetRoverSpeed(object core, double speed)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_Speed == null) return;
-            SetEditableDoubleField(rover, f_Rover_Speed, speed);
-        }
-
-        public static bool GetRoverStabilityControl(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_StabilityControl == null) return false;
-            try { return (bool)f_Rover_StabilityControl.GetValue(rover); }
-            catch { return false; }
-        }
-
-        public static void SetRoverStabilityControl(object core, bool enabled)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_StabilityControl == null) return;
-            try { f_Rover_StabilityControl.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static bool GetRoverBrakeOnEject(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_BrakeOnEject == null) return false;
-            try { return (bool)f_Rover_BrakeOnEject.GetValue(rover); }
-            catch { return false; }
-        }
-
-        public static void SetRoverBrakeOnEject(object core, bool enabled)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_BrakeOnEject == null) return;
-            try { f_Rover_BrakeOnEject.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static bool GetRoverBrakeOnEnergyDepletion(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_BrakeOnEnergyDepletion == null) return false;
-            try { return (bool)f_Rover_BrakeOnEnergyDepletion.GetValue(rover); }
-            catch { return false; }
-        }
-
-        public static void SetRoverBrakeOnEnergyDepletion(object core, bool enabled)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_BrakeOnEnergyDepletion == null) return;
-            try { f_Rover_BrakeOnEnergyDepletion.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static bool GetRoverWarpToDaylight(object core)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_WarpToDaylight == null) return false;
-            try { return (bool)f_Rover_WarpToDaylight.GetValue(rover); }
-            catch { return false; }
-        }
-
-        public static void SetRoverWarpToDaylight(object core, bool enabled)
-        {
-            object rover = GetRoverController(core);
-            if (rover == null || f_Rover_WarpToDaylight == null) return;
-            try { f_Rover_WarpToDaylight.SetValue(rover, enabled); }
-            catch { }
-        }
-
-        public static void DriveToTarget(object core)
-        {
-            object rover = GetRoverController(core);
+            object rover = core.Rover;
             if (rover == null || m_Rover_DriveToTarget == null) return;
             try { m_Rover_DriveToTarget.Invoke(rover, null); }
             catch { }
         }
 
-        public static void StopRover(object core)
+        public static void StopRover(MechJebCore core)
         {
-            object rover = GetRoverController(core);
+            object rover = core.Rover;
             if (rover == null || m_Rover_Stop == null) return;
             try { m_Rover_Stop.Invoke(rover, null); }
             catch { }
         }
 
-        public static void AddRoverWaypointAtCurrentPosition(object core, Vessel vessel)
+        public static void AddRoverWaypointAtCurrentPosition(MechJebCore core, Vessel vessel)
         {
-            object rover = GetRoverController(core);
+            object rover = core.Rover;
             if (rover == null || vessel == null || m_Rover_AddWaypoint == null) return;
 
             try
@@ -4189,229 +2209,22 @@ namespace JSI
             catch { }
         }
 
-        public static void ClearRoverWaypoints(object core)
+        public static void ClearRoverWaypoints(MechJebCore core)
         {
-            object rover = GetRoverController(core);
+            object rover = core.Rover;
             if (rover == null || m_Rover_ClearWaypoints == null) return;
             try { m_Rover_ClearWaypoints.Invoke(rover, null); }
             catch { }
         }
         #endregion
 
-        #region Airplane Autopilot Methods
-        public static object GetAirplaneAutopilot(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleAirplaneAutopilot");
-        }
-
-        public static bool GetAirplaneAltitudeHold(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_AltitudeHold == null) return false;
-            try { return (bool)f_Airplane_AltitudeHold.GetValue(ap); }
-            catch { return false; }
-        }
-
-        public static void SetAirplaneAltitudeHold(object core, bool enabled)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_AltitudeHold == null) return;
-            try { f_Airplane_AltitudeHold.SetValue(ap, enabled); }
-            catch { }
-        }
-
-        public static double GetAirplaneAltitudeTarget(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_AltitudeTarget == null) return 0;
-            return GetEditableDoubleField(ap, f_Airplane_AltitudeTarget);
-        }
-
-        public static void SetAirplaneAltitudeTarget(object core, double value)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_AltitudeTarget == null) return;
-            SetEditableDoubleField(ap, f_Airplane_AltitudeTarget, value);
-        }
-
-        public static bool GetAirplaneVertSpeedHold(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_VertSpeedHold == null) return false;
-            try { return (bool)f_Airplane_VertSpeedHold.GetValue(ap); }
-            catch { return false; }
-        }
-
-        public static void SetAirplaneVertSpeedHold(object core, bool enabled)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_VertSpeedHold == null) return;
-            try { f_Airplane_VertSpeedHold.SetValue(ap, enabled); }
-            catch { }
-        }
-
-        public static double GetAirplaneVertSpeedTarget(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_VertSpeedTarget == null) return 0;
-            return GetEditableDoubleField(ap, f_Airplane_VertSpeedTarget);
-        }
-
-        public static void SetAirplaneVertSpeedTarget(object core, double value)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_VertSpeedTarget == null) return;
-            SetEditableDoubleField(ap, f_Airplane_VertSpeedTarget, value);
-        }
-
-        public static bool GetAirplaneHeadingHold(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_HeadingHold == null) return false;
-            try { return (bool)f_Airplane_HeadingHold.GetValue(ap); }
-            catch { return false; }
-        }
-
-        public static void SetAirplaneHeadingHold(object core, bool enabled)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_HeadingHold == null) return;
-            try { f_Airplane_HeadingHold.SetValue(ap, enabled); }
-            catch { }
-        }
-
-        public static double GetAirplaneHeadingTarget(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_HeadingTarget == null) return 0;
-            return GetEditableDoubleField(ap, f_Airplane_HeadingTarget);
-        }
-
-        public static void SetAirplaneHeadingTarget(object core, double value)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_HeadingTarget == null) return;
-            SetEditableDoubleField(ap, f_Airplane_HeadingTarget, value);
-        }
-
-        public static bool GetAirplaneRollHold(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_RollHold == null) return false;
-            try { return (bool)f_Airplane_RollHold.GetValue(ap); }
-            catch { return false; }
-        }
-
-        public static void SetAirplaneRollHold(object core, bool enabled)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_RollHold == null) return;
-            try { f_Airplane_RollHold.SetValue(ap, enabled); }
-            catch { }
-        }
-
-        public static double GetAirplaneRollTarget(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_RollTarget == null) return 0;
-            return GetEditableDoubleField(ap, f_Airplane_RollTarget);
-        }
-
-        public static void SetAirplaneRollTarget(object core, double value)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_RollTarget == null) return;
-            SetEditableDoubleField(ap, f_Airplane_RollTarget, value);
-        }
-
-        public static bool GetAirplaneSpeedHold(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_SpeedHold == null) return false;
-            try { return (bool)f_Airplane_SpeedHold.GetValue(ap); }
-            catch { return false; }
-        }
-
-        public static void SetAirplaneSpeedHold(object core, bool enabled)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_SpeedHold == null) return;
-            try { f_Airplane_SpeedHold.SetValue(ap, enabled); }
-            catch { }
-        }
-
-        public static double GetAirplaneSpeedTarget(object core)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_SpeedTarget == null) return 0;
-            return GetEditableDoubleField(ap, f_Airplane_SpeedTarget);
-        }
-
-        public static void SetAirplaneSpeedTarget(object core, double value)
-        {
-            object ap = GetAirplaneAutopilot(core);
-            if (ap == null || f_Airplane_SpeedTarget == null) return;
-            SetEditableDoubleField(ap, f_Airplane_SpeedTarget, value);
-        }
-        #endregion
-
         #region Spaceplane Autopilot Methods
-        public static object GetSpaceplaneAutopilot(object core)
+        public static MechJebModuleSpaceplaneAutopilot GetSpaceplaneAutopilot(MechJebCore core)
         {
-            return GetComputerModule(core, "MechJebModuleSpaceplaneAutopilot");
+            return core.GetComputerModule<MechJebModuleSpaceplaneAutopilot>();
         }
 
-        public static double GetSpaceplaneGlideslope(object core)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_Glideslope == null) return 0;
-            return GetEditableDoubleField(sp, f_Spaceplane_Glideslope);
-        }
-
-        public static void SetSpaceplaneGlideslope(object core, double value)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_Glideslope == null) return;
-            SetEditableDoubleField(sp, f_Spaceplane_Glideslope, value);
-        }
-
-        public static double GetSpaceplaneApproachSpeed(object core)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_ApproachSpeed == null) return 0;
-            return GetEditableDoubleField(sp, f_Spaceplane_ApproachSpeed);
-        }
-
-        public static void SetSpaceplaneApproachSpeed(object core, double value)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_ApproachSpeed == null) return;
-            SetEditableDoubleField(sp, f_Spaceplane_ApproachSpeed, value);
-        }
-
-        public static double GetSpaceplaneTouchdownSpeed(object core)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_TouchdownSpeed == null) return 0;
-            return GetEditableDoubleField(sp, f_Spaceplane_TouchdownSpeed);
-        }
-
-        public static void SetSpaceplaneTouchdownSpeed(object core, double value)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || f_Spaceplane_TouchdownSpeed == null) return;
-            SetEditableDoubleField(sp, f_Spaceplane_TouchdownSpeed, value);
-        }
-
-        public static void SpaceplaneAutoland(object core)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || m_Spaceplane_Autoland == null) return;
-            try { m_Spaceplane_Autoland.Invoke(sp, null); }
-            catch { }
-        }
-
-        public static void SpaceplaneHoldHeadingAndAltitude(object core)
+        public static void SpaceplaneHoldHeadingAndAltitude(MechJebCore core)
         {
             object sp = GetSpaceplaneAutopilot(core);
             if (sp == null || m_Spaceplane_HoldHeadingAndAltitude == null) return;
@@ -4419,22 +2232,15 @@ namespace JSI
             catch { }
         }
 
-        public static void SpaceplaneAutopilotOff(object core)
-        {
-            object sp = GetSpaceplaneAutopilot(core);
-            if (sp == null || m_Spaceplane_AutopilotOff == null) return;
-            try { m_Spaceplane_AutopilotOff.Invoke(sp, null); }
-            catch { }
-        }
         #endregion
 
         #region Warp Methods
-        public static object GetWarpController(object core)
+        public static object GetWarpController(MechJebCore core)
         {
             return GetComputerModule(core, "MechJebModuleWarpController");
         }
 
-        public static void WarpToUT(object core, double ut)
+        public static void WarpToUT(MechJebCore core, double ut)
         {
             object warp = GetWarpController(core);
             if (warp == null || m_Warp_WarpToUT == null) return;
@@ -4463,177 +2269,30 @@ namespace JSI
             catch { }
         }
 
-        public static Vector3d CalcDeltaVToCircularize(Orbit orbit, double ut)
-        {
-            if (m_Calc_DeltaVToCircularize == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToCircularize.Invoke(null, new object[] { orbit, ut });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static Vector3d CalcDeltaVToChangeApoapsis(Orbit orbit, double ut, double newApR)
-        {
-            if (m_Calc_DeltaVToChangeApoapsis == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToChangeApoapsis.Invoke(null, new object[] { orbit, ut, newApR });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static Vector3d CalcDeltaVToChangePeriapsis(Orbit orbit, double ut, double newPeR)
-        {
-            if (m_Calc_DeltaVToChangePeriapsis == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToChangePeriapsis.Invoke(null, new object[] { orbit, ut, newPeR });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static Vector3d CalcDeltaVForSemiMajorAxis(Orbit orbit, double ut, double newSma)
-        {
-            if (m_Calc_DeltaVForSemiMajorAxis == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVForSemiMajorAxis.Invoke(null, new object[] { orbit, ut, newSma });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static Vector3d CalcDeltaVToChangeInclination(Orbit orbit, double ut, double newInc)
-        {
-            if (m_Calc_DeltaVToChangeInclination == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToChangeInclination.Invoke(null, new object[] { orbit, ut, newInc });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static bool TryCalcMatchPlanesAscending(Orbit orbit, Orbit target, double ut, out Vector3d dV, out double burnUT)
-        {
-            dV = Vector3d.zero;
-            burnUT = 0;
-            if (m_Calc_DeltaVToMatchPlanesAscending == null) return false;
-            try
-            {
-                object[] args = new object[] { orbit, target, ut, burnUT };
-                dV = (Vector3d)m_Calc_DeltaVToMatchPlanesAscending.Invoke(null, args);
-                burnUT = (double)args[3];
-                return true;
-            }
-            catch { return false; }
-        }
-
-        public static bool TryCalcMatchPlanesDescending(Orbit orbit, Orbit target, double ut, out Vector3d dV, out double burnUT)
-        {
-            dV = Vector3d.zero;
-            burnUT = 0;
-            if (m_Calc_DeltaVToMatchPlanesDescending == null) return false;
-            try
-            {
-                object[] args = new object[] { orbit, target, ut, burnUT };
-                dV = (Vector3d)m_Calc_DeltaVToMatchPlanesDescending.Invoke(null, args);
-                burnUT = (double)args[3];
-                return true;
-            }
-            catch { return false; }
-        }
-
-        public static Vector3d CalcDeltaVToMatchVelocities(Orbit orbit, double ut, Orbit target)
-        {
-            if (m_Calc_DeltaVToMatchVelocities == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToMatchVelocities.Invoke(null, new object[] { orbit, ut, target });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static bool TryCalcHohmannTransfer(Orbit orbit, Orbit target, double ut, out Vector3d dv1, out double ut1, out Vector3d dv2, out double ut2)
-        {
-            dv1 = Vector3d.zero;
-            dv2 = Vector3d.zero;
-            ut1 = 0;
-            ut2 = 0;
-            if (m_Calc_DeltaVAndTimeForHohmannTransfer == null) return false;
-            try
-            {
-                object result = m_Calc_DeltaVAndTimeForHohmannTransfer.Invoke(null, new object[] { orbit, target, ut, double.NaN, false, true, true, true });
-                dv1 = (Vector3d)result.GetType().GetField("dV1").GetValue(result);
-                ut1 = (double)result.GetType().GetField("UT1").GetValue(result);
-                dv2 = (Vector3d)result.GetType().GetField("dV2").GetValue(result);
-                ut2 = (double)result.GetType().GetField("UT2").GetValue(result);
-                return true;
-            }
-            catch { return false; }
-        }
-
-        public static Vector3d CalcDeltaVToShiftLAN(Orbit orbit, double ut, double newLan)
-        {
-            if (m_Calc_DeltaVToShiftLAN == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToShiftLAN.Invoke(null, new object[] { orbit, ut, newLan });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static Vector3d CalcDeltaVToEllipticize(Orbit orbit, double ut, double newPeR, double newApR)
-        {
-            if (m_Calc_DeltaVToEllipticize == null) return Vector3d.zero;
-            try
-            {
-                return (Vector3d)m_Calc_DeltaVToEllipticize.Invoke(null, new object[] { orbit, ut, newPeR, newApR });
-            }
-            catch { return Vector3d.zero; }
-        }
-
-        public static object CreateCourseCorrectionOperation()
+        public static OperationCourseCorrection CreateCourseCorrectionOperation()
         {
             if (t_OperationCourseCorrection == null) return null;
             try
             {
-                return Activator.CreateInstance(t_OperationCourseCorrection);
+                return Activator.CreateInstance(t_OperationCourseCorrection) as OperationCourseCorrection;
             }
             catch { return null; }
         }
 
-        public static bool IsCourseCorrectionAvailable
-        {
-            get { return t_OperationCourseCorrection != null; }
-        }
-
-        public static void SetCourseCorrectionTargetPe(object operation, double peKm)
+        public static void SetCourseCorrectionTargetPe(OperationCourseCorrection operation, double peKm)
         {
             if (operation == null) return;
 
-            if (f_CourseCorrection_TargetPe != null)
-            {
-                SetMemberDouble(operation, f_CourseCorrection_TargetPe, peKm);
-                return;
-            }
-
-            if (p_CourseCorrection_TargetPe != null)
-            {
-                SetMemberDouble(operation, p_CourseCorrection_TargetPe, peKm);
-            }
+            operation.CourseCorrectFinalPeA.Val = peKm; // review: is this correct?
         }
 
-        public static object CreateAdvancedTransferOperation()
+        static EditableDouble GetPeriapsisEditable(this OperationAdvancedTransfer operation)
         {
-            if (t_OperationAdvancedTransfer == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationAdvancedTransfer);
-            }
-            catch { return null; }
+            // Note: this field is private, so we either need to keep using reflection or publicize it
+            return f_AdvancedTransfer_PeriapsisHeight.GetValue(operation) as EditableDouble;
         }
 
-        public static void StartAdvancedTransferCompute(object operation, Orbit orbit, double ut, object targetController, bool includeCaptureBurn, double periapsisKm)
+        public static void StartAdvancedTransferCompute(OperationAdvancedTransfer operation, Orbit orbit, double ut, object targetController, bool includeCaptureBurn, double periapsisKm)
         {
             if (operation == null || targetController == null) return;
 
@@ -4644,11 +2303,9 @@ namespace JSI
                     f_AdvancedTransfer_IncludeCaptureBurn.SetValue(operation, includeCaptureBurn);
                 }
 
-                if (f_AdvancedTransfer_PeriapsisHeight != null)
-                {
-                    object periapsisEditable = f_AdvancedTransfer_PeriapsisHeight.GetValue(operation);
-                    SetEditableDouble(periapsisEditable, periapsisKm);
-                }
+                
+
+                operation.GetPeriapsisEditable().Val = periapsisKm;
 
                 if (f_AdvancedTransfer_SelectionMode != null)
                 {
@@ -4702,32 +2359,20 @@ namespace JSI
         /// <summary>
         /// Gets the periapsisHeight (in km) from OperationAdvancedTransfer
         /// </summary>
-        public static double GetAdvancedTransferPeriapsisKm(object operation)
+        public static double GetAdvancedTransferPeriapsisKm(OperationAdvancedTransfer operation)
         {
-            if (operation == null || f_AdvancedTransfer_PeriapsisHeight == null) return 100.0;
-            try
-            {
-                object periapsisEditable = f_AdvancedTransfer_PeriapsisHeight.GetValue(operation);
-                return GetEditableDouble(periapsisEditable);
-            }
-            catch { return 100.0; }
+            return operation.GetPeriapsisEditable().Val;
         }
 
         /// <summary>
         /// Sets the periapsisHeight (in km) on OperationAdvancedTransfer
         /// </summary>
-        public static void SetAdvancedTransferPeriapsisKm(object operation, double valueKm)
+        public static void SetAdvancedTransferPeriapsisKm(OperationAdvancedTransfer operation, double valueKm)
         {
-            if (operation == null || f_AdvancedTransfer_PeriapsisHeight == null) return;
-            try
-            {
-                object periapsisEditable = f_AdvancedTransfer_PeriapsisHeight.GetValue(operation);
-                SetEditableDouble(periapsisEditable, valueKm);
-            }
-            catch { }
+            operation.GetPeriapsisEditable().Val = valueKm;
         }
 
-        public static bool IsAdvancedTransferFinished(object operation, out int progress)
+        public static bool IsAdvancedTransferFinished(OperationAdvancedTransfer operation, out int progress)
         {
             progress = 0;
             if (operation == null || f_AdvancedTransfer_Worker == null) return false;
@@ -4741,7 +2386,7 @@ namespace JSI
             catch { return false; }
         }
 
-        public static void SelectAdvancedTransferLowestDV(object operation)
+        public static void SelectAdvancedTransferLowestDV(OperationAdvancedTransfer operation)
         {
             if (operation == null || f_AdvancedTransfer_Worker == null) return;
             try
@@ -4753,7 +2398,7 @@ namespace JSI
             catch { }
         }
 
-        public static void SelectAdvancedTransferASAP(object operation)
+        public static void SelectAdvancedTransferASAP(OperationAdvancedTransfer operation)
         {
             if (operation == null || f_AdvancedTransfer_Worker == null) return;
             try
@@ -4776,16 +2421,6 @@ namespace JSI
                 f_TransferCalculator_BestDuration.SetValue(worker, bestDuration);
             }
             catch { }
-        }
-
-        public static string GetOperationErrorMessage(object operation)
-        {
-            if (operation == null || m_Operation_GetErrorMessage == null) return "";
-            try
-            {
-                return (string)m_Operation_GetErrorMessage.Invoke(operation, null);
-            }
-            catch { return ""; }
         }
 
         /// <summary>
@@ -4878,131 +2513,12 @@ namespace JSI
         }
 
         #region ManeuverPlanner Operation Wrapper
-        /// <summary>
-        /// Gets MechJeb's static Operation array from ManeuverPlanner.
-        /// This is the SAME array that IMGUI uses, so changes sync automatically.
-        /// </summary>
-        public static object[] GetOperations()
+
+        public static Operation GetOperationByName(string name)
         {
-            if (cachedOperations != null) return cachedOperations;
-            if (f_ManeuverPlanner_operation == null) return null;
-            
-            try
-            {
-                object[] ops = f_ManeuverPlanner_operation.GetValue(null) as object[];
-                if (ops != null)
-                {
-                    cachedOperations = ops;
-                    // Also cache names
-                    cachedOperationNames = new string[ops.Length];
-                    for (int i = 0; i < ops.Length; i++)
-                    {
-                        cachedOperationNames[i] = GetOperationName(ops[i]) ?? "Unknown";
-                    }
-                }
-                return cachedOperations;
-            }
-            catch { return null; }
+            return operationsByName.GetValueOrDefault(name);
         }
 
-        /// <summary>
-        /// Gets the cached operation names array (same order as GetOperations())
-        /// </summary>
-        public static string[] GetOperationNames()
-        {
-            if (cachedOperationNames == null) GetOperations();  // Populate cache
-            return cachedOperationNames;
-        }
-
-        /// <summary>
-        /// Gets the name of an Operation instance
-        /// </summary>
-        public static string GetOperationName(object operation)
-        {
-            if (operation == null || m_Operation_GetName == null) return null;
-            try
-            {
-                return (string)m_Operation_GetName.Invoke(operation, null);
-            }
-            catch { return null; }
-        }
-
-        /// <summary>
-        /// Gets an Operation by its name
-        /// </summary>
-        public static object GetOperationByName(string name)
-        {
-            object[] ops = GetOperations();
-            if (ops == null) return null;
-            
-            foreach (object op in ops)
-            {
-                if (GetOperationName(op) == name) return op;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets an Operation by its index in the array
-        /// </summary>
-        public static object GetOperationByIndex(int index)
-        {
-            object[] ops = GetOperations();
-            if (ops == null || index < 0 || index >= ops.Length) return null;
-            return ops[index];
-        }
-
-        /// <summary>
-        /// Gets the operation index by name
-        /// </summary>
-        public static int GetOperationIndexByName(string name)
-        {
-            string[] names = GetOperationNames();
-            if (names == null) return -1;
-            for (int i = 0; i < names.Length; i++)
-            {
-                if (names[i] == name) return i;
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Gets the currently selected _operationId from ManeuverPlanner module
-        /// </summary>
-        public static int GetManeuverPlannerOperationId(object core)
-        {
-            if (f_ManeuverPlanner_operationId == null) return 0;
-            object planner = GetComputerModule(core, "MechJebModuleManeuverPlanner");
-            if (planner == null) return 0;
-            try
-            {
-                return (int)f_ManeuverPlanner_operationId.GetValue(planner);
-            }
-            catch { return 0; }
-        }
-
-        /// <summary>
-        /// Sets the _operationId on ManeuverPlanner module (syncs with IMGUI dropdown)
-        /// </summary>
-        public static void SetManeuverPlannerOperationId(object core, int operationId)
-        {
-            if (f_ManeuverPlanner_operationId == null) return;
-            object planner = GetComputerModule(core, "MechJebModuleManeuverPlanner");
-            if (planner == null) return;
-            try
-            {
-                f_ManeuverPlanner_operationId.SetValue(planner, operationId);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets the ManeuverPlanner module from core
-        /// </summary>
-        public static object GetManeuverPlanner(object core)
-        {
-            return GetComputerModule(core, "MechJebModuleManeuverPlanner");
-        }
 
         /// <summary>
         /// Gets an EditableDoubleMult field value from an operation
@@ -5181,18 +2697,6 @@ namespace JSI
             catch { return null; }
         }
 
-        /// <summary>
-        /// Gets the current TimeReference index from a TimeSelector
-        /// </summary>
-        public static int GetTimeSelectorCurrentTimeRef(object timeSelector)
-        {
-            if (timeSelector == null || f_TimeSelector_CurrentTimeRef == null) return 0;
-            try
-            {
-                return (int)f_TimeSelector_CurrentTimeRef.GetValue(timeSelector);
-            }
-            catch { return 0; }
-        }
 
         /// <summary>
         /// Sets the current TimeReference index on a TimeSelector
@@ -5267,28 +2771,11 @@ namespace JSI
             catch { }
         }
 
-        /// <summary>
-        /// Computes the maneuver time using the operation's TimeSelector
-        /// </summary>
-        public static double ComputeOperationManeuverTime(object operation, object core, Orbit orbit, double ut)
-        {
-            if (operation == null || m_TimeSelector_ComputeManeuverTime == null) return ut;
-            try
-            {
-                object timeSelector = GetOperationTimeSelector(operation);
-                if (timeSelector == null) return ut;
-                
-                object targetController = GetTargetController(core);
-                return (double)m_TimeSelector_ComputeManeuverTime.Invoke(
-                    timeSelector, new object[] { orbit, ut, targetController });
-            }
-            catch { return ut; }
-        }
 
         /// <summary>
         /// Calls MakeNodes on an operation and creates the maneuver nodes
         /// </summary>
-        public static bool ExecuteOperation(object operation, object core, Vessel vessel)
+        public static bool ExecuteOperation(object operation, MechJebCore core, Vessel vessel)
         {
             if (operation == null || core == null || vessel == null) return false;
             
@@ -5300,99 +2787,6 @@ namespace JSI
         }
         #endregion
 
-        #region OperationGeneric (Hohmann/Bi-Impulsive Transfer)
-        /// <summary>
-        /// Creates an OperationGeneric instance for Hohmann/bi-impulsive transfers
-        /// </summary>
-        public static object CreateGenericTransferOperation()
-        {
-            if (t_OperationGeneric == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationGeneric);
-            }
-            catch { return null; }
-        }
-
-        /// <summary>
-        /// Check if OperationGeneric is available
-        /// </summary>
-        public static bool IsGenericTransferAvailable
-        {
-            get { return t_OperationGeneric != null; }
-        }
-
-        /// <summary>
-        /// Configure OperationGeneric for a specific transfer type
-        /// </summary>
-        /// <param name="operation">The OperationGeneric instance</param>
-        /// <param name="capture">Include capture burn at target</param>
-        /// <param name="planCapture">Plan the insertion burn</param>
-        /// <param name="rendezvous">Rendezvous mode (vs Transfer mode)</param>
-        /// <param name="coplanar">Coplanar maneuver</param>
-        /// <param name="lagTime">Rendezvous time offset in seconds</param>
-        public static void ConfigureGenericTransfer(object operation, bool capture, bool planCapture, bool rendezvous, bool coplanar, double lagTime)
-        {
-            if (operation == null) return;
-
-            try
-            {
-                if (f_Generic_Capture != null)
-                    f_Generic_Capture.SetValue(operation, capture);
-
-                if (f_Generic_PlanCapture != null)
-                    f_Generic_PlanCapture.SetValue(operation, planCapture);
-
-                if (f_Generic_Rendezvous != null)
-                    f_Generic_Rendezvous.SetValue(operation, rendezvous);
-
-                if (f_Generic_Coplanar != null)
-                    f_Generic_Coplanar.SetValue(operation, coplanar);
-
-                if (f_Generic_LagTime != null)
-                {
-                    object lagEditable = f_Generic_LagTime.GetValue(operation);
-                    SetEditableDouble(lagEditable, lagTime);
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Get current configuration of OperationGeneric
-        /// </summary>
-        public static void GetGenericTransferConfig(object operation, out bool capture, out bool planCapture, out bool rendezvous, out bool coplanar, out double lagTime)
-        {
-            capture = true;
-            planCapture = true;
-            rendezvous = true;
-            coplanar = false;
-            lagTime = 0;
-
-            if (operation == null) return;
-
-            try
-            {
-                if (f_Generic_Capture != null)
-                    capture = (bool)f_Generic_Capture.GetValue(operation);
-
-                if (f_Generic_PlanCapture != null)
-                    planCapture = (bool)f_Generic_PlanCapture.GetValue(operation);
-
-                if (f_Generic_Rendezvous != null)
-                    rendezvous = (bool)f_Generic_Rendezvous.GetValue(operation);
-
-                if (f_Generic_Coplanar != null)
-                    coplanar = (bool)f_Generic_Coplanar.GetValue(operation);
-
-                if (f_Generic_LagTime != null)
-                {
-                    object lagEditable = f_Generic_LagTime.GetValue(operation);
-                    lagTime = GetEditableDouble(lagEditable);
-                }
-            }
-            catch { }
-        }
         #endregion
 
         private static Orbit GetTargetOrbitFromController(object targetController)
@@ -5404,7 +2798,6 @@ namespace JSI
             }
             catch { return null; }
         }
-        #endregion
 
         #region Additional Operation Types
         // Operation type cache for other maneuvers
@@ -5416,208 +2809,7 @@ namespace JSI
         private static Type t_OperationMoonReturn;
         private static Type t_OperationInterplanetaryTransfer;
 
-        /// <summary>
-        /// Calculate delta-V to change eccentricity at given time
-        /// </summary>
-        public static Vector3d CalcDeltaVToChangeEccentricity(Orbit orbit, double ut, double newEcc)
-        {
-            // Calculate new SMA to achieve target eccentricity while keeping periapsis constant
-            double r = orbit.Radius(ut);
-            double currentV = orbit.SwappedOrbitalVelocityAtUT(ut).magnitude;
-            double mu = orbit.referenceBody.gravParameter;
-
-            // For an orbit with eccentricity e, at radius r:
-            // v^2 = mu * (2/r - 1/a) where a is semi-major axis
-            // With e and keeping Pe constant: a = Pe / (1 - e)
-            double pe = orbit.PeR;
-            double newSma = pe / (1.0 - newEcc);
-            double newV = Math.Sqrt(mu * (2.0 / r - 1.0 / newSma));
-
-            // Get velocity direction
-            Vector3d velocityDir = orbit.SwappedOrbitalVelocityAtUT(ut).normalized;
-            return velocityDir * (newV - currentV);
-        }
-
-        /// <summary>
-        /// Calculate delta-V to change surface longitude of apsis
-        /// </summary>
-        public static Vector3d CalcDeltaVToChangeSurfaceLongitude(Orbit orbit, double ut, double targetLongitude)
-        {
-            // This requires changing the argument of periapsis
-            // Simplified implementation - may need refinement
-            double currentLon = orbit.LAN + orbit.argumentOfPeriapsis;
-            double deltaLon = targetLongitude - currentLon;
-            while (deltaLon > 180) deltaLon -= 360;
-            while (deltaLon < -180) deltaLon += 360;
-
-            // Small radial burn to shift apsides (approximate)
-            double r = orbit.Radius(ut);
-            double v = orbit.SwappedOrbitalVelocityAtUT(ut).magnitude;
-            double deltaV = v * Math.Tan(deltaLon * Math.PI / 180.0) * 0.1; // Rough approximation
-
-            Vector3d radialDir = Vector3d.Cross(orbit.SwappedOrbitalVelocityAtUT(ut), orbit.SwappedOrbitNormal()).normalized;
-            return radialDir * deltaV;
-        }
-
-        /// <summary>
-        /// Create operation for fine tuning closest approach
-        /// </summary>
-        public static object CreateFineTuneClosestApproachOperation()
-        {
-            if (t_OperationCourseCorrection_FineTune == null)
-            {
-                t_OperationCourseCorrection_FineTune = mechJebAssembly.GetType("MuMech.OperationCourseCorrection");
-            }
-            if (t_OperationCourseCorrection_FineTune == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationCourseCorrection_FineTune);
-            }
-            catch { return null; }
-        }
-
-        public static void SetFineTuneDistance(object operation, double distanceKm)
-        {
-            SetCourseCorrectionTargetPe(operation, distanceKm);
-        }
-
-        /// <summary>
-        /// Create operation for intercepting target at a specific time
-        /// </summary>
-        public static object CreateInterceptAtTimeOperation()
-        {
-            if (t_OperationLambert == null)
-            {
-                t_OperationLambert = mechJebAssembly.GetType("MuMech.OperationLambert");
-            }
-            if (t_OperationLambert == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationLambert);
-            }
-            catch { return null; }
-        }
-
-        public static void SetInterceptInterval(object operation, double seconds)
-        {
-            if (operation == null) return;
-            try
-            {
-                FieldInfo f = operation.GetType().GetField("interceptInterval", BindingFlags.Public | BindingFlags.Instance);
-                if (f != null)
-                {
-                    object editable = f.GetValue(operation);
-                    SetEditableDouble(editable, seconds);
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Create operation for resonant orbit
-        /// </summary>
-        public static object CreateResonantOrbitOperation()
-        {
-            if (t_OperationResonantOrbit == null)
-            {
-                t_OperationResonantOrbit = mechJebAssembly.GetType("MuMech.OperationResonantOrbit");
-            }
-            if (t_OperationResonantOrbit == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationResonantOrbit);
-            }
-            catch { return null; }
-        }
-
-        public static void SetResonance(object operation, double numerator, double denominator)
-        {
-            if (operation == null) return;
-            try
-            {
-                FieldInfo fNum = operation.GetType().GetField("resonanceNumerator", BindingFlags.Public | BindingFlags.Instance);
-                FieldInfo fDen = operation.GetType().GetField("resonanceDenominator", BindingFlags.Public | BindingFlags.Instance);
-                if (fNum != null)
-                {
-                    object editable = fNum.GetValue(operation);
-                    SetEditableDouble(editable, numerator);
-                }
-                if (fDen != null)
-                {
-                    object editable = fDen.GetValue(operation);
-                    SetEditableDouble(editable, denominator);
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Create operation for moon return
-        /// </summary>
-        public static object CreateMoonReturnOperation()
-        {
-            if (t_OperationMoonReturn == null)
-            {
-                t_OperationMoonReturn = mechJebAssembly.GetType("MuMech.OperationMoonReturn");
-            }
-            if (t_OperationMoonReturn == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationMoonReturn);
-            }
-            catch { return null; }
-        }
-
-        public static void SetMoonReturnAltitude(object operation, double altitudeKm)
-        {
-            if (operation == null) return;
-            try
-            {
-                FieldInfo f = operation.GetType().GetField("moonReturnAltitude", BindingFlags.Public | BindingFlags.Instance);
-                if (f != null)
-                {
-                    object editable = f.GetValue(operation);
-                    SetEditableDouble(editable, altitudeKm * 1000.0); // Convert to meters
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Create operation for interplanetary transfer
-        /// </summary>
-        public static object CreateInterplanetaryTransferOperation()
-        {
-            if (t_OperationInterplanetaryTransfer == null)
-            {
-                t_OperationInterplanetaryTransfer = mechJebAssembly.GetType("MuMech.OperationInterplanetaryTransfer");
-            }
-            if (t_OperationInterplanetaryTransfer == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationInterplanetaryTransfer);
-            }
-            catch { return null; }
-        }
         #endregion
 
-        #region VesselState Methods
-        /// <summary>
-        /// Get terminal velocity
-        /// </summary>
-        public static double GetTerminalVelocity(object core)
-        {
-            object vesselState = GetVesselState(core);
-            if (vesselState == null || m_VesselState_TerminalVelocity == null) return 0;
-            try
-            {
-                return (double)m_VesselState_TerminalVelocity.Invoke(vesselState, null);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-        #endregion
     }
 }
