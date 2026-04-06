@@ -77,15 +77,6 @@ namespace JSI
         private TextMenu smartassTargetMenu;
 
         // Maneuver planner state
-        private double circularizeAltitudeKm = 100.0;
-        private double changeApoapsisKm = 100.0;
-        private double changePeriapsisKm = 70.0;
-        private double changeSmaKm = 700.0;
-        private double changeInclinationDeg = 0.0;
-        private double changeLanDeg = 0.0;
-        private double resonanceNumerator = 2.0;
-        private double fineTuneDistanceKm = 100.0;
-        private double surfaceLongitudeDeg = 0.0;
         private double courseCorrectionPeKm = 50.0;
 
         // LEGACY: Hohmann state - no longer used, wrapper uses MechJeb's OperationGeneric directly
@@ -112,11 +103,6 @@ namespace JSI
         
         // Tracked menu items that need dynamic state updates
         private List<TrackedMenuItem> trackedItems = new List<TrackedMenuItem>();
-        
-        // Currently focused editable field
-        private TextMenu.Item editingItem = null;
-        private string editBuffer = "";
-        private bool isEditing = false;
         #endregion
 
         #region Tracked Item Classes
@@ -966,12 +952,8 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             // OperationApoapsis: NewApA parameter, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2), ALTITUDE(3), EQ_DESCENDING(4), EQ_ASCENDING(5)
-            AddNumericItem(menu, "New Apoapsis",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change apoapsis"), "NewApA") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change apoapsis"), "NewApA", val * 1000.0),
-                1.0, v => v.ToString("F1") + " km", null, true, 1.0, false, 0);
+            AddNumericItem(menu, "New Apoapsis", MechJebProxy.OpChangeApoapsis.NewApA,
+                1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 1.0, false, 0);
             
             AddMenuItem(menu, "Schedule the burn:", null);
             AddMenuItem(menu, "  at next periapsis", () => ExecuteChangeApoapsis(0));
@@ -1076,12 +1058,8 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             // OperationPeriapsis: NewPeA parameter, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2), ALTITUDE(3)
-            AddNumericItem(menu, "New Periapsis",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change periapsis"), "NewPeA") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change periapsis"), "NewPeA", val * 1000.0),
-                1.0, v => v.ToString("F1") + " km", null, true, 1.0, false, 0);
+            AddNumericItem(menu, "New Periapsis", MechJebProxy.OpChangePeriapsis.NewPeA,
+                1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 1.0, false, 0);
             
             AddMenuItem(menu, "Schedule the burn:", null);
             AddMenuItem(menu, "  at next periapsis", () => ExecuteChangePeriapsis(0));
@@ -1117,12 +1095,8 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationSemiMajor: NewSma parameter, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2), ALTITUDE(3)
-            AddNumericItem(menu, "New Semi-Major Axis",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change semi-major axis"), "NewSma") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change semi-major axis"), "NewSma", val * 1000.0),
-                1.0, v => v.ToString("F1") + " km", null, true, 1.0, false, 0);
+            AddNumericItem(menu, "New Semi-Major Axis", MechJebProxy.OpChangeSemiMajorAxis.NewSma,
+                1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 1.0, false, 0);
             
             AddMenuItem(menu, "Schedule the burn:", null);
             AddMenuItem(menu, "  at next periapsis", () => ExecuteChangeSMA(0));
@@ -1158,11 +1132,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationInclination: NewInc parameter, TimeRefs: EQ_NEAREST_AD(0), EQ_HIGHEST_AD(1), X_FROM_NOW(2), APOAPSIS(3), PERIAPSIS(4)
-            AddNumericItem(menu, "New Inclination",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change inclination"), "NewInc"),
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change inclination"), "NewInc", val),
+            AddNumericItem(menu, "New Inclination", MechJebProxy.OpChangeInclination.NewInc,
                 0.5, v => v.ToString("F1") + "°", null, true, -180, true, 180);
             
             AddMenuItem(menu, "Schedule the burn:", null);
@@ -1201,11 +1171,7 @@ namespace JSI
 
             // OperationLan uses EditableAngle for targetLongitude - we need to handle this differently
             // TimeRefs: X_FROM_NOW(0), APOAPSIS(1), PERIAPSIS(2)
-            AddNumericItem(menu, "New LAN",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change longitude of ascending node"), "targetLongitude"),
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change longitude of ascending node"), "targetLongitude", val),
+            AddNumericItem(menu, "New LAN", mjCore.Target.targetLongitude.Degrees,
                 0.5, v => v.ToString("F1") + "°", null, true, 0, true, 360);
             
             AddMenuItem(menu, "Schedule the burn:", null);
@@ -1245,32 +1211,26 @@ namespace JSI
 
             // "no insertion burn (impact/flyby)" checkbox - inverted Capture bool
             AddToggleItem(menu, "no insertion burn (impact/flyby)",
-                () => !MechJebProxy.GetOperationBool(MechJebProxy.GetOperationByName(opName), "Capture"),
-                (val) => MechJebProxy.SetOperationBool(MechJebProxy.GetOperationByName(opName), "Capture", !val));
+                () => !MechJebProxy.OpGeneric.Capture,
+                (val) => MechJebProxy.OpGeneric.Capture = !val);
 
             // "Plan insertion burn" checkbox
-            AddToggleItem(menu, "Plan insertion burn",
-                () => MechJebProxy.GetOperationBool(MechJebProxy.GetOperationByName(opName), "PlanCapture"),
-                (val) => MechJebProxy.SetOperationBool(MechJebProxy.GetOperationByName(opName), "PlanCapture", val));
+            AddToggleItem(menu, "Plan insertion burn", MechJebProxy.OpGeneric, MechJebProxy.f_Generic_PlanCapture);
 
             // "coplanar maneuver" checkbox
-            AddToggleItem(menu, "coplanar maneuver",
-                () => MechJebProxy.GetOperationBool(MechJebProxy.GetOperationByName(opName), "Coplanar"),
-                (val) => MechJebProxy.SetOperationBool(MechJebProxy.GetOperationByName(opName), "Coplanar", val));
+            AddToggleItem(menu, "coplanar maneuver", MechJebProxy.OpGeneric, MechJebProxy.f_Generic_Coplanar);
 
             // Rendezvous vs Transfer radio buttons - use isSelected for green highlighting
-            var rendezvousItem = new TextMenu.Item("Rendezvous", (idx, item) => MechJebProxy.SetOperationBool(MechJebProxy.GetOperationByName(opName), "Rendezvous", true));
+            var rendezvousItem = new TextMenu.Item("Rendezvous", (idx, item) => MechJebProxy.OpGeneric.Rendezvous = true);
             menu.Add(rendezvousItem);
-            trackedItems.Add(new TrackedMenuItem { item = rendezvousItem, id = "HohmannRendezvous", isSelected = () => MechJebProxy.GetOperationBool(MechJebProxy.GetOperationByName(opName), "Rendezvous") });
+            trackedItems.Add(new TrackedMenuItem { item = rendezvousItem, id = "HohmannRendezvous", isSelected = () => MechJebProxy.OpGeneric.Rendezvous });
             
-            var transferItem = new TextMenu.Item("Transfer", (idx, item) => MechJebProxy.SetOperationBool(MechJebProxy.GetOperationByName(opName), "Rendezvous", false));
+            var transferItem = new TextMenu.Item("Transfer", (idx, item) => MechJebProxy.OpGeneric.Rendezvous = false);
             menu.Add(transferItem);
-            trackedItems.Add(new TrackedMenuItem { item = transferItem, id = "HohmannTransfer", isSelected = () => !MechJebProxy.GetOperationBool(MechJebProxy.GetOperationByName(opName), "Rendezvous") });
+            trackedItems.Add(new TrackedMenuItem { item = transferItem, id = "HohmannTransfer", isSelected = () => !MechJebProxy.OpGeneric.Rendezvous });
 
             // Rendezvous time offset (LagTime in seconds)
-            AddNumericItem(menu, "rendezvous time offset",
-                () => MechJebProxy.GetOperationEditableDouble(MechJebProxy.GetOperationByName(opName), "LagTime"),
-                (val) => MechJebProxy.SetOperationEditableDouble(MechJebProxy.GetOperationByName(opName), "LagTime", val),
+            AddNumericItem(menu, "rendezvous time offset", MechJebProxy.OpGeneric.LagTime,
                 1.0, v => v.ToString("F0") + " sec", null, false, 0, false, 0);
 
             // Schedule the burn - TimeSelector options
@@ -1321,18 +1281,10 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationEllipticize: NewPeA, NewApA parameters, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2)
-            AddNumericItem(menu, "New periapsis",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change both Pe and Ap"), "NewPeA") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change both Pe and Ap"), "NewPeA", val * 1000.0),
-                1.0, v => v.ToString("F1") + " km", null, true, 1.0, false, 0);
-            AddNumericItem(menu, "New apoapsis",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change both Pe and Ap"), "NewApA") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change both Pe and Ap"), "NewApA", val * 1000.0),
-                1.0, v => v.ToString("F1") + " km", null, true, 1.0, false, 0);
+            AddNumericItem(menu, "New periapsis", MechJebProxy.OpEllipticize.NewPeA,
+                1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 1.0, false, 0);
+            AddNumericItem(menu, "New apoapsis", MechJebProxy.OpEllipticize.NewApA,
+                1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 1.0, false, 0);
             
             AddMenuItem(menu, "Schedule the burn:", null);
             AddMenuItem(menu, "  at next periapsis", () => ExecuteChangeBothPeAp(0));
@@ -1367,11 +1319,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationEccentricity: NewEcc parameter, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2), ALTITUDE(3)
-            AddNumericItem(menu, "New eccentricity",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change eccentricity"), "NewEcc"),
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change eccentricity"), "NewEcc", val),
+            AddNumericItem(menu, "New eccentricity", MechJebProxy.OpEccentricity.NewEcc,
                 0.01, v => v.ToString("F3"), null, true, 0, true, 0.99);
             
             AddMenuItem(menu, "Schedule the burn:", null);
@@ -1408,11 +1356,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationLongitude: targetLongitude (EditableAngle), TimeRefs: PERIAPSIS(0), APOAPSIS(1)
-            AddNumericItem(menu, "Target longitude",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change surface longitude of apsis"), "targetLongitude"),
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("change surface longitude of apsis"), "targetLongitude", val),
+            AddNumericItem(menu, "Target longitude", mjCore.Target.targetLongitude.Degrees,
                 1.0, v => v.ToString("F1") + "°", null, true, -180, true, 180);
             
             AddMenuItem(menu, "Schedule the burn:", null);
@@ -1453,20 +1397,12 @@ namespace JSI
             
             if (isCelestialTarget)
             {
-                AddNumericItem(menu, "Target periapsis",
-                    () => MechJebProxy.GetOperationEditableDouble(
-                        MechJebProxy.GetOperationByName("fine tune closest approach to target"), "CourseCorrectFinalPeA") / 1000.0,
-                    (val) => MechJebProxy.SetOperationEditableDouble(
-                        MechJebProxy.GetOperationByName("fine tune closest approach to target"), "CourseCorrectFinalPeA", val * 1000.0),
-                    1.0, v => v.ToString("F1") + " km", null, true, 0, false, 0);
+                AddNumericItem(menu, "Target periapsis", MechJebProxy.OpCourseCorrection.CourseCorrectFinalPeA,
+                    1000.0, v => (v / 1000.0).ToString("F1") + " km", null, true, 0, false, 0);
             }
             else
             {
-                AddNumericItem(menu, "Distance at closest approach",
-                    () => MechJebProxy.GetOperationEditableDouble(
-                        MechJebProxy.GetOperationByName("fine tune closest approach to target"), "InterceptDistance"),
-                    (val) => MechJebProxy.SetOperationEditableDouble(
-                        MechJebProxy.GetOperationByName("fine tune closest approach to target"), "InterceptDistance", val),
+                AddNumericItem(menu, "Distance at closest approach", MechJebProxy.OpCourseCorrection.InterceptDistance,
                     10.0, v => v.ToString("F0") + " m", null, true, 0, false, 0);
             }
             
@@ -1494,11 +1430,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationLambert: InterceptInterval parameter, TimeRef: X_FROM_NOW only
-            AddNumericItem(menu, "Intercept after",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("intercept target at chosen time"), "InterceptInterval"),
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("intercept target at chosen time"), "InterceptInterval", val),
+            AddNumericItem(menu, "Intercept after", MechJebProxy.OpLambert.InterceptInterval,
                 60.0, v => FormatTime(v), null, true, 60, false, 0);
             
             AddMenuItem(menu, "[Create Node]", () => ExecuteInterceptAtTime());
@@ -1563,17 +1495,9 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationResonantOrbit: ResonanceNumerator, ResonanceDenominator, TimeRefs: PERIAPSIS(0), APOAPSIS(1), X_FROM_NOW(2), ALTITUDE(3)
-            AddNumericItem(menu, "Resonance numerator",
-                () => MechJebProxy.GetOperationEditableInt(
-                    MechJebProxy.GetOperationByName("resonant orbit"), "ResonanceNumerator"),
-                (val) => MechJebProxy.SetOperationEditableInt(
-                    MechJebProxy.GetOperationByName("resonant orbit"), "ResonanceNumerator", (int)val),
+            AddNumericItem(menu, "Resonance numerator", MechJebProxy.OpResonantOrbit.ResonanceNumerator,
                 1.0, v => ((int)v).ToString(), null, true, 1, false, 0);
-            AddNumericItem(menu, "Resonance denominator",
-                () => MechJebProxy.GetOperationEditableInt(
-                    MechJebProxy.GetOperationByName("resonant orbit"), "ResonanceDenominator"),
-                (val) => MechJebProxy.SetOperationEditableInt(
-                    MechJebProxy.GetOperationByName("resonant orbit"), "ResonanceDenominator", (int)val),
+            AddNumericItem(menu, "Resonance denominator", MechJebProxy.OpResonantOrbit.ResonanceDenominator,
                 1.0, v => ((int)v).ToString(), null, true, 1, false, 0);
             
             AddMenuItem(menu, "Schedule the burn:", null);
@@ -1610,12 +1534,8 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationMoonReturn: MoonReturnAltitude parameter (no time selector - auto computed)
-            AddNumericItem(menu, "Return altitude",
-                () => MechJebProxy.GetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("return from a moon"), "MoonReturnAltitude") / 1000.0,
-                (val) => MechJebProxy.SetOperationEditableDouble(
-                    MechJebProxy.GetOperationByName("return from a moon"), "MoonReturnAltitude", val * 1000.0),
-                10.0, v => v.ToString("F0") + " km", null, true, 10, false, 0);
+            AddNumericItem(menu, "Return altitude", MechJebProxy.OpMoonReturn.MoonReturnAltitude,
+                10.0, v => (v / 1000.0).ToString("F0") + " km", null, true, 10, false, 0);
             AddMenuItem(menu, "[Create Node]", () => ExecuteMoonReturn());
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -1640,12 +1560,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             // OperationInterplanetaryTransfer: WaitForPhaseAngle (bool) parameter
-            AddToggleItem(menu, "Wait for optimal phase angle",
-                () => MechJebProxy.GetOperationBool(
-                    MechJebProxy.GetOperationByName("transfer to another planet"), "WaitForPhaseAngle"),
-                (val) => MechJebProxy.SetOperationBool(
-                    MechJebProxy.GetOperationByName("transfer to another planet"), "WaitForPhaseAngle", val));
-            
+            AddToggleItem(menu, "Wait for optimal phase angle", MechJebProxy.OpInterplanetaryTransfer, MechJebProxy.f_InterplanetaryTransfer_WaitForPhaseAngle);
             AddMenuItem(menu, "[Create Node]", () => ExecuteInterplanetaryTransfer());
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 

@@ -396,7 +396,22 @@ namespace JSI
 
         public static OperationAdvancedTransfer OpAdvancedTransfer { get; private set; }
         public static OperationCircularize OpCircularize { get; private set; }
-        private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
+        public static OperationApoapsis OpChangeApoapsis { get; private set; }
+        public static OperationPeriapsis OpChangePeriapsis { get; private set; }
+        public static OperationSemiMajor OpChangeSemiMajorAxis { get; private set; }
+        public static OperationInclination OpChangeInclination { get; private set; }
+        public static OperationLan OpChangeLAN { get; private set; }
+        public static OperationGeneric OpGeneric { get; private set; }
+        public static OperationEllipticize OpEllipticize { get; private set; }
+        public static OperationEccentricity OpEccentricity { get; private set; }
+        public static OperationCourseCorrection OpCourseCorrection { get; private set; }
+        public static OperationLambert OpLambert { get; private set; }
+        public static OperationLongitude OpLongitude { get; private set; }
+        public static OperationResonantOrbit OpResonantOrbit { get; private set; }
+        public static OperationMoonReturn OpMoonReturn { get; private set; }
+        public static OperationInterplanetaryTransfer OpInterplanetaryTransfer { get; private set; }
+
+		private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
 
 
         // TimeSelector for operation timing options
@@ -421,10 +436,12 @@ namespace JSI
         // OperationGeneric (Hohmann/bi-impulsive transfer) internals
         private static Type t_OperationGeneric;
         private static FieldInfo f_Generic_Capture;
-        private static FieldInfo f_Generic_PlanCapture;
+        internal static FieldInfo f_Generic_PlanCapture;
         private static FieldInfo f_Generic_Rendezvous;
-        private static FieldInfo f_Generic_Coplanar;
+        internal static FieldInfo f_Generic_Coplanar;
         private static FieldInfo f_Generic_LagTime;
+
+        internal static FieldInfo f_InterplanetaryTransfer_WaitForPhaseAngle;
 
         // OperationCourseCorrection internals
         private static FieldInfo f_CourseCorrection_TargetPe;
@@ -580,6 +597,21 @@ namespace JSI
                 {
                     if (op is OperationAdvancedTransfer opAdvancedTransfer) OpAdvancedTransfer = opAdvancedTransfer;
                     else if (op is OperationCircularize opCircularize) OpCircularize = opCircularize;
+                    else if (op is OperationApoapsis opChangeApoapsis) OpChangeApoapsis = opChangeApoapsis;
+                    else if (op is OperationPeriapsis opPeriapsis) OpChangePeriapsis = opPeriapsis;
+                    else if (op is OperationSemiMajor operationSemiMajor) OpChangeSemiMajorAxis = operationSemiMajor;
+                    else if (op is OperationInclination operationInclination) OpChangeInclination = operationInclination;
+                    else if (op is OperationLan operationLan) OpChangeLAN = operationLan;
+                    else if (op is OperationGeneric operationGeneric) OpGeneric = operationGeneric;
+                    else if (op is OperationEllipticize operationEllipticize) OpEllipticize = operationEllipticize;
+                    else if (op is OperationEccentricity operationEccentricity) OpEccentricity = operationEccentricity;
+                    else if (op is OperationCourseCorrection operationCourseCorrection) OpCourseCorrection = operationCourseCorrection;
+                    else if (op is OperationLambert operationLambert) OpLambert = operationLambert;
+                    else if (op is OperationLongitude operationLongitude) OpLongitude = operationLongitude;
+                    else if (op is OperationResonantOrbit operationResonantOrbit) OpResonantOrbit = operationResonantOrbit;
+                    else if (op is OperationMoonReturn operationMoonReturn) OpMoonReturn = operationMoonReturn;
+                    else if (op is OperationInterplanetaryTransfer operationInterplanetaryTransfer) OpInterplanetaryTransfer = operationInterplanetaryTransfer;
+
 
 
                     operationsByName[op.GetName()] = op; // review: GetName is localized, so this needs to change.  Maybe the type name?
@@ -886,6 +918,12 @@ namespace JSI
                 f_Generic_Rendezvous = t_OperationGeneric.GetField("Rendezvous", BindingFlags.Public | BindingFlags.Instance);
                 f_Generic_Coplanar = t_OperationGeneric.GetField("Coplanar", BindingFlags.Public | BindingFlags.Instance);
                 f_Generic_LagTime = t_OperationGeneric.GetField("LagTime", BindingFlags.Public | BindingFlags.Instance);
+            }
+
+            Type t_OperatiionInterplanetaryTransfer = mechJebAssembly.GetType("MuMech.OperationInterplanetaryTransfer");
+            if (t_OperatiionInterplanetaryTransfer != null)
+            {
+                f_InterplanetaryTransfer_WaitForPhaseAngle = t_OperatiionInterplanetaryTransfer.GetField("WaitForPhaseAngle", BindingFlags.Public | BindingFlags.Instance);
             }
 
             // PlotArea for porkchop selection
@@ -2517,165 +2555,6 @@ namespace JSI
         public static Operation GetOperationByName(string name)
         {
             return operationsByName.GetValueOrDefault(name);
-        }
-
-
-        /// <summary>
-        /// Gets an EditableDoubleMult field value from an operation
-        /// </summary>
-        public static double GetOperationEditableDouble(object operation, string fieldName)
-        {
-            if (operation == null) return 0;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return 0;
-                
-                object editable = field.GetValue(operation);
-                if (editable == null) return 0;
-                
-                // Try EditableDoubleMult first
-                if (p_EditableDoubleMult_Val != null && t_EditableDoubleMult != null 
-                    && t_EditableDoubleMult.IsInstanceOfType(editable))
-                {
-                    return (double)p_EditableDoubleMult_Val.GetValue(editable, null);
-                }
-                
-                // Try EditableDouble
-                if (p_EditableDouble_Val != null && t_EditableDouble != null 
-                    && t_EditableDouble.IsInstanceOfType(editable))
-                {
-                    return (double)p_EditableDouble_Val.GetValue(editable, null);
-                }
-                
-                return 0;
-            }
-            catch { return 0; }
-        }
-
-        /// <summary>
-        /// Sets an EditableDoubleMult field value on an operation
-        /// </summary>
-        public static void SetOperationEditableDouble(object operation, string fieldName, double value)
-        {
-            if (operation == null) return;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return;
-                
-                object editable = field.GetValue(operation);
-                if (editable == null) return;
-                
-                // Try EditableDoubleMult first
-                if (p_EditableDoubleMult_Val != null && t_EditableDoubleMult != null 
-                    && t_EditableDoubleMult.IsInstanceOfType(editable))
-                {
-                    p_EditableDoubleMult_Val.SetValue(editable, value, null);
-                    return;
-                }
-                
-                // Try EditableDouble
-                if (p_EditableDouble_Val != null && t_EditableDouble != null 
-                    && t_EditableDouble.IsInstanceOfType(editable))
-                {
-                    p_EditableDouble_Val.SetValue(editable, value, null);
-                    return;
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets an EditableInt field value from an operation
-        /// </summary>
-        public static int GetOperationEditableInt(object operation, string fieldName)
-        {
-            if (operation == null) return 0;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return 0;
-                
-                object editable = field.GetValue(operation);
-                if (editable == null) return 0;
-                
-                if (p_EditableInt_Val != null && t_EditableInt != null 
-                    && t_EditableInt.IsInstanceOfType(editable))
-                {
-                    return (int)p_EditableInt_Val.GetValue(editable, null);
-                }
-                
-                return 0;
-            }
-            catch { return 0; }
-        }
-
-        /// <summary>
-        /// Sets an EditableInt field value on an operation
-        /// </summary>
-        public static void SetOperationEditableInt(object operation, string fieldName, int value)
-        {
-            if (operation == null) return;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return;
-                
-                object editable = field.GetValue(operation);
-                if (editable == null) return;
-                
-                if (p_EditableInt_Val != null && t_EditableInt != null 
-                    && t_EditableInt.IsInstanceOfType(editable))
-                {
-                    p_EditableInt_Val.SetValue(editable, value, null);
-                }
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets a boolean field value from an operation
-        /// </summary>
-        public static bool GetOperationBool(object operation, string fieldName)
-        {
-            if (operation == null) return false;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return false;
-                
-                return (bool)field.GetValue(operation);
-            }
-            catch { return false; }
-        }
-
-        /// <summary>
-        /// Sets a boolean field value on an operation
-        /// </summary>
-        public static void SetOperationBool(object operation, string fieldName, bool value)
-        {
-            if (operation == null) return;
-            try
-            {
-                Type opType = operation.GetType();
-                FieldInfo field = opType.GetField(fieldName, 
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field == null) return;
-                
-                field.SetValue(operation, value);
-            }
-            catch { }
         }
 
         /// <summary>
