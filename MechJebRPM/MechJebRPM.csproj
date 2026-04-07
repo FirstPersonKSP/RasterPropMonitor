@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" />
+    <Publicize Include="MechJeb2" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="KSPBuildTools" Version="0.0.4" />

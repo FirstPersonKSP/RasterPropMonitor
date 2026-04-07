@@ -410,6 +410,8 @@ namespace JSI
         public static OperationResonantOrbit OpResonantOrbit { get; private set; }
         public static OperationMoonReturn OpMoonReturn { get; private set; }
         public static OperationInterplanetaryTransfer OpInterplanetaryTransfer { get; private set; }
+        public static OperationPlane OpMatchPlane { get; private set; }
+        public static OperationKillRelVel OpMatchVelocity { get; private set; }
 
 		private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
 
@@ -427,7 +429,7 @@ namespace JSI
         private static FieldInfo f_AdvancedTransfer_SelectionMode;
         private static FieldInfo f_AdvancedTransfer_Worker;
         private static FieldInfo f_AdvancedTransfer_Plot;
-        private static FieldInfo f_AdvancedTransfer_IncludeCaptureBurn;
+        internal static FieldInfo f_AdvancedTransfer_IncludeCaptureBurn;
         private static FieldInfo f_AdvancedTransfer_PeriapsisHeight;
         private static FieldInfo f_AdvancedTransfer_LastTargetCelestial;
         private static MethodInfo m_AdvancedTransfer_ComputeTimes;
@@ -611,7 +613,8 @@ namespace JSI
                     else if (op is OperationResonantOrbit operationResonantOrbit) OpResonantOrbit = operationResonantOrbit;
                     else if (op is OperationMoonReturn operationMoonReturn) OpMoonReturn = operationMoonReturn;
                     else if (op is OperationInterplanetaryTransfer operationInterplanetaryTransfer) OpInterplanetaryTransfer = operationInterplanetaryTransfer;
-
+                    else if (op is OperationPlane operationPlane) OpMatchPlane = operationPlane;
+                    else if (op is OperationKillRelVel operationKillRelVel) OpMatchVelocity = operationKillRelVel;
 
 
                     operationsByName[op.GetName()] = op; // review: GetName is localized, so this needs to change.  Maybe the type name?
@@ -2257,14 +2260,9 @@ namespace JSI
         #endregion
 
         #region Spaceplane Autopilot Methods
-        public static MechJebModuleSpaceplaneAutopilot GetSpaceplaneAutopilot(MechJebCore core)
-        {
-            return core.GetComputerModule<MechJebModuleSpaceplaneAutopilot>();
-        }
 
-        public static void SpaceplaneHoldHeadingAndAltitude(MechJebCore core)
+        public static void SpaceplaneHoldHeadingAndAltitude(MechJebModuleSpaceplaneAutopilot sp)
         {
-            object sp = GetSpaceplaneAutopilot(core);
             if (sp == null || m_Spaceplane_HoldHeadingAndAltitude == null) return;
             try { m_Spaceplane_HoldHeadingAndAltitude.Invoke(sp, null); }
             catch { }
@@ -2307,44 +2305,12 @@ namespace JSI
             catch { }
         }
 
-        public static OperationCourseCorrection CreateCourseCorrectionOperation()
-        {
-            if (t_OperationCourseCorrection == null) return null;
-            try
-            {
-                return Activator.CreateInstance(t_OperationCourseCorrection) as OperationCourseCorrection;
-            }
-            catch { return null; }
-        }
-
-        public static void SetCourseCorrectionTargetPe(OperationCourseCorrection operation, double peKm)
-        {
-            if (operation == null) return;
-
-            operation.CourseCorrectFinalPeA.Val = peKm; // review: is this correct?
-        }
-
-        static EditableDouble GetPeriapsisEditable(this OperationAdvancedTransfer operation)
-        {
-            // Note: this field is private, so we either need to keep using reflection or publicize it
-            return f_AdvancedTransfer_PeriapsisHeight.GetValue(operation) as EditableDouble;
-        }
-
-        public static void StartAdvancedTransferCompute(OperationAdvancedTransfer operation, Orbit orbit, double ut, object targetController, bool includeCaptureBurn, double periapsisKm)
+        public static void StartAdvancedTransferCompute(OperationAdvancedTransfer operation, Orbit orbit, double ut, object targetController)
         {
             if (operation == null || targetController == null) return;
 
             try
             {
-                if (f_AdvancedTransfer_IncludeCaptureBurn != null)
-                {
-                    f_AdvancedTransfer_IncludeCaptureBurn.SetValue(operation, includeCaptureBurn);
-                }
-
-                
-
-                operation.GetPeriapsisEditable().Val = periapsisKm;
-
                 if (f_AdvancedTransfer_SelectionMode != null)
                 {
                     Type enumType = f_AdvancedTransfer_SelectionMode.FieldType;
@@ -2366,48 +2332,6 @@ namespace JSI
                 }
             }
             catch { }
-        }
-
-        /// <summary>
-        /// Gets the includeCaptureBurn field from OperationAdvancedTransfer
-        /// </summary>
-        public static bool GetAdvancedTransferIncludeCapture(object operation)
-        {
-            if (operation == null || f_AdvancedTransfer_IncludeCaptureBurn == null) return false;
-            try
-            {
-                return (bool)f_AdvancedTransfer_IncludeCaptureBurn.GetValue(operation);
-            }
-            catch { return false; }
-        }
-
-        /// <summary>
-        /// Sets the includeCaptureBurn field on OperationAdvancedTransfer
-        /// </summary>
-        public static void SetAdvancedTransferIncludeCapture(object operation, bool value)
-        {
-            if (operation == null || f_AdvancedTransfer_IncludeCaptureBurn == null) return;
-            try
-            {
-                f_AdvancedTransfer_IncludeCaptureBurn.SetValue(operation, value);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets the periapsisHeight (in km) from OperationAdvancedTransfer
-        /// </summary>
-        public static double GetAdvancedTransferPeriapsisKm(OperationAdvancedTransfer operation)
-        {
-            return operation.GetPeriapsisEditable().Val;
-        }
-
-        /// <summary>
-        /// Sets the periapsisHeight (in km) on OperationAdvancedTransfer
-        /// </summary>
-        public static void SetAdvancedTransferPeriapsisKm(OperationAdvancedTransfer operation, double valueKm)
-        {
-            operation.GetPeriapsisEditable().Val = valueKm;
         }
 
         public static bool IsAdvancedTransferFinished(OperationAdvancedTransfer operation, out int progress)
@@ -2557,99 +2481,16 @@ namespace JSI
             return operationsByName.GetValueOrDefault(name);
         }
 
-        /// <summary>
-        /// Gets the TimeSelector from an operation (for timing options)
-        /// </summary>
-        public static object GetOperationTimeSelector(object operation)
+        public static TimeSelector GetTimeSelector(this Operation operation)
         {
-            if (operation == null || t_TimeSelector == null) return null;
-            try
-            {
-                Type opType = operation.GetType();
-                // Look for static _timeSelector field
-                FieldInfo field = opType.GetField("_timeSelector", 
-                    BindingFlags.NonPublic | BindingFlags.Static);
-                if (field == null) return null;
+            Type opType = operation.GetType();
+            // Look for static _timeSelector field
+            FieldInfo field = opType.GetField("_timeSelector", 
+                BindingFlags.NonPublic | BindingFlags.Static);
+            if (field == null) return null;
                 
-                return field.GetValue(null);
-            }
-            catch { return null; }
+            return field.GetValue(null) as TimeSelector;
         }
-
-
-        /// <summary>
-        /// Sets the current TimeReference index on a TimeSelector
-        /// </summary>
-        public static void SetTimeSelectorCurrentTimeRef(object timeSelector, int timeRefIndex)
-        {
-            if (timeSelector == null || f_TimeSelector_CurrentTimeRef == null) return;
-            try
-            {
-                f_TimeSelector_CurrentTimeRef.SetValue(timeSelector, timeRefIndex);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets the CircularizeAltitude from a TimeSelector (in meters)
-        /// </summary>
-        public static double GetTimeSelectorCircularizeAltitude(object timeSelector)
-        {
-            if (timeSelector == null || f_TimeSelector_CircularizeAltitude == null || p_EditableDoubleMult_Val == null) return 0;
-            try
-            {
-                object altField = f_TimeSelector_CircularizeAltitude.GetValue(timeSelector);
-                if (altField == null) return 0;
-                return (double)p_EditableDoubleMult_Val.GetValue(altField, null);
-            }
-            catch { return 0; }
-        }
-
-        /// <summary>
-        /// Sets the CircularizeAltitude on a TimeSelector (in meters)
-        /// </summary>
-        public static void SetTimeSelectorCircularizeAltitude(object timeSelector, double altitudeMeters)
-        {
-            if (timeSelector == null || f_TimeSelector_CircularizeAltitude == null || p_EditableDoubleMult_Val == null) return;
-            try
-            {
-                object altField = f_TimeSelector_CircularizeAltitude.GetValue(timeSelector);
-                if (altField == null) return;
-                p_EditableDoubleMult_Val.SetValue(altField, altitudeMeters, null);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Gets the LeadTime from a TimeSelector (in seconds)
-        /// </summary>
-        public static double GetTimeSelectorLeadTime(object timeSelector)
-        {
-            if (timeSelector == null || f_TimeSelector_LeadTime == null || p_EditableDouble_Val == null) return 0;
-            try
-            {
-                object leadField = f_TimeSelector_LeadTime.GetValue(timeSelector);
-                if (leadField == null) return 0;
-                return (double)p_EditableDouble_Val.GetValue(leadField, null);
-            }
-            catch { return 0; }
-        }
-
-        /// <summary>
-        /// Sets the LeadTime on a TimeSelector (in seconds)
-        /// </summary>
-        public static void SetTimeSelectorLeadTime(object timeSelector, double seconds)
-        {
-            if (timeSelector == null || f_TimeSelector_LeadTime == null || p_EditableDouble_Val == null) return;
-            try
-            {
-                object leadField = f_TimeSelector_LeadTime.GetValue(timeSelector);
-                if (leadField == null) return;
-                p_EditableDouble_Val.SetValue(leadField, seconds, null);
-            }
-            catch { }
-        }
-
 
         /// <summary>
         /// Calls MakeNodes on an operation and creates the maneuver nodes
@@ -2664,9 +2505,9 @@ namespace JSI
             
             return CreateNodesFromOperation(operation, orbit, ut, targetController, vessel);
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
         private static Orbit GetTargetOrbitFromController(object targetController)
         {
