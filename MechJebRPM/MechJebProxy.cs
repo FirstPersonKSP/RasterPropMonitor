@@ -35,6 +35,46 @@ namespace JSI
     /// </summary>
     public static class MechJebProxy
     {
+        #region FieldInfo Cache for Menu Binding
+        // Used by MechJebRPM's AddToggleItem(obj, FieldInfo) for simple boolean field toggles.
+        internal static FieldInfo f_SmartASS_ForceRol;
+        internal static FieldInfo f_Ascent_ForceRoll;
+        internal static FieldInfo f_Ascent_LimitAoA;
+        internal static FieldInfo f_Ascent_CorrectiveSteering;
+        internal static FieldInfo f_Ascent_AutoPath;
+        internal static FieldInfo f_Ascent_Autostage;
+        internal static FieldInfo f_Landing_DeployGears;
+        internal static FieldInfo f_Landing_DeployChutes;
+        internal static FieldInfo f_Landing_UseRCS;
+        internal static FieldInfo f_Landing_ShowTrajectory;
+        internal static FieldInfo f_Thrust_LimitToPreventOverheats;
+        internal static FieldInfo f_Thrust_LimitToTerminalVelocity;
+        internal static FieldInfo f_Thrust_LimitDynamicPressure;
+        internal static FieldInfo f_Thrust_LimitAcceleration;
+        internal static FieldInfo f_Thrust_LimitThrottle;
+        internal static FieldInfo f_Thrust_LimitToPreventFlameout;
+        internal static FieldInfo f_Thrust_SmoothThrottle;
+        internal static FieldInfo f_Thrust_ManageIntakes;
+        internal static FieldInfo f_Thrust_DifferentialThrottle;
+        internal static FieldInfo f_Staging_Autostage;
+        internal static FieldInfo f_Staging_DropSolids;
+        internal static FieldInfo f_Docking_ForceRoll;
+        internal static FieldInfo f_Docking_OverrideSafeDistance;
+        internal static FieldInfo f_Docking_OverrideTargetSize;
+        internal static FieldInfo f_Docking_DrawBoundingBox;
+        internal static FieldInfo f_Rover_ControlHeading;
+        internal static FieldInfo f_Rover_ControlSpeed;
+        internal static FieldInfo f_Rover_StabilityControl;
+        internal static FieldInfo f_Rover_BrakeOnEject;
+        internal static FieldInfo f_Rover_BrakeOnEnergyDepletion;
+        internal static FieldInfo f_Rover_WarpToDaylight;
+        internal static FieldInfo f_Airplane_RollHold;
+        internal static FieldInfo f_Generic_PlanCapture;
+        internal static FieldInfo f_Generic_Coplanar;
+        internal static FieldInfo f_InterplanetaryTransfer_WaitForPhaseAngle;
+        internal static FieldInfo f_AdvancedTransfer_IncludeCaptureBurn;
+        #endregion
+
         #region Initialization
         private static bool initialized = false;
         private static bool mjAvailable = false;
@@ -90,6 +130,8 @@ namespace JSI
                     operationsByName[op.GetName()] = op;
                 }
 
+                InitializeFieldInfoCache();
+
                 mjAvailable = true;
                 JUtil.LogMessage(null, "MechJebProxy: Successfully initialized");
             }
@@ -100,6 +142,46 @@ namespace JSI
             }
         }
         #endregion
+
+        private static void InitializeFieldInfoCache()
+        {
+            f_SmartASS_ForceRol = typeof(MechJebModuleSmartASS).GetField("forceRol", BindingFlags.Public | BindingFlags.Instance);
+            f_Ascent_ForceRoll = typeof(MechJebModuleAscentSettings).GetField("ForceRoll", BindingFlags.Public | BindingFlags.Instance);
+            f_Ascent_LimitAoA = typeof(MechJebModuleAscentSettings).GetField("LimitAoA", BindingFlags.Public | BindingFlags.Instance);
+            f_Ascent_CorrectiveSteering = typeof(MechJebModuleAscentSettings).GetField("CorrectiveSteering", BindingFlags.Public | BindingFlags.Instance);
+            f_Ascent_AutoPath = typeof(MechJebModuleAscentSettings).GetField("AutoPath", BindingFlags.Public | BindingFlags.Instance);
+            f_Ascent_Autostage = typeof(MechJebModuleAscentSettings).GetField("Autostage", BindingFlags.Public | BindingFlags.Instance);
+            f_Landing_DeployGears = typeof(MechJebModuleLandingAutopilot).GetField("DeployGears", BindingFlags.Public | BindingFlags.Instance);
+            f_Landing_DeployChutes = typeof(MechJebModuleLandingAutopilot).GetField("DeployChutes", BindingFlags.Public | BindingFlags.Instance);
+            f_Landing_UseRCS = typeof(MechJebModuleLandingAutopilot).GetField("RCSAdjustment", BindingFlags.Public | BindingFlags.Instance);
+            f_Landing_ShowTrajectory = typeof(MechJebModuleLandingPredictions).GetField("showTrajectory", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitToPreventOverheats = typeof(MechJebModuleThrustController).GetField("LimitToPreventOverheats", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitToTerminalVelocity = typeof(MechJebModuleThrustController).GetField("LimitToTerminalVelocity", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitDynamicPressure = typeof(MechJebModuleThrustController).GetField("LimitDynamicPressure", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitAcceleration = typeof(MechJebModuleThrustController).GetField("LimitAcceleration", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitThrottle = typeof(MechJebModuleThrustController).GetField("LimitThrottle", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_LimitToPreventFlameout = typeof(MechJebModuleThrustController).GetField("LimitToPreventFlameout", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_SmoothThrottle = typeof(MechJebModuleThrustController).GetField("SmoothThrottle", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_ManageIntakes = typeof(MechJebModuleThrustController).GetField("ManageIntakes", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_DifferentialThrottle = typeof(MechJebModuleThrustController).GetField("DifferentialThrottle", BindingFlags.Public | BindingFlags.Instance);
+            f_Staging_Autostage = typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance);
+            f_Staging_DropSolids = typeof(MechJebModuleStagingController).GetField("DropSolids", BindingFlags.Public | BindingFlags.Instance);
+            f_Docking_ForceRoll = typeof(MechJebModuleDockingAutopilot).GetField("forceRol", BindingFlags.Public | BindingFlags.Instance);
+            f_Docking_OverrideSafeDistance = typeof(MechJebModuleDockingAutopilot).GetField("overrideSafeDistance", BindingFlags.Public | BindingFlags.Instance);
+            f_Docking_OverrideTargetSize = typeof(MechJebModuleDockingAutopilot).GetField("overrideTargetSize", BindingFlags.Public | BindingFlags.Instance);
+            f_Docking_DrawBoundingBox = typeof(MechJebModuleDockingAutopilot).GetField("DrawBoundingBox", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_ControlHeading = typeof(MechJebModuleRoverController).GetField("ControlHeading", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_ControlSpeed = typeof(MechJebModuleRoverController).GetField("ControlSpeed", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_StabilityControl = typeof(MechJebModuleRoverController).GetField("StabilityControl", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_BrakeOnEject = typeof(MechJebModuleRoverController).GetField("BrakeOnEject", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_BrakeOnEnergyDepletion = typeof(MechJebModuleRoverController).GetField("BrakeOnEnergyDepletion", BindingFlags.Public | BindingFlags.Instance);
+            f_Rover_WarpToDaylight = typeof(MechJebModuleRoverController).GetField("WarpToDaylight", BindingFlags.Public | BindingFlags.Instance);
+            f_Airplane_RollHold = typeof(MechJebModuleAirplaneAutopilot).GetField("RollHoldEnabled", BindingFlags.Public | BindingFlags.Instance);
+            f_Generic_PlanCapture = typeof(OperationGeneric).GetField("PlanCapture", BindingFlags.Public | BindingFlags.Instance);
+            f_Generic_Coplanar = typeof(OperationGeneric).GetField("Coplanar", BindingFlags.Public | BindingFlags.Instance);
+            f_InterplanetaryTransfer_WaitForPhaseAngle = typeof(OperationInterplanetaryTransfer).GetField("WaitForPhaseAngle", BindingFlags.Public | BindingFlags.Instance);
+            f_AdvancedTransfer_IncludeCaptureBurn = typeof(OperationAdvancedTransfer).GetField("includeCaptureBurn", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
 
         #region Operation Cache
         public static OperationAdvancedTransfer OpAdvancedTransfer { get; private set; }

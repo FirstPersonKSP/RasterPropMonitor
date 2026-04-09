@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace JSI
 {
-    public class ExperimentDetailsMenu : TextMenu
+    class ExperimentDetailsMenu : TextMenu
     {
         public ExperimentDetailsMenu(ModuleScienceExperiment experimentModule)
         {
@@ -103,7 +103,7 @@ namespace JSI
         }
     }
 
-    public class JSIScienceDisplay : InternalModule
+    class JSIScienceDisplay : InternalModule
     {
         [KSPField]
         public string pageTitle;

@@ -70,6 +70,10 @@ namespace JSI
         private MechJebModuleRendezvousAutopilot mjRendezvousAutopilot = null;
         private MechJebModuleTranslatron mjTranslatron = null;
         private MechJebModuleSpaceplaneAutopilot mjSpacePlaneAutopilot = null;
+        private MechJebModuleLandingPredictions mjLandingPredictions = null;
+        private MechJebModuleLandingGuidance mjLandingGuidance = null;
+        private MechJebModuleWarpController mjWarpController = null;
+        private MechJebModuleStageStats mjStageStats = null;
 		private Vessel activeVessel = null;
 
         private TextMenu smartassOrbitalMenu;
@@ -242,6 +246,15 @@ namespace JSI
             });
         }
 
+		private void AddToggleItem(TextMenu menu, string label,
+            object obj, FieldInfo field,
+            Func<bool> enabledCheck = null)
+        {
+            AddToggleItem(menu, label,
+				() => (bool)field.GetValue(obj),
+				val => field.SetValue(obj, val),
+				enabledCheck);
+		}
 
 		private void AddValueItem(TextMenu menu, string label,
             Func<string> getValue, Action<double> setValue,
@@ -386,7 +399,7 @@ namespace JSI
                 () => vessel != null && vessel.patchedConicSolver != null && 
                         vessel.patchedConicSolver.maneuverNodes.Count > 0);
             AddMenuItem(menu, "------", null);
-            AddToggleItem(menu, "Force Roll", () => mjSmartASS.forceRol, v => mjSmartASS.forceRol = v);
+            AddToggleItem(menu, "Force Roll", mjSmartASS, MechJebProxy.f_SmartASS_ForceRol);
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
             return menu;
@@ -567,7 +580,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
-            AddToggleItem(menu, "Automatic Altitude Turn", () => mjCore.AscentSettings.AutoPath, v => mjCore.AscentSettings.AutoPath = v);
+            AddToggleItem(menu, "Automatic Altitude Turn", mjCore.AscentSettings, MechJebProxy.f_Ascent_AutoPath);
 
             AddNumericItem(menu, "Turn Start Alt", mjCore.AscentSettings.TurnStartAltitude,
                 1000.0, v => (v / 1000.0).ToString("F1") + " km",
@@ -609,20 +622,20 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
-            AddToggleItem(menu, "Autostage", () => mjCore.AscentSettings.Autostage, v => mjCore.AscentSettings.Autostage = v);
+            AddToggleItem(menu, "Autostage", mjCore.AscentSettings, MechJebProxy.f_Ascent_Autostage);
             AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Limit to Prevent Overheats", () => mjCore.Thrust.LimitToPreventOverheats, v => mjCore.Thrust.LimitToPreventOverheats = v);
-            AddToggleItem(menu, "Limit by Max Q", () => mjCore.Thrust.LimitDynamicPressure, v => mjCore.Thrust.LimitDynamicPressure = v);
+            AddToggleItem(menu, "Limit to Prevent Overheats", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToPreventOverheats);
+            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitDynamicPressure);
             AddNumericItem(menu, "Max Q", mjCore.Thrust.MaxDynamicPressure,
                 1000.0, v => v.ToString("F0") + " Pa", null, true, 0, false, 0);
-            AddToggleItem(menu, "Limit Acceleration", () => mjCore.Thrust.LimitAcceleration, v => mjCore.Thrust.LimitAcceleration = v);
+            AddToggleItem(menu, "Limit Acceleration", mjCore.Thrust, MechJebProxy.f_Thrust_LimitAcceleration);
             AddNumericItem(menu, "Max Acceleration", mjCore.Thrust.MaxAcceleration,
                 0.1, v => v.ToString("F1") + " m/s²", null, true, 0, false, 0);
-            AddToggleItem(menu, "Limit Throttle", () => mjCore.Thrust.LimitThrottle, v => mjCore.Thrust.LimitThrottle = v);
+            AddToggleItem(menu, "Limit Throttle", mjCore.Thrust, MechJebProxy.f_Thrust_LimitThrottle);
             AddNumericItem(menu, "Max Throttle", mjCore.Thrust.MaxThrottle,
                 1.0, v => v.ToString("F0") + "%", null, true, 0, true, 100);
 
@@ -664,7 +677,7 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
-            AddToggleItem(menu, "Force Roll", () => mjCore.AscentSettings.ForceRoll, v => mjCore.AscentSettings.ForceRoll = v);
+            AddToggleItem(menu, "Force Roll", mjCore.AscentSettings, MechJebProxy.f_Ascent_ForceRoll);
             AddNumericItem(menu, "Vertical Roll", mjCore.AscentSettings.VerticalRoll,
                 1.0, v => v.ToString("F1") + "°", null, true, -180, true, 180);
             AddNumericItem(menu, "Turn Roll", mjCore.AscentSettings.TurnRoll,
@@ -674,7 +687,7 @@ namespace JSI
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Limit AoA", () => mjCore.AscentSettings.LimitAoA, v => mjCore.AscentSettings.LimitAoA = v);
+            AddToggleItem(menu, "Limit AoA", mjCore.AscentSettings, MechJebProxy.f_Ascent_LimitAoA);
             AddNumericItem(menu, "Max AoA", mjCore.AscentSettings.MaxAoA,
                 0.5, v => v.ToString("F1") + "°", null, true, 0, true, 45);
             AddNumericItem(menu, "AoA Fadeout Pressure", mjCore.AscentSettings.AOALimitFadeoutPressure,
@@ -682,7 +695,7 @@ namespace JSI
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Corrective Steering", () => mjCore.AscentSettings.CorrectiveSteering, v => mjCore.AscentSettings.CorrectiveSteering = v);
+            AddToggleItem(menu, "Corrective Steering", mjCore.AscentSettings, MechJebProxy.f_Ascent_CorrectiveSteering);
             AddNumericItem(menu, "Corrective Gain", mjCore.AscentSettings.CorrectiveSteeringGain,
                 0.1, v => v.ToString("F2"));
 
@@ -724,13 +737,13 @@ namespace JSI
             // Settings
             AddNumericItem(menu, "Touchdown Speed", mjCore.Landing.TouchdownSpeed,
                 0.5, v => v.ToString("F1") + " m/s", null, true, 0, false, 0);
-            AddToggleItem(menu, "Deploy Gear", () => mjCore.Landing.DeployGears, v => mjCore.Landing.DeployGears = v);
-            AddToggleItem(menu, "Deploy Chutes", () => mjCore.Landing.DeployChutes, v => mjCore.Landing.DeployChutes = v);
+            AddToggleItem(menu, "Deploy Gear", mjCore.Landing, MechJebProxy.f_Landing_DeployGears);
+            AddToggleItem(menu, "Deploy Chutes", mjCore.Landing, MechJebProxy.f_Landing_DeployChutes);
             AddNumericItem(menu, "Limit Gear Stage", mjCore.Landing.LimitGearsStage,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
             AddNumericItem(menu, "Limit Chute Stage", mjCore.Landing.LimitChutesStage,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
-            AddToggleItem(menu, "Use RCS", () => mjCore.Landing.RCSAdjustment, v => mjCore.Landing.RCSAdjustment = v);
+            AddToggleItem(menu, "Use RCS", mjCore.Landing, MechJebProxy.f_Landing_UseRCS);
 
             AddMenuItem(menu, "------", null);
 
@@ -750,8 +763,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "Show Trajectory",
-                () => mjCore.GetComputerModule<MechJebModuleLandingPredictions>()?.showTrajectory == true,
-                (val) => mjCore.GetComputerModule<MechJebModuleLandingPredictions>().showTrajectory = val);
+                mjLandingPredictions, MechJebProxy.f_Landing_ShowTrajectory);
 
             AddMenuItem(menu, "------", null);
 
@@ -803,13 +815,13 @@ namespace JSI
         private void LandAtTarget()
         {
             if (mjCore == null) return;
-            mjCore.Landing.LandAtPositionTarget(mjCore.GetComputerModule<MechJebModuleLandingGuidance>());
+            mjCore.Landing.LandAtPositionTarget(mjLandingGuidance);
         }
 
         private void LandSomewhere()
         {
             if (mjCore == null) return;
-            mjCore.Landing.LandUntargeted(mjCore.GetComputerModule<MechJebModuleLandingGuidance>());
+            mjCore.Landing.LandUntargeted(mjLandingGuidance);
         }
 
         private void StopLanding()
@@ -1049,10 +1061,10 @@ namespace JSI
                 (val) => op.Capture = !val);
 
             // "Plan insertion burn" checkbox
-            AddToggleItem(menu, "Plan insertion burn", () => op.PlanCapture, v => op.PlanCapture = v);
+            AddToggleItem(menu, "Plan insertion burn", op, MechJebProxy.f_Generic_PlanCapture);
 
             // "coplanar maneuver" checkbox
-            AddToggleItem(menu, "coplanar maneuver", () => op.Coplanar, v => op.Coplanar = v);
+            AddToggleItem(menu, "coplanar maneuver", op, MechJebProxy.f_Generic_Coplanar);
 
             // Rendezvous vs Transfer radio buttons - use isSelected for green highlighting
             var rendezvousItem = new TextMenu.Item("Rendezvous", (idx, item) => op.Rendezvous = true);
@@ -1137,7 +1149,7 @@ namespace JSI
         private void PopulateInterplanetaryTransferMenu(TextMenu menu, Operation baseOp)
         {
             var op = baseOp as OperationInterplanetaryTransfer;
-            AddToggleItem(menu, "Wait for optimal phase angle", () => op.WaitForPhaseAngle, v => op.WaitForPhaseAngle = v);
+            AddToggleItem(menu, "Wait for optimal phase angle", op, MechJebProxy.f_InterplanetaryTransfer_WaitForPhaseAngle);
         }
 
         private TextMenu BuildAdvancedTransferMenu()
@@ -1176,7 +1188,7 @@ namespace JSI
             });
 
             // Include capture burn checkbox - wraps operation field
-            AddToggleItem(menu, "Include capture burn", () => op.includeCaptureBurn, v => op.includeCaptureBurn = v);
+            AddToggleItem(menu, "Include capture burn", op, MechJebProxy.f_AdvancedTransfer_IncludeCaptureBurn);
 
             // Periapsis input - wraps periapsisHeight field (in km)
             AddNumericItem(menu, "Periapsis", op.periapsisHeight,
@@ -1397,7 +1409,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "ENGAGE Rendezvous Autopilot",
-                () => mjCore.GetComputerModule<MechJebModuleRendezvousAutopilot>()?.Enabled == true,
+                () => mjRendezvousAutopilot?.Enabled == true,
                 (val) => MechJebProxy.SetRendezvousAutopilotEngaged(mjCore, val));
 
             AddMenuItem(menu, "------", null);
@@ -1424,7 +1436,7 @@ namespace JSI
                 item = rendezvousStatus,
                 id = "RendezvousStatus",
                 isEnabled = null,
-                getLabel = () => "Status: " + mjCore.GetComputerModule<MechJebModuleRendezvousAutopilot>()?.status ?? ""
+                getLabel = () => "Status: " + mjRendezvousAutopilot?.status ?? ""
             });
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
@@ -1442,8 +1454,8 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "ENGAGE Docking Autopilot",
-                () => mjCore.GetComputerModule<MechJebModuleDockingAutopilot>()?.Enabled == true,
-                (val) => mjCore.GetComputerModule<MechJebModuleDockingAutopilot>().Enabled = val);
+                () => mjDockingAutoPilot?.Enabled == true,
+                (val) => mjDockingAutoPilot.Enabled = val);
 
             AddMenuItem(menu, "------", null);
 
@@ -1451,24 +1463,23 @@ namespace JSI
                 mjDockingAutoPilot.speedLimit,
                 0.1, v => v.ToString("F1") + " m/s", null, true, 0, false, 0);
 
-            AddToggleItem(menu, "Force Roll", () => mjDockingAutoPilot.forceRol, v => mjDockingAutoPilot.forceRol = v);
+            AddToggleItem(menu, "Force Roll", mjDockingAutoPilot, MechJebProxy.f_Docking_ForceRoll);
             AddNumericItem(menu, "Roll",
                 mjDockingAutoPilot.rol,
                 1.0, v => v.ToString("F1") + "°", null, true, -180, true, 180);
 
-            AddToggleItem(menu, "Override Safe Distance", () => mjDockingAutoPilot.overrideSafeDistance, v => mjDockingAutoPilot.overrideSafeDistance = v);
+            AddToggleItem(menu, "Override Safe Distance", mjDockingAutoPilot, MechJebProxy.f_Docking_OverrideSafeDistance);
             AddNumericItem(menu, "Safe Distance",
                 mjDockingAutoPilot.overridenSafeDistance,
                 0.1, v => v.ToString("F1") + " m", () => mjDockingAutoPilot.overrideSafeDistance, true, 0, false, 0);
 
-            AddToggleItem(menu, "Override Target Size", () => mjDockingAutoPilot.overrideTargetSize, v => mjDockingAutoPilot.overrideTargetSize = v);
+            AddToggleItem(menu, "Override Target Size", mjDockingAutoPilot, MechJebProxy.f_Docking_OverrideTargetSize);
             AddNumericItem(menu, "Target Size",
                 mjDockingAutoPilot.overridenTargetSize,
                 0.1, v => v.ToString("F1") + " m", () => mjDockingAutoPilot.overrideTargetSize, true, 0, false, 0);
 
             AddToggleItem(menu, "Draw Bounding Box",
-                () => (bool)typeof(MechJebModuleDockingAutopilot).GetField("DrawBoundingBox", BindingFlags.Public | BindingFlags.Instance).GetValue(mjDockingAutoPilot),
-                v => typeof(MechJebModuleDockingAutopilot).GetField("DrawBoundingBox", BindingFlags.Public | BindingFlags.Instance).SetValue(mjDockingAutoPilot, v));
+                mjDockingAutoPilot, MechJebProxy.f_Docking_DrawBoundingBox);
 
             AddMenuItem(menu, "------", null);
 
@@ -1481,7 +1492,7 @@ namespace JSI
                 item = dockingStatus,
                 id = "DockingStatus",
                 isEnabled = null,
-                getLabel = () => "  " + mjCore.GetComputerModule<MechJebModuleDockingAutopilot>()?.status ?? ""
+                getLabel = () => "  " + mjDockingAutoPilot?.status ?? ""
             });
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
@@ -1519,7 +1530,7 @@ namespace JSI
 
             AddMenuItem(menu, "------", null);
 
-            AddMenuItem(menu, "!! PANIC !!", () => mjCore.GetComputerModule<MechJebModuleTranslatron>()?.PanicSwitch());
+            AddMenuItem(menu, "!! PANIC !!", () => mjTranslatron?.PanicSwitch());
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -1541,12 +1552,12 @@ namespace JSI
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Control Heading", () => mjCore.Rover.ControlHeading, v => mjCore.Rover.ControlHeading = v);
+            AddToggleItem(menu, "Control Heading", mjCore.Rover, MechJebProxy.f_Rover_ControlHeading);
             AddNumericItem(menu, "Heading",
                 mjCore.Rover.heading,
                 1.0, v => v.ToString("F1") + "°", null, true, 0, true, 360);
 
-            AddToggleItem(menu, "Control Speed", () => mjCore.Rover.ControlSpeed, v => mjCore.Rover.ControlSpeed = v);
+            AddToggleItem(menu, "Control Speed", mjCore.Rover, MechJebProxy.f_Rover_ControlSpeed);
             AddNumericItem(menu, "Speed",
                 mjCore.Rover.speed,
                 0.5, v => v.ToString("F1") + " m/s", null, true, 0, false, 0);
@@ -1554,17 +1565,13 @@ namespace JSI
             AddMenuItem(menu, "------", null);
 
             AddToggleItem(menu, "Stability Control",
-                () => (bool)typeof(MechJebModuleRoverController).GetField("StabilityControl", BindingFlags.Public | BindingFlags.Instance).GetValue(mjCore.Rover),
-                v => typeof(MechJebModuleRoverController).GetField("StabilityControl", BindingFlags.Public | BindingFlags.Instance).SetValue(mjCore.Rover, v));
+                mjCore.Rover, MechJebProxy.f_Rover_StabilityControl);
             AddToggleItem(menu, "Brake on Eject",
-                () => (bool)typeof(MechJebModuleRoverController).GetField("BrakeOnEject", BindingFlags.Public | BindingFlags.Instance).GetValue(mjCore.Rover),
-                v => typeof(MechJebModuleRoverController).GetField("BrakeOnEject", BindingFlags.Public | BindingFlags.Instance).SetValue(mjCore.Rover, v));
+                mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEject);
             AddToggleItem(menu, "Brake on Energy Depletion",
-                () => (bool)typeof(MechJebModuleRoverController).GetField("BrakeOnEnergyDepletion", BindingFlags.Public | BindingFlags.Instance).GetValue(mjCore.Rover),
-                v => typeof(MechJebModuleRoverController).GetField("BrakeOnEnergyDepletion", BindingFlags.Public | BindingFlags.Instance).SetValue(mjCore.Rover, v));
+                mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEnergyDepletion);
             AddToggleItem(menu, "Warp to Daylight",
-                () => (bool)typeof(MechJebModuleRoverController).GetField("WarpToDaylight", BindingFlags.Public | BindingFlags.Instance).GetValue(mjCore.Rover),
-                v => typeof(MechJebModuleRoverController).GetField("WarpToDaylight", BindingFlags.Public | BindingFlags.Instance).SetValue(mjCore.Rover, v));
+                mjCore.Rover, MechJebProxy.f_Rover_WarpToDaylight);
 
             AddMenuItem(menu, "------", null);
 
@@ -1645,7 +1652,7 @@ namespace JSI
                 () => mjCore.Airplane.HeadingTarget,
                 (val) => mjCore.Airplane.HeadingTarget = val,
                 1.0, v => v.ToString("F1") + "°", null, true, 0, true, 360);
-            AddToggleItem(menu, "Roll Hold", () => mjCore.Airplane.RollHoldEnabled, v => mjCore.Airplane.RollHoldEnabled = v);
+            AddToggleItem(menu, "Roll Hold", mjCore.Airplane, MechJebProxy.f_Airplane_RollHold);
             AddNumericItem(menu, "Target Roll",
                 () => mjCore.Airplane.RollTarget,
                 (val) => mjCore.Airplane.RollTarget = val,
@@ -1705,8 +1712,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "Autostage",
-                () => (bool)typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance).GetValue(mjCore.Staging),
-                v => typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance).SetValue(mjCore.Staging, v));
+                mjCore.Staging, MechJebProxy.f_Staging_Autostage);
             AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
             AddMenuItem(menu, "Stage Once", () => StageOnce());
@@ -1789,7 +1795,7 @@ namespace JSI
 
             AddNumericItem(menu, "Hot Staging Lead", mjCore.Staging.HotStagingLeadTime,
                 0.1, v => v.ToString("F1") + " s", null, true, 0, false, 0);
-            AddToggleItem(menu, "Drop Solids", () => mjCore.Staging.DropSolids, v => mjCore.Staging.DropSolids = v);
+            AddToggleItem(menu, "Drop Solids", mjCore.Staging, MechJebProxy.f_Staging_DropSolids);
             AddNumericItem(menu, "Drop Solids Lead", mjCore.Staging.DropSolidsLeadTime,
                 0.1, v => v.ToString("F1") + " s", () => mjCore.Staging.DropSolids, true, 0, false, 0);
 
@@ -1979,20 +1985,20 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
             AddMenuItem(menu, "-- THRUST LIMITS --", null);
-            AddToggleItem(menu, "Prevent Overheats", () => mjCore.Thrust.LimitToPreventOverheats, v => mjCore.Thrust.LimitToPreventOverheats = v);
-            AddToggleItem(menu, "Limit by Max Q", () => mjCore.Thrust.LimitDynamicPressure, v => mjCore.Thrust.LimitDynamicPressure = v);
-            AddToggleItem(menu, "Limit to Terminal Velocity", () => mjCore.Thrust.LimitToTerminalVelocity, v => mjCore.Thrust.LimitToTerminalVelocity = v);
-            AddToggleItem(menu, "Limit Acceleration", () => mjCore.Thrust.LimitAcceleration, v => mjCore.Thrust.LimitAcceleration = v);
-            AddToggleItem(menu, "Limit Throttle", () => mjCore.Thrust.LimitThrottle, v => mjCore.Thrust.LimitThrottle = v);
+            AddToggleItem(menu, "Prevent Overheats", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToPreventOverheats);
+            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitDynamicPressure);
+            AddToggleItem(menu, "Limit to Terminal Velocity", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToTerminalVelocity);
+            AddToggleItem(menu, "Limit Acceleration", mjCore.Thrust, MechJebProxy.f_Thrust_LimitAcceleration);
+            AddToggleItem(menu, "Limit Throttle", mjCore.Thrust, MechJebProxy.f_Thrust_LimitThrottle);
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Prevent Flameout", () => mjCore.Thrust.LimitToPreventFlameout, v => mjCore.Thrust.LimitToPreventFlameout = v);
+            AddToggleItem(menu, "Prevent Flameout", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToPreventFlameout);
             AddNumericItem(menu, "Flameout Safety", mjCore.Thrust.FlameoutSafetyPct,
                 1.0, v => v.ToString("F0") + "%", null, true, 0, true, 100);
-            AddToggleItem(menu, "Smooth Throttle", () => mjCore.Thrust.SmoothThrottle, v => mjCore.Thrust.SmoothThrottle = v);
-            AddToggleItem(menu, "Manage Intakes", () => mjCore.Thrust.ManageIntakes, v => mjCore.Thrust.ManageIntakes = v);
-            AddToggleItem(menu, "Differential Throttle", () => mjCore.Thrust.DifferentialThrottle, v => mjCore.Thrust.DifferentialThrottle = v);
+            AddToggleItem(menu, "Smooth Throttle", mjCore.Thrust, MechJebProxy.f_Thrust_SmoothThrottle);
+            AddToggleItem(menu, "Manage Intakes", mjCore.Thrust, MechJebProxy.f_Thrust_ManageIntakes);
+            AddToggleItem(menu, "Differential Throttle", mjCore.Thrust, MechJebProxy.f_Thrust_DifferentialThrottle);
 
             AddMenuItem(menu, "------", null);
 
@@ -2058,16 +2064,24 @@ namespace JSI
                 mjRendezvousAutopilot = null;
                 mjTranslatron = null;
                 mjSpacePlaneAutopilot = null;
+                mjLandingPredictions = null;
+                mjLandingGuidance = null;
+                mjWarpController = null;
+                mjStageStats = null;
 
 				activeVessel = vessel;
                 mjCore = vessel.GetMasterMechJeb();
                 if (mjCore != null)
                 {
                     mjSmartASS = mjCore.GetComputerModule<MechJebModuleSmartASS>();
-                    mjDockingAutoPilot = mjCore.GetComputerModule<MechJebModuleDockingAutopilot>();
-					mjRendezvousAutopilot = mjCore.GetComputerModule<MechJebModuleRendezvousAutopilot>();
-                    mjTranslatron = mjCore.GetComputerModule<MechJebModuleTranslatron>();
+                    mjDockingAutoPilot = mjDockingAutoPilot;
+					mjRendezvousAutopilot = mjRendezvousAutopilot;
+                    mjTranslatron = mjTranslatron;
                     mjSpacePlaneAutopilot = mjCore.GetComputerModule<MechJebModuleSpaceplaneAutopilot>();
+                    mjLandingPredictions = mjLandingPredictions;
+                    mjLandingGuidance = mjLandingGuidance;
+                    mjWarpController = mjWarpController;
+                    mjStageStats = mjStageStats;
 				}
             }
 
@@ -2083,7 +2097,7 @@ namespace JSI
             double ut = Planetarium.GetUniversalTime();
             if (ut - lastStageStatsUpdateUT > 1.0)
             {
-                mjCore.GetComputerModule<MechJebModuleStageStats>()?.RequestUpdate();
+                mjStageStats?.RequestUpdate();
                 lastStageStatsUpdateUT = ut;
             }
         }
@@ -2163,14 +2177,14 @@ namespace JSI
         {
             if (vessel == null) return;
             double ut = vessel.orbit.NextApoapsisTime(Planetarium.GetUniversalTime());
-            mjCore.GetComputerModule<MechJebModuleWarpController>()?.WarpToUT(ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToPeriapsis()
         {
             if (vessel == null) return;
             double ut = vessel.orbit.NextPeriapsisTime(Planetarium.GetUniversalTime());
-            mjCore.GetComputerModule<MechJebModuleWarpController>()?.WarpToUT(ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToNode()
@@ -2178,7 +2192,7 @@ namespace JSI
             if (vessel == null || vessel.patchedConicSolver == null) return;
             if (vessel.patchedConicSolver.maneuverNodes.Count == 0) return;
             double ut = vessel.patchedConicSolver.maneuverNodes[0].UT;
-            mjCore.GetComputerModule<MechJebModuleWarpController>()?.WarpToUT(ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToSOI()
@@ -2186,14 +2200,14 @@ namespace JSI
             if (vessel == null) return;
             if (vessel.orbit.patchEndTransition == Orbit.PatchTransitionType.FINAL) return;
             double ut = vessel.orbit.EndUT;
-            mjCore.GetComputerModule<MechJebModuleWarpController>()?.WarpToUT(ut);
+            mjWarpController?.WarpToUT(ut);
         }
         #endregion
 
         #region Landing Prediction Helpers
         private string GetLandingPredLatitude(object core)
         {
-            var result = mjCore.GetComputerModule<MechJebModuleLandingPredictions>()?.Result;
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double lat, lon;
             { lat = result.EndPosition.Latitude; lon = result.EndPosition.Longitude; };
@@ -2202,7 +2216,7 @@ namespace JSI
 
         private string GetLandingPredLongitude(object core)
         {
-            var result = mjCore.GetComputerModule<MechJebModuleLandingPredictions>()?.Result;
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double lat, lon;
             { lat = result.EndPosition.Latitude; lon = result.EndPosition.Longitude; };
@@ -2211,7 +2225,7 @@ namespace JSI
 
         private string GetLandingPredTime(object core)
         {
-            var result = mjCore.GetComputerModule<MechJebModuleLandingPredictions>()?.Result;
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double ut = result.EndUT;
             double dt = ut - Planetarium.GetUniversalTime();
@@ -2220,7 +2234,7 @@ namespace JSI
 
         private string GetLandingPredGees(object core)
         {
-            var result = mjCore.GetComputerModule<MechJebModuleLandingPredictions>()?.Result;
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double gees = (result?.MaxDragGees ?? 0);
             return gees.ToString("F2");

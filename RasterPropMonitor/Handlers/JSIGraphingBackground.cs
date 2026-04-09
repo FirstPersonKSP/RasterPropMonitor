@@ -26,7 +26,7 @@ namespace JSI
 {
     // JSIGraphingBackground provides an editable / configurable way to render
     // one or more data in a graphical manner.
-    public class JSIGraphingBackground : InternalModule
+    class JSIGraphingBackground : InternalModule
     {
         [KSPField]
         public string layout = null;
