@@ -18,3 +18,5 @@ on:
 jobs:
   build:
     uses: KSPModdingLibs/KSPBuildTools/.github/workflows/build.yml@0.0.4
+    with:
+      use-ckan: true
