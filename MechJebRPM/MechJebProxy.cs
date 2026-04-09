@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 using MuMech;
 using MechJebLib.FuelFlowSimulation;
 using UnityEngine;
@@ -30,144 +29,20 @@ using UnityEngine;
 namespace JSI
 {
     /// <summary>
-    /// MechJebProxy provides a direct-access interface to MechJeb 2.15+.
-    /// Uses Krafs.Publicizer for compile-time access to MechJeb internals.
+    /// MechJebProxy handles MechJeb initialization, operation caching,
+    /// and complex multi-step MechJeb interactions.
+    /// Simple one-liner accessors are called directly on MJ types from MechJebRPM.
     /// </summary>
     public static class MechJebProxy
     {
-        #region Initialization State
+        #region Initialization
         private static bool initialized = false;
         private static bool mjAvailable = false;
         private static string initError = null;
 
         public static bool IsAvailable { get { return mjAvailable; } }
         public static string InitializationError { get { return initError; } }
-        #endregion
 
-        #region Operation Cache
-        public static OperationAdvancedTransfer OpAdvancedTransfer { get; private set; }
-        public static OperationCircularize OpCircularize { get; private set; }
-        public static OperationApoapsis OpChangeApoapsis { get; private set; }
-        public static OperationPeriapsis OpChangePeriapsis { get; private set; }
-        public static OperationSemiMajor OpChangeSemiMajorAxis { get; private set; }
-        public static OperationInclination OpChangeInclination { get; private set; }
-        public static OperationLan OpChangeLAN { get; private set; }
-        public static OperationGeneric OpGeneric { get; private set; }
-        public static OperationEllipticize OpEllipticize { get; private set; }
-        public static OperationEccentricity OpEccentricity { get; private set; }
-        public static OperationCourseCorrection OpCourseCorrection { get; private set; }
-        public static OperationLambert OpLambert { get; private set; }
-        public static OperationLongitude OpLongitude { get; private set; }
-        public static OperationResonantOrbit OpResonantOrbit { get; private set; }
-        public static OperationMoonReturn OpMoonReturn { get; private set; }
-        public static OperationInterplanetaryTransfer OpInterplanetaryTransfer { get; private set; }
-        public static OperationPlane OpMatchPlane { get; private set; }
-        public static OperationKillRelVel OpMatchVelocity { get; private set; }
-
-        private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
-        #endregion
-
-        #region Public Enum Copies
-
-        /// <summary>SmartASS mode categories</summary>
-        public enum Mode
-        {
-            ORBITAL = 0,
-            SURFACE = 1,
-            TARGET = 2,
-            ADVANCED = 3,
-            AUTO = 4,
-        }
-
-        /// <summary>Translatron modes</summary>
-        public enum TranslatronMode
-        {
-            OFF,
-            KEEP_OBT,
-            KEEP_SURF,
-            KEEP_VERT,
-            KEEP_REL,
-            DIRECT,
-        }
-
-        /// <summary>Mapping from Target to Mode</summary>
-        public static readonly Mode[] Target2Mode = new Mode[]
-        {
-            Mode.ORBITAL, // OFF
-            Mode.ORBITAL, // KILLROT
-            Mode.ORBITAL, // NODE
-            Mode.SURFACE, // SURFACE
-            Mode.ORBITAL, // PROGRADE
-            Mode.ORBITAL, // RETROGRADE
-            Mode.ORBITAL, // NORMAL_PLUS
-            Mode.ORBITAL, // NORMAL_MINUS
-            Mode.ORBITAL, // RADIAL_PLUS
-            Mode.ORBITAL, // RADIAL_MINUS
-            Mode.TARGET,  // RELATIVE_PLUS
-            Mode.TARGET,  // RELATIVE_MINUS
-            Mode.TARGET,  // TARGET_PLUS
-            Mode.TARGET,  // TARGET_MINUS
-            Mode.TARGET,  // PARALLEL_PLUS
-            Mode.TARGET,  // PARALLEL_MINUS
-            Mode.ADVANCED,// ADVANCED
-            Mode.AUTO,    // AUTO
-            Mode.SURFACE, // SURFACE_PROGRADE
-            Mode.SURFACE, // SURFACE_RETROGRADE
-            Mode.SURFACE, // HORIZONTAL_PLUS
-            Mode.SURFACE, // HORIZONTAL_MINUS
-            Mode.SURFACE, // VERTICAL_PLUS
-        };
-
-        /// <summary>Display texts for modes</summary>
-        public static readonly string[] ModeTexts = new string[]
-        {
-            "OBT",
-            "SURF",
-            "TGT",
-            "ADV",
-            "AUTO",
-        };
-
-        /// <summary>Display texts for targets</summary>
-        public static readonly string[] TargetTexts = new string[]
-        {
-            "OFF",
-            "KILL\nROT",
-            "NODE",
-            "SURF",
-            "PRO\nGRAD",
-            "RETR\nGRAD",
-            "NML\n+",
-            "NML\n-",
-            "RAD\n+",
-            "RAD\n-",
-            "RVEL\n+",
-            "RVEL\n-",
-            "TGT\n+",
-            "TGT\n-",
-            "PAR\n+",
-            "PAR\n-",
-            "ADV",
-            "AUTO",
-            "SVEL\n+",
-            "SVEL\n-",
-            "HVEL\n+",
-            "HVEL\n-",
-            "UP",
-        };
-
-        /// <summary>Landing prediction outcomes</summary>
-        public enum LandingOutcome
-        {
-            LANDED,
-            AEROBRAKED,
-            TIMED_OUT,
-            NO_REENTRY,
-            ERROR
-        }
-        #endregion
-
-        #region Initialization
         public static void Initialize()
         {
             if (initialized) return;
@@ -175,7 +50,6 @@ namespace JSI
 
             try
             {
-                // Verify MechJeb is loaded
                 bool found = false;
                 foreach (AssemblyLoader.LoadedAssembly la in AssemblyLoader.loadedAssemblies)
                 {
@@ -192,7 +66,6 @@ namespace JSI
                     return;
                 }
 
-                // Cache operation instances
                 foreach (var op in Operation.GetAvailableOperations())
                 {
                     if (op is OperationAdvancedTransfer oat) OpAdvancedTransfer = oat;
@@ -228,171 +101,46 @@ namespace JSI
         }
         #endregion
 
-        #region Core Module Accessors
+        #region Operation Cache
+        public static OperationAdvancedTransfer OpAdvancedTransfer { get; private set; }
+        public static OperationCircularize OpCircularize { get; private set; }
+        public static OperationApoapsis OpChangeApoapsis { get; private set; }
+        public static OperationPeriapsis OpChangePeriapsis { get; private set; }
+        public static OperationSemiMajor OpChangeSemiMajorAxis { get; private set; }
+        public static OperationInclination OpChangeInclination { get; private set; }
+        public static OperationLan OpChangeLAN { get; private set; }
+        public static OperationGeneric OpGeneric { get; private set; }
+        public static OperationEllipticize OpEllipticize { get; private set; }
+        public static OperationEccentricity OpEccentricity { get; private set; }
+        public static OperationCourseCorrection OpCourseCorrection { get; private set; }
+        public static OperationLambert OpLambert { get; private set; }
+        public static OperationLongitude OpLongitude { get; private set; }
+        public static OperationResonantOrbit OpResonantOrbit { get; private set; }
+        public static OperationMoonReturn OpMoonReturn { get; private set; }
+        public static OperationInterplanetaryTransfer OpInterplanetaryTransfer { get; private set; }
+        public static OperationPlane OpMatchPlane { get; private set; }
+        public static OperationKillRelVel OpMatchVelocity { get; private set; }
 
-        public static MechJebModuleTargetController GetTargetController(MechJebCore core)
-        {
-            if (core == null) return null;
-            return core.Target;
-        }
+        private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
+        #endregion
 
-        public static MechJebModuleNodeExecutor GetNodeExecutor(MechJebCore core)
+        #region Enums
+        public enum TranslatronMode
         {
-            if (core == null) return null;
-            return core.Node;
-        }
-
-        public static MechJebModuleStagingController GetStagingController(MechJebCore core)
-        {
-            if (core == null) return null;
-            return core.Staging;
+            OFF,
+            KEEP_OBT,
+            KEEP_SURF,
+            KEEP_VERT,
+            KEEP_REL,
+            DIRECT,
         }
         #endregion
 
-        #region SmartASS Methods
-
-        public static string GetSmartASSAdvancedReferenceName(MechJebModuleSmartASS smartass)
-        {
-            if (smartass == null) return "N/A";
-            return smartass.advReference.ToString();
-        }
-
-        public static void CycleSmartASSAdvancedReference(MechJebModuleSmartASS smartass, int direction)
-        {
-            if (smartass == null) return;
-            var values = (AttitudeReference[])Enum.GetValues(typeof(AttitudeReference));
-            int idx = Array.IndexOf(values, smartass.advReference);
-            if (idx < 0) idx = 0;
-            int next = (idx + direction + values.Length) % values.Length;
-            smartass.advReference = values[next];
-        }
-
-        public static string GetSmartASSAdvancedDirectionName(MechJebModuleSmartASS smartass)
-        {
-            if (smartass == null) return "N/A";
-            return smartass.advDirection.ToString();
-        }
-
-        public static void CycleSmartASSAdvancedDirection(MechJebModuleSmartASS smartass, int direction)
-        {
-            if (smartass == null) return;
-            var values = (Vector6.Direction[])Enum.GetValues(typeof(Vector6.Direction));
-            int idx = Array.IndexOf(values, smartass.advDirection);
-            if (idx < 0) idx = 0;
-            int next = (idx + direction + values.Length) % values.Length;
-            smartass.advDirection = values[next];
-        }
-        #endregion
-
-        #region Node Executor Methods
-
-        public static void ExecuteOneNode(MechJebCore core, object controller)
-        {
-            var node = GetNodeExecutor(core);
-            if (node == null) return;
-            node.ExecuteOneNode(controller);
-        }
-
-        public static void AbortNode(MechJebCore core)
-        {
-            var node = GetNodeExecutor(core);
-            if (node == null) return;
-            node.Abort();
-        }
-
-        public static bool IsNodeExecutorRunning(MechJebCore core)
-        {
-            var node = GetNodeExecutor(core);
-            return node != null && node.Enabled;
-        }
-
-        public static bool GetNodeAutowarp(MechJebCore core)
-        {
-            var node = GetNodeExecutor(core);
-            if (node == null) return false;
-            return node.Autowarp;
-        }
-
-        public static void SetNodeAutowarp(MechJebCore core, bool autowarp)
-        {
-            var node = GetNodeExecutor(core);
-            if (node == null) return;
-            node.Autowarp = autowarp;
-        }
-        #endregion
-
-        #region Target Controller Methods
-
-        public static bool PositionTargetExists(MechJebCore core)
-        {
-            var target = GetTargetController(core);
-            if (target == null) return false;
-            return target.PositionTargetExists;
-        }
-
-        public static double GetTargetLatitude(MechJebCore core)
-        {
-            return core.Target.targetLatitude;
-        }
-
-        public static double GetTargetLongitude(MechJebCore core)
-        {
-            return core.Target.targetLongitude;
-        }
-
-        public static void SetTargetLatitude(MechJebCore core, CelestialBody body, double latitude)
-        {
-            if (body == null) return;
-            double lon = GetTargetLongitude(core);
-            SetPositionTarget(core, body, latitude, lon);
-        }
-
-        public static void SetTargetLongitude(MechJebCore core, CelestialBody body, double longitude)
-        {
-            if (body == null) return;
-            double lat = GetTargetLatitude(core);
-            SetPositionTarget(core, body, lat, longitude);
-        }
-
-        public static void SetPositionTarget(MechJebCore core, CelestialBody body, double latitude, double longitude)
-        {
-            var target = GetTargetController(core);
-            if (target == null) return;
-            target.SetPositionTarget(body, latitude, longitude);
-        }
-
-        public static void PickPositionTargetOnMap(MechJebCore core)
-        {
-            var target = GetTargetController(core);
-            if (target == null) return;
-            target.PickPositionTargetOnMap();
-        }
-        #endregion
-
-        #region Ascent Methods
-
-        public static MechJebModuleAscentSettings GetAscentSettings(MechJebCore core)
-        {
-            if (core == null) return null;
-            return core.AscentSettings;
-        }
-
-        public static MechJebModuleAscentBaseAutopilot GetAscentAutopilot(MechJebCore core)
-        {
-            var settings = GetAscentSettings(core);
-            if (settings == null) return null;
-            return settings.AscentAutopilot;
-        }
-
-        public static bool IsAscentAutopilotEngaged(MechJebCore core)
-        {
-            var autopilot = GetAscentAutopilot(core);
-            return autopilot != null && autopilot.Enabled;
-        }
+        #region Autopilot Engagement
 
         public static void SetAscentAutopilotEngaged(MechJebCore core, bool engaged, object controller = null)
         {
-            var autopilot = GetAscentAutopilot(core);
+            var autopilot = core?.AscentSettings?.AscentAutopilot;
             if (autopilot == null) return;
 
             if (controller == null) controller = core;
@@ -403,233 +151,12 @@ namespace JSI
                 autopilot.Users.Remove(controller);
         }
 
-        public static bool GetAscentAutowarp(MechJebCore core)
-        {
-            return GetNodeAutowarp(core);
-        }
-
-        public static void SetAscentAutowarp(MechJebCore core, bool autowarp)
-        {
-            SetNodeAutowarp(core, autowarp);
-        }
-
-        public static bool GetAscentAutoPath(MechJebCore core)
-        {
-            var settings = GetAscentSettings(core);
-            if (settings == null) return false;
-            return settings.AutoPath;
-        }
-
-        public static bool GetAscentSkipCircularization(MechJebCore core)
-        {
-            var settings = GetAscentSettings(core);
-            if (settings == null) return false;
-            return settings.SkipCircularization;
-        }
-
-        public static void SetAscentSkipCircularization(MechJebCore core, bool value)
-        {
-            var settings = GetAscentSettings(core);
-            if (settings == null) return;
-            settings.SkipCircularization = value;
-        }
-        #endregion
-
-        #region Landing Methods
-
-        public static MechJebModuleLandingAutopilot GetLandingAutopilot(MechJebCore core)
-        {
-            return core.Landing;
-        }
-
-        public static MechJebModuleLandingPredictions GetLandingPredictions(MechJebCore core)
-        {
-            return core.GetComputerModule<MechJebModuleLandingPredictions>();
-        }
-
-        public static void LandAtPositionTarget(MechJebCore core, object controller = null)
-        {
-            var landing = GetLandingAutopilot(core);
-            if (landing == null) return;
-            if (controller == null) controller = core.GetComputerModule<MechJebModuleLandingGuidance>();
-            landing.LandAtPositionTarget(controller);
-        }
-
-        public static void LandUntargeted(MechJebCore core, object controller = null)
-        {
-            var landing = GetLandingAutopilot(core);
-            if (landing == null) return;
-            if (controller == null) controller = core.GetComputerModule<MechJebModuleLandingGuidance>();
-            landing.LandUntargeted(controller);
-        }
-
-        public static void StopLanding(MechJebCore core)
-        {
-            var landing = GetLandingAutopilot(core);
-            if (landing == null) return;
-            landing.StopLanding();
-        }
-
-        public static bool IsLandingAutopilotEngaged(MechJebCore core)
-        {
-            var landing = GetLandingAutopilot(core);
-            return landing != null && landing.Enabled;
-        }
-
-        public static ReentrySimulation.Result GetLandingPredictionResult(MechJebCore core)
-        {
-            var predictions = GetLandingPredictions(core);
-            if (predictions == null) return null;
-            return predictions.Result;
-        }
-
-        public static void GetLandingEndPosition(ReentrySimulation.Result result, out double latitude, out double longitude)
-        {
-            latitude = result.EndPosition.Latitude;
-            longitude = result.EndPosition.Longitude;
-        }
-
-        public static double GetLandingEndUT(ReentrySimulation.Result result)
-        {
-            return result.EndUT;
-        }
-
-        public static double GetLandingMaxDragGees(ReentrySimulation.Result result)
-        {
-            if (result == null) return 0;
-            return result.MaxDragGees;
-        }
-
-        public static bool GetLandingShowTrajectory(MechJebCore core)
-        {
-            var predictions = GetLandingPredictions(core);
-            if (predictions == null) return false;
-            return predictions.showTrajectory;
-        }
-
-        public static void SetLandingShowTrajectory(MechJebCore core, bool show)
-        {
-            var predictions = GetLandingPredictions(core);
-            if (predictions == null) return;
-            predictions.showTrajectory = show;
-        }
-        #endregion
-
-        #region Stage Stats Methods
-
-        public static MechJebModuleStageStats GetStageStats(MechJebCore core)
-        {
-            if (core == null) return null;
-            return core.GetComputerModule<MechJebModuleStageStats>();
-        }
-
-        public static void RequestStageStatsUpdate(MechJebCore core, object controller = null)
-        {
-            var stats = GetStageStats(core);
-            if (stats == null) return;
-            stats.RequestUpdate();
-        }
-
-        public static List<FuelStats> GetVacuumStageStats(MechJebCore core)
-        {
-            var stats = GetStageStats(core);
-            if (stats == null) return null;
-            return stats.VacStats;
-        }
-
-        public static List<FuelStats> GetAtmoStageStats(MechJebCore core)
-        {
-            var stats = GetStageStats(core);
-            if (stats == null) return null;
-            return stats.AtmoStats;
-        }
-
-        public static double GetStageDeltaV(FuelStats fuelStats)
-        {
-            return fuelStats.DeltaV;
-        }
-
-        public static double GetTotalVacuumDeltaV(MechJebCore core)
-        {
-            var stats = GetVacuumStageStats(core);
-            if (stats == null) return 0;
-
-            double total = 0;
-            foreach (var stage in stats)
-                total += stage.DeltaV;
-            return total;
-        }
-
-        public static double GetTotalAtmoDeltaV(MechJebCore core)
-        {
-            var stats = GetAtmoStageStats(core);
-            if (stats == null) return 0;
-
-            double total = 0;
-            foreach (var stage in stats)
-                total += stage.DeltaV;
-            return total;
-        }
-        #endregion
-
-        #region Staging Controller Methods
-
-        public static void AutostageOnce(MechJebCore core, object controller = null)
-        {
-            var staging = GetStagingController(core);
-            if (staging == null) return;
-            staging.AutostageOnce(controller);
-        }
-        #endregion
-
-        #region Docking Methods
-
-        public static MechJebModuleDockingAutopilot GetDockingAutopilot(MechJebCore core)
-        {
-            return core.GetComputerModule<MechJebModuleDockingAutopilot>();
-        }
-
-        public static bool IsDockingAutopilotEngaged(MechJebCore core)
-        {
-            var docking = GetDockingAutopilot(core);
-            return docking != null && docking.Enabled;
-        }
-
-        public static void SetDockingAutopilotEngaged(MechJebCore core, bool engaged)
-        {
-            var docking = GetDockingAutopilot(core);
-            if (docking == null) return;
-            docking.Enabled = engaged;
-        }
-
-        public static string GetDockingStatus(MechJebCore core)
-        {
-            var docking = GetDockingAutopilot(core);
-            if (docking == null) return "";
-            return docking.status;
-        }
-        #endregion
-
-        #region Rendezvous Methods
-
-        public static MechJebModuleRendezvousAutopilot GetRendezvousAutopilot(MechJebCore core)
-        {
-            return core.GetComputerModule<MechJebModuleRendezvousAutopilot>();
-        }
-
-        public static bool IsRendezvousAutopilotEngaged(MechJebCore core)
-        {
-            var rendezvous = GetRendezvousAutopilot(core);
-            return rendezvous != null && rendezvous.Enabled;
-        }
-
         public static void SetRendezvousAutopilotEngaged(MechJebCore core, bool engaged, object controller = null)
         {
-            var rendezvous = GetRendezvousAutopilot(core);
+            var rendezvous = core?.GetComputerModule<MechJebModuleRendezvousAutopilot>();
             if (rendezvous == null) return;
 
             if (controller == null) controller = core.GetComputerModule<MechJebModuleRendezvousAutopilotWindow>();
-
             if (controller == null) return;
 
             if (engaged)
@@ -638,116 +165,46 @@ namespace JSI
                 rendezvous.Users.Remove(controller);
         }
 
-        public static string GetRendezvousStatus(MechJebCore core)
-        {
-            var rendezvous = GetRendezvousAutopilot(core);
-            if (rendezvous == null) return "";
-            return rendezvous.status;
-        }
-        #endregion
-
-        #region Translatron Methods
-
-        public static MechJebModuleTranslatron GetTranslatron(MechJebCore core)
-        {
-            return core.GetComputerModule<MechJebModuleTranslatron>();
-        }
-
         public static void SetTranslatronMode(MechJebCore core, TranslatronMode mode)
         {
-            var translatron = GetTranslatron(core);
+            var translatron = core?.GetComputerModule<MechJebModuleTranslatron>();
             if (translatron == null) return;
             translatron.SetMode((MechJebModuleThrustController.TMode)(int)mode);
         }
+        #endregion
 
-        public static bool GetTranslatronKillH(MechJebCore core)
+        #region Stage Stats
+
+        public static List<FuelStats> GetVacuumStageStats(MechJebCore core)
         {
-            if (core == null) return false;
-            return core.Thrust.TransKillH;
+            return core?.GetComputerModule<MechJebModuleStageStats>()?.VacStats;
         }
 
-        public static void SetTranslatronKillH(MechJebCore core, bool killH)
+        public static List<FuelStats> GetAtmoStageStats(MechJebCore core)
         {
-            if (core == null) return;
-            core.Thrust.TransKillH = killH;
+            return core?.GetComputerModule<MechJebModuleStageStats>()?.AtmoStats;
         }
 
-        public static void PanicSwitch(MechJebCore core)
+        public static double GetTotalVacuumDeltaV(MechJebCore core)
         {
-            var translatron = GetTranslatron(core);
-            if (translatron == null) return;
-            translatron.PanicSwitch();
+            var stats = GetVacuumStageStats(core);
+            if (stats == null) return 0;
+            double total = 0;
+            foreach (var stage in stats) total += stage.DeltaV;
+            return total;
+        }
+
+        public static double GetTotalAtmoDeltaV(MechJebCore core)
+        {
+            var stats = GetAtmoStageStats(core);
+            if (stats == null) return 0;
+            double total = 0;
+            foreach (var stage in stats) total += stage.DeltaV;
+            return total;
         }
         #endregion
 
-        #region Rover Methods
-
-        public static void DriveToTarget(MechJebCore core)
-        {
-            var rover = core.Rover;
-            if (rover == null) return;
-            rover.ControlHeading = true;
-            rover.ControlSpeed = true;
-        }
-
-        public static void StopRover(MechJebCore core)
-        {
-            var rover = core.Rover;
-            if (rover == null) return;
-            rover.ControlHeading = false;
-            rover.ControlSpeed = false;
-        }
-
-        public static void AddRoverWaypointAtCurrentPosition(MechJebCore core, Vessel vessel)
-        {
-            var rover = core.Rover;
-            if (rover == null || vessel == null) return;
-            rover.Waypoints.Add(new MechJebWaypoint(vessel.latitude, vessel.longitude));
-        }
-
-        public static void ClearRoverWaypoints(MechJebCore core)
-        {
-            var rover = core.Rover;
-            if (rover == null) return;
-            rover.Waypoints.Clear();
-        }
-        #endregion
-
-        #region Spaceplane Autopilot Methods
-
-        public static void SpaceplaneHoldHeadingAndAltitude(MechJebModuleSpaceplaneAutopilot sp)
-        {
-            if (sp == null) return;
-            var airplane = sp.Autopilot;
-            if (airplane == null) return;
-            airplane.HeadingHoldEnabled = true;
-            airplane.AltitudeHoldEnabled = true;
-        }
-        #endregion
-
-        #region Warp Methods
-
-        public static MechJebModuleWarpController GetWarpController(MechJebCore core)
-        {
-            if (core == null) return null;
-            return core.GetComputerModule<MechJebModuleWarpController>();
-        }
-
-        public static void WarpToUT(MechJebCore core, double ut)
-        {
-            var warp = GetWarpController(core);
-            if (warp == null) return;
-            warp.WarpToUT(ut);
-        }
-        #endregion
-
-        #region Maneuver Calculator Methods
-
-        public static void PlaceManeuverNode(Vessel vessel, Orbit orbit, Vector3d dV, double UT)
-        {
-            if (vessel == null) return;
-            vessel.PlaceManeuverNode(orbit, dV, UT);
-        }
+        #region Advanced Transfer
 
         public static void StartAdvancedTransferCompute(OperationAdvancedTransfer operation, Orbit orbit, double ut, MechJebModuleTargetController targetController)
         {
@@ -826,19 +283,19 @@ namespace JSI
 
             return true;
         }
+        #endregion
+
+        #region Operation Execution
 
         public static bool CreateNodesFromOperation(Operation operation, Orbit orbit, double ut, MechJebModuleTargetController targetController, Vessel vessel)
         {
             if (operation == null || vessel == null) return false;
 
-            // For AdvancedTransfer, ensure lastTargetCelestial is set
             if (operation is OperationAdvancedTransfer advTransfer)
             {
                 CelestialBody targetBody = FlightGlobals.fetch.VesselTarget as CelestialBody;
                 if (targetBody != null)
-                {
                     advTransfer.lastTargetCelestial = targetBody;
-                }
             }
 
             var nodes = operation.MakeNodes(orbit, ut, targetController);
@@ -847,36 +304,24 @@ namespace JSI
             foreach (var node in nodes)
             {
                 if (node == null) continue;
-                PlaceManeuverNode(vessel, orbit, node.dV, node.UT);
+                vessel.PlaceManeuverNode(orbit, node.dV, node.UT);
             }
 
             return true;
         }
 
-        public static Operation GetOperationByName(string name)
+        public static bool ExecuteOperation(Operation operation, MechJebCore core, Vessel vessel)
         {
-            return operationsByName.GetValueOrDefault(name);
+            if (operation == null || core == null || vessel == null) return false;
+            return CreateNodesFromOperation(operation, vessel.orbit, Planetarium.GetUniversalTime(), core.Target, vessel);
         }
 
         public static TimeSelector GetTimeSelector(this Operation operation)
         {
-            Type opType = operation.GetType();
-            FieldInfo field = opType.GetField("_timeSelector",
+            FieldInfo field = operation.GetType().GetField("_timeSelector",
                 BindingFlags.NonPublic | BindingFlags.Static);
             if (field == null) return null;
-
             return field.GetValue(null) as TimeSelector;
-        }
-
-        public static bool ExecuteOperation(Operation operation, MechJebCore core, Vessel vessel)
-        {
-            if (operation == null || core == null || vessel == null) return false;
-
-            Orbit orbit = vessel.orbit;
-            double ut = Planetarium.GetUniversalTime();
-            var targetController = GetTargetController(core);
-
-            return CreateNodesFromOperation(operation, orbit, ut, targetController, vessel);
         }
         #endregion
     }
