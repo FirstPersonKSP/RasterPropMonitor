@@ -103,11 +103,21 @@ namespace JSI
         // Menu stacks for navigation
         private Stack<TextMenu> menuStack = new Stack<TextMenu>();
         
-        // Tracked menu items that need dynamic state updates
-        private List<TrackedMenuItem> trackedItems = new List<TrackedMenuItem>();
+        // Tracked menu items that need dynamic state updates, keyed by menu
+        private Dictionary<TextMenu, List<TrackedMenuItem>> trackedItemsByMenu = new Dictionary<TextMenu, List<TrackedMenuItem>>();
         #endregion
 
         #region Tracked Item Classes
+        private List<TrackedMenuItem> GetTrackedItems(TextMenu menu)
+        {
+            if (!trackedItemsByMenu.TryGetValue(menu, out var list))
+            {
+                list = new List<TrackedMenuItem>();
+                trackedItemsByMenu[menu] = list;
+            }
+            return list;
+        }
+
         private class TrackedMenuItem
         {
             public TextMenu.Item item;
@@ -186,7 +196,7 @@ namespace JSI
             
             if (enabledCheck != null)
             {
-                trackedItems.Add(new TrackedMenuItem
+                GetTrackedItems(menu).Add(new TrackedMenuItem
                 {
                     item = newItem,
                     id = label,
@@ -209,7 +219,7 @@ namespace JSI
             var newItem = new TextMenu.Item(initialLabel, menuAction);
             menu.Add(newItem);
             
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = newItem,
                 id = "DynamicLabel_" + initialLabel,
@@ -235,7 +245,7 @@ namespace JSI
             var newItem = new TextMenu.Item(label, toggleAction);
             menu.Add(newItem);
 
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = newItem,
                 id = label,
@@ -267,7 +277,7 @@ namespace JSI
             var newItem = new TextMenu.Item(label, editAction);
             menu.Add(newItem);
 
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = newItem,
                 id = label,
@@ -292,7 +302,7 @@ namespace JSI
             var newItem = new TextMenu.Item(label, editAction);
             menu.Add(newItem);
 
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = newItem,
                 id = label,
@@ -463,7 +473,7 @@ namespace JSI
             AddMenuItem(menu, "Set ADVANCED Mode", () => SetSmartASSTarget(MechJebModuleSmartASS.Target.ADVANCED));
             var refItem = new TextMenu.Item("Reference: [ORBIT]", (idx, item) => CycleSmartASSAdvancedReference(1));
             menu.Add(refItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = refItem,
                 id = "SmartASSAdvReference",
@@ -473,7 +483,7 @@ namespace JSI
 
             var dirItem = new TextMenu.Item("Direction: [FORWARD]", (idx, item) => CycleSmartASSAdvancedDirection(1));
             menu.Add(dirItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = dirItem,
                 id = "SmartASSAdvDirection",
@@ -773,28 +783,28 @@ namespace JSI
             menu.Add(timeItem);
             menu.Add(geesItem);
 
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = latItem,
                 id = "LandingPredLat",
                 isEnabled = null,
                 getLabel = () => "  Lat: " + GetLandingPredLatitude()
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = lonItem,
                 id = "LandingPredLon",
                 isEnabled = null,
                 getLabel = () => "  Lon: " + GetLandingPredLongitude()
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = timeItem,
                 id = "LandingPredTime",
                 isEnabled = null,
                 getLabel = () => "  Time: " + GetLandingPredTime()
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = geesItem,
                 id = "LandingPredGees",
@@ -1040,11 +1050,11 @@ namespace JSI
             // Rendezvous vs Transfer radio buttons - use isSelected for green highlighting
             var rendezvousItem = new TextMenu.Item("Rendezvous", (idx, item) => op.Rendezvous = true);
             menu.Add(rendezvousItem);
-            trackedItems.Add(new TrackedMenuItem { item = rendezvousItem, id = "HohmannRendezvous", isSelected = () => op.Rendezvous });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = rendezvousItem, id = "HohmannRendezvous", isSelected = () => op.Rendezvous });
             
             var transferItem = new TextMenu.Item("Transfer", (idx, item) => MechJebProxy.OpGeneric.Rendezvous = false);
             menu.Add(transferItem);
-            trackedItems.Add(new TrackedMenuItem { item = transferItem, id = "HohmannTransfer", isSelected = () => !op.Rendezvous });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = transferItem, id = "HohmannTransfer", isSelected = () => !op.Rendezvous });
 
             // Rendezvous time offset (LagTime in seconds)
             AddNumericItem(menu, "rendezvous time offset", op.LagTime,
@@ -1134,7 +1144,7 @@ namespace JSI
             // Status display - shows computation progress/ready status
             var statusItem = new TextMenu.Item("Status: ---", null);
             menu.Add(statusItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = statusItem,
                 id = "AdvancedTransferStatus",
@@ -1145,7 +1155,7 @@ namespace JSI
             // ΔV display
             var dvItem = new TextMenu.Item("ΔV: ---", null);
             menu.Add(dvItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = dvItem,
                 id = "AdvancedTransferDV",
@@ -1168,16 +1178,16 @@ namespace JSI
             // Selection mode - Lowest ΔV vs ASAP - use isSelected for green highlighting
             var lowestDVItem = new TextMenu.Item("Lowest ΔV", (idx, item) => { advancedTransferSelectLowestDV = true; SelectAdvancedTransferLowestDV(); });
             menu.Add(lowestDVItem);
-            trackedItems.Add(new TrackedMenuItem { item = lowestDVItem, id = "AdvTransferLowestDV", isSelected = () => advancedTransferSelectLowestDV });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = lowestDVItem, id = "AdvTransferLowestDV", isSelected = () => advancedTransferSelectLowestDV });
             
             var asapItem = new TextMenu.Item("ASAP", (idx, item) => { advancedTransferSelectLowestDV = false; SelectAdvancedTransferASAP(); });
             menu.Add(asapItem);
-            trackedItems.Add(new TrackedMenuItem { item = asapItem, id = "AdvTransferASAP", isSelected = () => !advancedTransferSelectLowestDV });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = asapItem, id = "AdvTransferASAP", isSelected = () => !advancedTransferSelectLowestDV });
 
             // Departure info
             var departureItem = new TextMenu.Item("Departure: ---", null);
             menu.Add(departureItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = departureItem,
                 id = "AdvancedTransferDeparture",
@@ -1188,7 +1198,7 @@ namespace JSI
             // Transit duration
             var transitItem = new TextMenu.Item("Transit: ---", null);
             menu.Add(transitItem);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = transitItem,
                 id = "AdvancedTransferTransit",
@@ -1402,7 +1412,7 @@ namespace JSI
             AddMenuItem(menu, "-- RENDEZVOUS INFO --", null);
             var rendezvousStatus = new TextMenu.Item("Status: ---", null);
             menu.Add(rendezvousStatus);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = rendezvousStatus,
                 id = "RendezvousStatus",
@@ -1458,7 +1468,7 @@ namespace JSI
             AddMenuItem(menu, "Status:", null);
             var dockingStatus = new TextMenu.Item("  ---", null);
             menu.Add(dockingStatus);
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = dockingStatus,
                 id = "DockingStatus",
@@ -1691,28 +1701,28 @@ namespace JSI
             menu.Add(stageAtmItem);
             menu.Add(totalAtmItem);
 
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = stageVacItem,
                 id = "StageDVVac",
                 isEnabled = null,
                 getLabel = () => "Stage dV (Vac): " + GetStageDeltaVText(mjCore, true)
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = totalVacItem,
                 id = "TotalDVVac",
                 isEnabled = null,
                 getLabel = () => "Total dV (Vac): " + FormatDeltaV(MechJebProxy.GetTotalVacuumDeltaV(mjCore))
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = stageAtmItem,
                 id = "StageDVAtm",
                 isEnabled = null,
                 getLabel = () => "Stage dV (Atm): " + GetStageDeltaVText(mjCore, false)
             });
-            trackedItems.Add(new TrackedMenuItem
+            GetTrackedItems(menu).Add(new TrackedMenuItem
             {
                 item = totalAtmItem,
                 id = "TotalDVAtm",
@@ -1824,15 +1834,15 @@ namespace JSI
             menu.Add(tApItem);
             menu.Add(tPeItem);
 
-            trackedItems.Add(new TrackedMenuItem { item = apItem, id = "OrbitAp", isEnabled = null, getLabel = () => "Apoapsis: " + FormatDistance(vessel != null ? vessel.orbit.ApA : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = peItem, id = "OrbitPe", isEnabled = null, getLabel = () => "Periapsis: " + FormatDistance(vessel != null ? vessel.orbit.PeA : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = eccItem, id = "OrbitEcc", isEnabled = null, getLabel = () => "Eccentricity: " + (vessel != null ? vessel.orbit.eccentricity.ToString("F4") : "---") });
-            trackedItems.Add(new TrackedMenuItem { item = incItem, id = "OrbitInc", isEnabled = null, getLabel = () => "Inclination: " + FormatAngle(vessel != null ? vessel.orbit.inclination : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = lanItem, id = "OrbitLAN", isEnabled = null, getLabel = () => "LAN: " + FormatAngle(vessel != null ? vessel.orbit.LAN : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = argPeItem, id = "OrbitArgPe", isEnabled = null, getLabel = () => "Arg. of PE: " + FormatAngle(vessel != null ? vessel.orbit.argumentOfPeriapsis : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = periodItem, id = "OrbitPeriod", isEnabled = null, getLabel = () => "Period: " + FormatTime(vessel != null ? vessel.orbit.period : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = tApItem, id = "OrbitTAP", isEnabled = null, getLabel = () => "Time to AP: " + FormatTime(GetTimeToApoapsis()) });
-            trackedItems.Add(new TrackedMenuItem { item = tPeItem, id = "OrbitTPE", isEnabled = null, getLabel = () => "Time to PE: " + FormatTime(GetTimeToPeriapsis()) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = apItem, id = "OrbitAp", isEnabled = null, getLabel = () => "Apoapsis: " + FormatDistance(vessel != null ? vessel.orbit.ApA : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = peItem, id = "OrbitPe", isEnabled = null, getLabel = () => "Periapsis: " + FormatDistance(vessel != null ? vessel.orbit.PeA : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = eccItem, id = "OrbitEcc", isEnabled = null, getLabel = () => "Eccentricity: " + (vessel != null ? vessel.orbit.eccentricity.ToString("F4") : "---") });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = incItem, id = "OrbitInc", isEnabled = null, getLabel = () => "Inclination: " + FormatAngle(vessel != null ? vessel.orbit.inclination : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = lanItem, id = "OrbitLAN", isEnabled = null, getLabel = () => "LAN: " + FormatAngle(vessel != null ? vessel.orbit.LAN : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = argPeItem, id = "OrbitArgPe", isEnabled = null, getLabel = () => "Arg. of PE: " + FormatAngle(vessel != null ? vessel.orbit.argumentOfPeriapsis : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = periodItem, id = "OrbitPeriod", isEnabled = null, getLabel = () => "Period: " + FormatTime(vessel != null ? vessel.orbit.period : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = tApItem, id = "OrbitTAP", isEnabled = null, getLabel = () => "Time to AP: " + FormatTime(GetTimeToApoapsis()) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = tPeItem, id = "OrbitTPE", isEnabled = null, getLabel = () => "Time to PE: " + FormatTime(GetTimeToPeriapsis()) });
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
             return menu;
@@ -1861,14 +1871,14 @@ namespace JSI
             menu.Add(horizSpdItem);
             menu.Add(headingItem);
 
-            trackedItems.Add(new TrackedMenuItem { item = altAslItem, id = "SurfAltASL", isEnabled = null, getLabel = () => "Altitude (ASL): " + FormatDistance(vessel != null ? vessel.altitude : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = altAglItem, id = "SurfAltAGL", isEnabled = null, getLabel = () => "Altitude (AGL): " + FormatDistance(vessel != null ? vessel.radarAltitude : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = latItem, id = "SurfLat", isEnabled = null, getLabel = () => "Latitude: " + FormatAngle(vessel != null ? vessel.latitude : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = lonItem, id = "SurfLon", isEnabled = null, getLabel = () => "Longitude: " + FormatAngle(vessel != null ? vessel.longitude : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = srfSpdItem, id = "SurfSpd", isEnabled = null, getLabel = () => "Surface Speed: " + FormatSpeed(vessel != null ? vessel.srfSpeed : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = vertSpdItem, id = "VertSpd", isEnabled = null, getLabel = () => "Vertical Speed: " + FormatSpeed(vessel != null ? vessel.verticalSpeed : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = horizSpdItem, id = "HorizSpd", isEnabled = null, getLabel = () => "Horizontal Speed: " + FormatSpeed(vessel != null ? vessel.horizontalSrfSpeed : 0) });
-            trackedItems.Add(new TrackedMenuItem { item = headingItem, id = "Heading", isEnabled = null, getLabel = () => "Heading: " + FormatAngle(GetSurfaceHeading()) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = altAslItem, id = "SurfAltASL", isEnabled = null, getLabel = () => "Altitude (ASL): " + FormatDistance(vessel != null ? vessel.altitude : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = altAglItem, id = "SurfAltAGL", isEnabled = null, getLabel = () => "Altitude (AGL): " + FormatDistance(vessel != null ? vessel.radarAltitude : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = latItem, id = "SurfLat", isEnabled = null, getLabel = () => "Latitude: " + FormatAngle(vessel != null ? vessel.latitude : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = lonItem, id = "SurfLon", isEnabled = null, getLabel = () => "Longitude: " + FormatAngle(vessel != null ? vessel.longitude : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = srfSpdItem, id = "SurfSpd", isEnabled = null, getLabel = () => "Surface Speed: " + FormatSpeed(vessel != null ? vessel.srfSpeed : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = vertSpdItem, id = "VertSpd", isEnabled = null, getLabel = () => "Vertical Speed: " + FormatSpeed(vessel != null ? vessel.verticalSpeed : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = horizSpdItem, id = "HorizSpd", isEnabled = null, getLabel = () => "Horizontal Speed: " + FormatSpeed(vessel != null ? vessel.horizontalSrfSpeed : 0) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = headingItem, id = "Heading", isEnabled = null, getLabel = () => "Heading: " + FormatAngle(GetSurfaceHeading()) });
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
             return menu;
@@ -1891,11 +1901,11 @@ namespace JSI
             menu.Add(tcaItem);
             menu.Add(relIncItem);
 
-            trackedItems.Add(new TrackedMenuItem { item = distItem, id = "TgtDist", isEnabled = null, getLabel = () => "Distance: " + GetTargetDistanceText() });
-            trackedItems.Add(new TrackedMenuItem { item = relVelItem, id = "TgtRelVel", isEnabled = null, getLabel = () => "Relative Velocity: " + GetTargetRelVelText() });
-            trackedItems.Add(new TrackedMenuItem { item = caItem, id = "TgtCA", isEnabled = null, getLabel = () => "Closest Approach: " + GetTargetClosestApproachText() });
-            trackedItems.Add(new TrackedMenuItem { item = tcaItem, id = "TgtTCA", isEnabled = null, getLabel = () => "Time to Closest: " + GetTargetTimeToClosestText() });
-            trackedItems.Add(new TrackedMenuItem { item = relIncItem, id = "TgtRelInc", isEnabled = null, getLabel = () => "Rel Inclination: " + GetTargetRelInclinationText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = distItem, id = "TgtDist", isEnabled = null, getLabel = () => "Distance: " + GetTargetDistanceText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = relVelItem, id = "TgtRelVel", isEnabled = null, getLabel = () => "Relative Velocity: " + GetTargetRelVelText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = caItem, id = "TgtCA", isEnabled = null, getLabel = () => "Closest Approach: " + GetTargetClosestApproachText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = tcaItem, id = "TgtTCA", isEnabled = null, getLabel = () => "Time to Closest: " + GetTargetTimeToClosestText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = relIncItem, id = "TgtRelInc", isEnabled = null, getLabel = () => "Rel Inclination: " + GetTargetRelInclinationText() });
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
             return menu;
@@ -1920,12 +1930,12 @@ namespace JSI
             menu.Add(dvVacItem);
             menu.Add(dvAtmItem);
 
-            trackedItems.Add(new TrackedMenuItem { item = massItem, id = "VesselMass", isEnabled = null, getLabel = () => "Mass: " + GetVesselMassText() });
-            trackedItems.Add(new TrackedMenuItem { item = twrItem, id = "VesselTWR", isEnabled = null, getLabel = () => "TWR: " + GetVesselTwrText() });
-            trackedItems.Add(new TrackedMenuItem { item = maxThrustItem, id = "VesselMaxThrust", isEnabled = null, getLabel = () => "Max Thrust: " + GetVesselMaxThrustText() });
-            trackedItems.Add(new TrackedMenuItem { item = curThrustItem, id = "VesselCurThrust", isEnabled = null, getLabel = () => "Current Thrust: " + GetVesselCurrentThrustText() });
-            trackedItems.Add(new TrackedMenuItem { item = dvVacItem, id = "VesselDVVac", isEnabled = null, getLabel = () => "Total dV (Vac): " + FormatDeltaV(MechJebProxy.GetTotalVacuumDeltaV(mjCore)) });
-            trackedItems.Add(new TrackedMenuItem { item = dvAtmItem, id = "VesselDVAtm", isEnabled = null, getLabel = () => "Total dV (Atm): " + FormatDeltaV(MechJebProxy.GetTotalAtmoDeltaV(mjCore)) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = massItem, id = "VesselMass", isEnabled = null, getLabel = () => "Mass: " + GetVesselMassText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = twrItem, id = "VesselTWR", isEnabled = null, getLabel = () => "TWR: " + GetVesselTwrText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = maxThrustItem, id = "VesselMaxThrust", isEnabled = null, getLabel = () => "Max Thrust: " + GetVesselMaxThrustText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = curThrustItem, id = "VesselCurThrust", isEnabled = null, getLabel = () => "Current Thrust: " + GetVesselCurrentThrustText() });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = dvVacItem, id = "VesselDVVac", isEnabled = null, getLabel = () => "Total dV (Vac): " + FormatDeltaV(MechJebProxy.GetTotalVacuumDeltaV(mjCore)) });
+            GetTrackedItems(menu).Add(new TrackedMenuItem { item = dvAtmItem, id = "VesselDVAtm", isEnabled = null, getLabel = () => "Total dV (Atm): " + FormatDeltaV(MechJebProxy.GetTotalAtmoDeltaV(mjCore)) });
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
             return menu;
@@ -2043,7 +2053,9 @@ namespace JSI
                 return;
             }
 
-            // Update tracked items
+            if (!pageActiveState) return;
+
+            // Update tracked items for the current menu only
             UpdateTrackedItems();
 
             double ut = Planetarium.GetUniversalTime();
@@ -2056,9 +2068,11 @@ namespace JSI
 
         private void UpdateTrackedItems()
         {
-            if (mjCore == null) return;
+            if (mjCore == null || currentMenu == null) return;
 
-            foreach (var tracked in trackedItems)
+            if (!trackedItemsByMenu.TryGetValue(currentMenu, out var items)) return;
+
+            foreach (var tracked in items)
             {
                 try
                 {
@@ -2401,9 +2415,11 @@ namespace JSI
             TextMenu.Item currentItem = currentMenu.GetCurrentItem();
             if (currentItem == null) return;
 
-            for (int i = 0; i < trackedItems.Count; i++)
+            if (!trackedItemsByMenu.TryGetValue(currentMenu, out var currentItems)) return;
+
+            for (int i = 0; i < currentItems.Count; i++)
             {
-                TrackedMenuItem tracked = trackedItems[i];
+                TrackedMenuItem tracked = currentItems[i];
                 if (tracked.item == currentItem && tracked.isValueItem && tracked.getNumber != null && tracked.setNumber != null)
                 {
                     double current = tracked.getNumber();
