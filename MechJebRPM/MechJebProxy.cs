@@ -56,6 +56,8 @@ namespace JSI
         internal static FieldInfo f_Thrust_SmoothThrottle;
         internal static FieldInfo f_Thrust_ManageIntakes;
         internal static FieldInfo f_Thrust_DifferentialThrottle;
+        internal static FieldInfo f_Thrust_TransKillH;
+        internal static FieldInfo f_Node_Autowarp;
         internal static FieldInfo f_Staging_Autostage;
         internal static FieldInfo f_Staging_DropSolids;
         internal static FieldInfo f_Docking_ForceRoll;
@@ -126,8 +128,6 @@ namespace JSI
                     else if (op is OperationInterplanetaryTransfer oit) OpInterplanetaryTransfer = oit;
                     else if (op is OperationPlane opl) OpMatchPlane = opl;
                     else if (op is OperationKillRelVel okr) OpMatchVelocity = okr;
-
-                    operationsByName[op.GetName()] = op;
                 }
 
                 InitializeFieldInfoCache();
@@ -164,7 +164,9 @@ namespace JSI
             f_Thrust_SmoothThrottle = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.SmoothThrottle), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_ManageIntakes = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.ManageIntakes), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_DifferentialThrottle = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.DifferentialThrottle), BindingFlags.Public | BindingFlags.Instance);
-            f_Staging_Autostage = typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance);
+            f_Thrust_TransKillH = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.TransKillH), BindingFlags.Public | BindingFlags.Instance);
+			f_Node_Autowarp = typeof(MechJebModuleNodeExecutor).GetField(nameof(MechJebModuleNodeExecutor.Autowarp), BindingFlags.Public | BindingFlags.Instance);
+			f_Staging_Autostage = typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance);
             f_Staging_DropSolids = typeof(MechJebModuleStagingController).GetField(nameof(MechJebModuleStagingController.DropSolids), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_ForceRoll = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.forceRol), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_OverrideSafeDistance = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.overrideSafeDistance), BindingFlags.Public | BindingFlags.Instance);
@@ -202,20 +204,6 @@ namespace JSI
         public static OperationInterplanetaryTransfer OpInterplanetaryTransfer { get; private set; }
         public static OperationPlane OpMatchPlane { get; private set; }
         public static OperationKillRelVel OpMatchVelocity { get; private set; }
-
-        private static Dictionary<string, Operation> operationsByName = new Dictionary<string, Operation>();
-        #endregion
-
-        #region Enums
-        public enum TranslatronMode
-        {
-            OFF,
-            KEEP_OBT,
-            KEEP_SURF,
-            KEEP_VERT,
-            KEEP_REL,
-            DIRECT,
-        }
         #endregion
 
         #region Autopilot Engagement
@@ -247,29 +235,13 @@ namespace JSI
                 rendezvous.Users.Remove(controller);
         }
 
-        public static void SetTranslatronMode(MechJebCore core, TranslatronMode mode)
-        {
-            var translatron = core?.GetComputerModule<MechJebModuleTranslatron>();
-            if (translatron == null) return;
-            translatron.SetMode((MechJebModuleThrustController.TMode)(int)mode);
-        }
         #endregion
 
         #region Stage Stats
 
-        public static List<FuelStats> GetVacuumStageStats(MechJebCore core)
-        {
-            return core?.GetComputerModule<MechJebModuleStageStats>()?.VacStats;
-        }
-
-        public static List<FuelStats> GetAtmoStageStats(MechJebCore core)
-        {
-            return core?.GetComputerModule<MechJebModuleStageStats>()?.AtmoStats;
-        }
-
         public static double GetTotalVacuumDeltaV(MechJebCore core)
         {
-            var stats = GetVacuumStageStats(core);
+            var stats = core.StageStats.VacStats;
             if (stats == null) return 0;
             double total = 0;
             foreach (var stage in stats) total += stage.DeltaV;
@@ -278,7 +250,7 @@ namespace JSI
 
         public static double GetTotalAtmoDeltaV(MechJebCore core)
         {
-            var stats = GetAtmoStageStats(core);
+            var stats = core.StageStats.AtmoStats;
             if (stats == null) return 0;
             double total = 0;
             foreach (var stage in stats) total += stage.DeltaV;

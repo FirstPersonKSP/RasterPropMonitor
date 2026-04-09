@@ -154,7 +154,6 @@ namespace JSI
         // EditableDoubleMult
         private static readonly DynamicMethodDelegate setEditableDoubleMult;
         private static readonly DynamicFuncDouble getEditableDoubleMult;
-        private static readonly FieldInfo getEditableDoubleMultMultiplier;
 
         // EditableDouble
         // EditableDouble.val (set)
