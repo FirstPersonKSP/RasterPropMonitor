@@ -2440,7 +2440,7 @@ namespace JSI
             stringBuilder.Clear();
             stringBuilder.AppendLine(pageTitle);
             currentMenu.ShowMenu(stringBuilder, screenWidth, screenHeight - 1);
-            return currentMenu.ToString();
+            return stringBuilder.ToString();
         }
         #endregion
     }
