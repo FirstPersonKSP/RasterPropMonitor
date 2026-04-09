@@ -103,19 +103,17 @@ namespace JSI
         // Menu stacks for navigation
         private Stack<TextMenu> menuStack = new Stack<TextMenu>();
         
-        // Tracked menu items that need dynamic state updates, keyed by menu
-        private Dictionary<TextMenu, List<TrackedMenuItem>> trackedItemsByMenu = new Dictionary<TextMenu, List<TrackedMenuItem>>();
         #endregion
 
         #region Tracked Item Classes
-        private List<TrackedMenuItem> GetTrackedItems(TextMenu menu)
+        private class TrackedTextMenu : TextMenu
         {
-            if (!trackedItemsByMenu.TryGetValue(menu, out var list))
-            {
-                list = new List<TrackedMenuItem>();
-                trackedItemsByMenu[menu] = list;
-            }
-            return list;
+            public readonly List<TrackedMenuItem> trackedItems = new List<TrackedMenuItem>();
+        }
+
+        private static List<TrackedMenuItem> GetTrackedItems(TextMenu menu)
+        {
+            return (menu as TrackedTextMenu)?.trackedItems;
         }
 
         private class TrackedMenuItem
@@ -147,7 +145,7 @@ namespace JSI
 
         private void BuildMenus()
         {
-            topMenu = new TextMenu();
+            topMenu = new TrackedTextMenu();
             topMenu.labelColor = JUtil.ColorToColorTag(Color.white);
             topMenu.selectedColor = JUtil.ColorToColorTag(Color.green);
             topMenu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -369,7 +367,7 @@ namespace JSI
 		#region SmartASS Menu
 		private TextMenu BuildSmartASSMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -390,7 +388,7 @@ namespace JSI
 
         private TextMenu BuildSmartASSOrbitalMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -415,7 +413,7 @@ namespace JSI
 
         private TextMenu BuildSmartASSSurfaceMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -445,7 +443,7 @@ namespace JSI
 
         private TextMenu BuildSmartASSTargetMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -465,7 +463,7 @@ namespace JSI
 
         private TextMenu BuildSmartASSAdvancedMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -537,7 +535,7 @@ namespace JSI
         #region Ascent Menu
         private TextMenu BuildAscentMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -581,7 +579,7 @@ namespace JSI
 
         private TextMenu BuildAscentPathMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -623,13 +621,14 @@ namespace JSI
 
         private TextMenu BuildAscentStagingMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "Autostage",
-                mjCore.AscentSettings, MechJebProxy.f_Staging_Autostage);
+                () => mjCore.AscentSettings.Autostage,
+                (val) => mjCore.AscentSettings.Autostage = val);
             AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
 
@@ -653,7 +652,7 @@ namespace JSI
 
         private TextMenu BuildAscentLaunchMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -679,7 +678,7 @@ namespace JSI
 
         private TextMenu BuildAscentGuidanceMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -714,7 +713,7 @@ namespace JSI
         #region Landing Menu
         private TextMenu BuildLandingMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -764,7 +763,7 @@ namespace JSI
 
         private TextMenu BuildLandingPredictionsMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -824,7 +823,7 @@ namespace JSI
         // Menu matching IMGUI Maneuver Planner exactly
         private TextMenu BuildManeuverPlannerMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -943,7 +942,7 @@ namespace JSI
         /// </summary>
         private TextMenu BuildTimeSelectorAltitudeMenu(Operation op, int timeRefIndex)
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -970,7 +969,7 @@ namespace JSI
         /// </summary>
         private TextMenu BuildTimeSelectorLeadTimeMenu(Operation op, int timeRefIndex)
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1319,7 +1318,7 @@ namespace JSI
         #region Node Editor Menu
         private TextMenu BuildNodeEditorMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1385,7 +1384,7 @@ namespace JSI
         #region Rendezvous Menu
         private TextMenu BuildRendezvousMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1430,7 +1429,7 @@ namespace JSI
         #region Docking Menu
         private TextMenu BuildDockingMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1486,7 +1485,7 @@ namespace JSI
         #region Translatron Menu
         private TextMenu BuildTranslatronMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1518,7 +1517,7 @@ namespace JSI
         #region Rover Menu
         private TextMenu BuildRoverMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1555,7 +1554,7 @@ namespace JSI
 
         private TextMenu BuildRoverWaypointsMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1596,7 +1595,7 @@ namespace JSI
         #region Aircraft Menu
         private TextMenu BuildAircraftMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1649,7 +1648,7 @@ namespace JSI
         #region Spaceplane Menu
         private TextMenu BuildSpaceplaneMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
@@ -1677,13 +1676,14 @@ namespace JSI
         #region Utilities Menu
         private TextMenu BuildUtilitiesMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "Autostage",
-                mjCore.AscentSettings, MechJebProxy.f_Staging_Autostage);
+                () => mjCore.AscentSettings.Autostage,
+                (val) => mjCore.AscentSettings.Autostage = val);
             AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
             AddMenuItem(menu, "Stage Once", () => mjCore.Staging.AutostageOnce(null));
@@ -1742,7 +1742,7 @@ namespace JSI
 
         private TextMenu BuildAutostageOptionsMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1776,7 +1776,7 @@ namespace JSI
 
         private TextMenu BuildWarpHelperMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1795,7 +1795,7 @@ namespace JSI
         #region Info Display Menu
         private TextMenu BuildInfoMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1811,7 +1811,7 @@ namespace JSI
 
         private TextMenu BuildOrbitInfoMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1851,7 +1851,7 @@ namespace JSI
 
         private TextMenu BuildSurfaceInfoMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1887,7 +1887,7 @@ namespace JSI
 
         private TextMenu BuildTargetInfoMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1914,7 +1914,7 @@ namespace JSI
 
         private TextMenu BuildVesselInfoMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -1946,7 +1946,7 @@ namespace JSI
         #region Settings Menu
         private TextMenu BuildSettingsMenu()
         {
-            var menu = new TextMenu();
+            var menu = new TrackedTextMenu();
             menu.labelColor = JUtil.ColorToColorTag(Color.white);
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
 
@@ -2071,7 +2071,8 @@ namespace JSI
         {
             if (mjCore == null || currentMenu == null) return;
 
-            if (!trackedItemsByMenu.TryGetValue(currentMenu, out var items)) return;
+            var items = GetTrackedItems(currentMenu);
+            if (items == null) return;
 
             foreach (var tracked in items)
             {
@@ -2416,7 +2417,8 @@ namespace JSI
             TextMenu.Item currentItem = currentMenu.GetCurrentItem();
             if (currentItem == null) return;
 
-            if (!trackedItemsByMenu.TryGetValue(currentMenu, out var currentItems)) return;
+            var currentItems = GetTrackedItems(currentMenu);
+            if (currentItems == null) return;
 
             for (int i = 0; i < currentItems.Count; i++)
             {
