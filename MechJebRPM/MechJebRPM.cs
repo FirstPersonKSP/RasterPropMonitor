@@ -2074,14 +2074,14 @@ namespace JSI
                 if (mjCore != null)
                 {
                     mjSmartASS = mjCore.GetComputerModule<MechJebModuleSmartASS>();
-                    mjDockingAutoPilot = mjDockingAutoPilot;
-					mjRendezvousAutopilot = mjRendezvousAutopilot;
-                    mjTranslatron = mjTranslatron;
+                    mjDockingAutoPilot = mjCore.GetComputerModule<MechJebModuleDockingAutopilot>();
+					mjRendezvousAutopilot = mjCore.GetComputerModule<MechJebModuleRendezvousAutopilot>();
+                    mjTranslatron = mjCore.GetComputerModule<MechJebModuleTranslatron>();
                     mjSpacePlaneAutopilot = mjCore.GetComputerModule<MechJebModuleSpaceplaneAutopilot>();
-                    mjLandingPredictions = mjLandingPredictions;
-                    mjLandingGuidance = mjLandingGuidance;
-                    mjWarpController = mjWarpController;
-                    mjStageStats = mjStageStats;
+                    mjLandingPredictions = mjCore.GetComputerModule<MechJebModuleLandingPredictions>();
+                    mjLandingGuidance = mjCore.GetComputerModule<MechJebModuleLandingGuidance>();
+                    mjWarpController = mjCore.GetComputerModule<MechJebModuleWarpController>();
+                    mjStageStats = mjCore.GetComputerModule<MechJebModuleStageStats>();
 				}
             }
 
