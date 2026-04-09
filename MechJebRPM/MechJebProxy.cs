@@ -42,7 +42,6 @@ namespace JSI
         internal static FieldInfo f_Ascent_LimitAoA;
         internal static FieldInfo f_Ascent_CorrectiveSteering;
         internal static FieldInfo f_Ascent_AutoPath;
-        internal static FieldInfo f_Ascent_Autostage;
         internal static FieldInfo f_Landing_DeployGears;
         internal static FieldInfo f_Landing_DeployChutes;
         internal static FieldInfo f_Landing_UseRCS;
@@ -58,7 +57,6 @@ namespace JSI
         internal static FieldInfo f_Thrust_DifferentialThrottle;
         internal static FieldInfo f_Thrust_TransKillH;
         internal static FieldInfo f_Node_Autowarp;
-        internal static FieldInfo f_Staging_Autostage;
         internal static FieldInfo f_Staging_DropSolids;
         internal static FieldInfo f_Docking_ForceRoll;
         internal static FieldInfo f_Docking_OverrideSafeDistance;
@@ -150,7 +148,6 @@ namespace JSI
             f_Ascent_LimitAoA = typeof(MechJebModuleAscentSettings).GetField(nameof(MechJebModuleAscentSettings.LimitAoA), BindingFlags.Public | BindingFlags.Instance);
             f_Ascent_CorrectiveSteering = typeof(MechJebModuleAscentSettings).GetField(nameof(MechJebModuleAscentSettings.CorrectiveSteering), BindingFlags.Public | BindingFlags.Instance);
             f_Ascent_AutoPath = typeof(MechJebModuleAscentSettings).GetField(nameof(MechJebModuleAscentSettings.AutoPath), BindingFlags.Public | BindingFlags.Instance);
-            f_Ascent_Autostage = typeof(MechJebModuleAscentSettings).GetField(nameof(MechJebModuleAscentSettings.Autostage), BindingFlags.Public | BindingFlags.Instance);
             f_Landing_DeployGears = typeof(MechJebModuleLandingAutopilot).GetField(nameof(MechJebModuleLandingAutopilot.DeployGears), BindingFlags.Public | BindingFlags.Instance);
             f_Landing_DeployChutes = typeof(MechJebModuleLandingAutopilot).GetField(nameof(MechJebModuleLandingAutopilot.DeployChutes), BindingFlags.Public | BindingFlags.Instance);
             f_Landing_UseRCS = typeof(MechJebModuleLandingAutopilot).GetField(nameof(MechJebModuleLandingAutopilot.RCSAdjustment), BindingFlags.Public | BindingFlags.Instance);
@@ -165,8 +162,7 @@ namespace JSI
             f_Thrust_ManageIntakes = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.ManageIntakes), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_DifferentialThrottle = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.DifferentialThrottle), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_TransKillH = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.TransKillH), BindingFlags.Public | BindingFlags.Instance);
-			f_Node_Autowarp = typeof(MechJebModuleNodeExecutor).GetField(nameof(MechJebModuleNodeExecutor.Autowarp), BindingFlags.Public | BindingFlags.Instance);
-			f_Staging_Autostage = typeof(MechJebModuleStagingController).GetField("autostage", BindingFlags.Public | BindingFlags.Instance);
+            f_Node_Autowarp = typeof(MechJebModuleNodeExecutor).GetField(nameof(MechJebModuleNodeExecutor.Autowarp), BindingFlags.Public | BindingFlags.Instance);
             f_Staging_DropSolids = typeof(MechJebModuleStagingController).GetField(nameof(MechJebModuleStagingController.DropSolids), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_ForceRoll = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.forceRol), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_OverrideSafeDistance = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.overrideSafeDistance), BindingFlags.Public | BindingFlags.Instance);
