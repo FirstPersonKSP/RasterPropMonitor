@@ -1681,11 +1681,6 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
-            AddToggleItem(menu, "Autostage",
-                () => mjCore.AscentSettings.Autostage,
-                (val) => mjCore.AscentSettings.Autostage = val);
-            AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
-                1.0, v => v.ToString("F0"), null, true, 0, false, 0);
             AddMenuItem(menu, "Stage Once", () => mjCore.Staging.AutostageOnce(null));
             AddMenuItem(menu, "Autostage Options", () => PushMenu(BuildAutostageOptionsMenu()));
 

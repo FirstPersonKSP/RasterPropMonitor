@@ -162,7 +162,7 @@ namespace JSI
             f_Thrust_ManageIntakes = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.ManageIntakes), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_DifferentialThrottle = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.DifferentialThrottle), BindingFlags.Public | BindingFlags.Instance);
             f_Thrust_TransKillH = typeof(MechJebModuleThrustController).GetField(nameof(MechJebModuleThrustController.TransKillH), BindingFlags.Public | BindingFlags.Instance);
-			f_Node_Autowarp = typeof(MechJebModuleNodeExecutor).GetField(nameof(MechJebModuleNodeExecutor.Autowarp), BindingFlags.Public | BindingFlags.Instance);
+            f_Node_Autowarp = typeof(MechJebModuleNodeExecutor).GetField(nameof(MechJebModuleNodeExecutor.Autowarp), BindingFlags.Public | BindingFlags.Instance);
             f_Staging_DropSolids = typeof(MechJebModuleStagingController).GetField(nameof(MechJebModuleStagingController.DropSolids), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_ForceRoll = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.forceRol), BindingFlags.Public | BindingFlags.Instance);
             f_Docking_OverrideSafeDistance = typeof(MechJebModuleDockingAutopilot).GetField(nameof(MechJebModuleDockingAutopilot.overrideSafeDistance), BindingFlags.Public | BindingFlags.Instance);
