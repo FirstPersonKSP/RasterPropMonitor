@@ -70,6 +70,10 @@ namespace JSI
         private MechJebModuleRendezvousAutopilot mjRendezvousAutopilot = null;
         private MechJebModuleTranslatron mjTranslatron = null;
         private MechJebModuleSpaceplaneAutopilot mjSpacePlaneAutopilot = null;
+        private MechJebModuleLandingPredictions mjLandingPredictions = null;
+        private MechJebModuleLandingGuidance mjLandingGuidance = null;
+        private MechJebModuleWarpController mjWarpController = null;
+        private MechJebModuleStageStats mjStageStats = null;
 		private Vessel activeVessel = null;
 
         private TextMenu smartassOrbitalMenu;
@@ -246,17 +250,6 @@ namespace JSI
             object obj, FieldInfo field,
             Func<bool> enabledCheck = null)
         {
-            if (obj == null)
-            {
-                Log.Error($"obj is null trying to add toggle item {label}");
-                return;
-            }
-            if (field == null)
-            {
-                Log.Error($"field is null trying to add toggle item {label}");
-                return;
-            }
-
             AddToggleItem(menu, label,
 				() => (bool)field.GetValue(obj),
 				val => field.SetValue(obj, val),
@@ -477,7 +470,7 @@ namespace JSI
                 item = refItem,
                 id = "SmartASSAdvReference",
                 isEnabled = null,
-                getLabel = () => "Reference: [" + MechJebProxy.GetSmartASSAdvancedReferenceName(mjSmartASS) + "]"
+                getLabel = () => "Reference: [" + mjSmartASS.advReference.ToString() + "]"
             });
 
             var dirItem = new TextMenu.Item("Direction: [FORWARD]", (idx, item) => CycleSmartASSAdvancedDirection(1));
@@ -487,7 +480,7 @@ namespace JSI
                 item = dirItem,
                 id = "SmartASSAdvDirection",
                 isEnabled = null,
-                getLabel = () => "Direction: [" + MechJebProxy.GetSmartASSAdvancedDirectionName(mjSmartASS) + "]"
+                getLabel = () => "Direction: [" + mjSmartASS.advDirection.ToString() + "]"
             });
             AddToggleItem(menu, "Force Roll",
                 () => mjSmartASS.forceRol,
@@ -509,18 +502,29 @@ namespace JSI
         {
             if (mjSmartASS == null) return;
             mjSmartASS.target = target;
+            mjSmartASS.Engage();
         }
 
         private void CycleSmartASSAdvancedReference(int direction)
         {
             if (mjSmartASS == null) return;
-            MechJebProxy.CycleSmartASSAdvancedReference(mjSmartASS, direction);
+            var values = (AttitudeReference[])Enum.GetValues(typeof(AttitudeReference));
+            int idx = Array.IndexOf(values, mjSmartASS.advReference);
+            if (idx < 0) idx = 0;
+            int next = (idx + direction + values.Length) % values.Length;
+            mjSmartASS.advReference = values[next];
+            mjSmartASS.Engage();
         }
 
         private void CycleSmartASSAdvancedDirection(int direction)
         {
             if (mjSmartASS == null) return;
-            MechJebProxy.CycleSmartASSAdvancedDirection(mjSmartASS, direction);
+            var values = (Vector6.Direction[])Enum.GetValues(typeof(Vector6.Direction));
+            int idx = Array.IndexOf(values, mjSmartASS.advDirection);
+            if (idx < 0) idx = 0;
+            int next = (idx + direction + values.Length) % values.Length;
+            mjSmartASS.advDirection = values[next];
+            mjSmartASS.Engage();
         }
         #endregion
 
@@ -533,7 +537,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "ENGAGE Ascent Autopilot",
-                () => MechJebProxy.IsAscentAutopilotEngaged(mjCore),
+                () => mjCore.AscentSettings?.AscentAutopilot?.Enabled == true,
                 (val) => MechJebProxy.SetAscentAutopilotEngaged(mjCore, val, this));
 
             AddMenuItem(menu, "------", null);
@@ -561,8 +565,8 @@ namespace JSI
             AddMenuItem(menu, "------", null);
 
             AddToggleItem(menu, "Auto-Warp",
-                () => MechJebProxy.GetAscentAutowarp(mjCore),
-                (val) => MechJebProxy.SetAscentAutowarp(mjCore, val));
+                () => mjCore.Node.Autowarp,
+                (val) => mjCore.Node.Autowarp = val);
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -580,15 +584,15 @@ namespace JSI
 
             AddNumericItem(menu, "Turn Start Alt", mjCore.AscentSettings.TurnStartAltitude,
                 1000.0, v => (v / 1000.0).ToString("F1") + " km",
-                () => !MechJebProxy.GetAscentAutoPath(mjCore));
+                () => !mjCore.AscentSettings.AutoPath);
 
             AddNumericItem(menu, "Turn Start Vel", mjCore.AscentSettings.TurnStartVelocity,
                 10.0, v => v.ToString("F0") + " m/s",
-                () => !MechJebProxy.GetAscentAutoPath(mjCore));
+                () => !mjCore.AscentSettings.AutoPath);
 
             AddNumericItem(menu, "Turn End Alt", mjCore.AscentSettings.TurnEndAltitude,
                 1000.0, v => (v / 1000.0).ToString("F1") + " km",
-                () => !MechJebProxy.GetAscentAutoPath(mjCore));
+                () => !mjCore.AscentSettings.AutoPath);
 
             AddNumericItem(menu, "Final Flight Path Angle", mjCore.AscentSettings.TurnEndAngle,
                 0.5, v => v.ToString("F1") + "°");
@@ -600,11 +604,11 @@ namespace JSI
                 () => mjCore.AscentSettings.AutoTurnPerc * 100.0,
                 (val) => mjCore.AscentSettings.AutoTurnPerc = (float)(val / 100.0),
                 0.5, v => v.ToString("F1") + "%",
-                () => MechJebProxy.GetAscentAutoPath(mjCore), true, 0.5, true, 105.0);
+                () => mjCore.AscentSettings.AutoPath, true, 0.5, true, 105.0);
 
             AddNumericItem(menu, "Auto Turn Spd", mjCore.AscentSettings.AutoTurnSpdFactor,
                 0.5, v => v.ToString("F1"),
-                () => MechJebProxy.GetAscentAutoPath(mjCore), true, 4.0, true, 80.0);
+                () => mjCore.AscentSettings.AutoPath, true, 4.0, true, 80.0);
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -625,7 +629,7 @@ namespace JSI
             AddMenuItem(menu, "------", null);
 
             AddToggleItem(menu, "Limit to Prevent Overheats", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToPreventOverheats);
-            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToMaxDynamicPressure);
+            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitDynamicPressure);
             AddNumericItem(menu, "Max Q", mjCore.Thrust.MaxDynamicPressure,
                 1000.0, v => v.ToString("F0") + " Pa", null, true, 0, false, 0);
             AddToggleItem(menu, "Limit Acceleration", mjCore.Thrust, MechJebProxy.f_Thrust_LimitAcceleration);
@@ -659,8 +663,8 @@ namespace JSI
             AddNumericItem(menu, "Warp Countdown", mjCore.AscentSettings.WarpCountDown,
                 1.0, v => v.ToString("F0") + " s", null, true, 0, false, 0);
             AddToggleItem(menu, "Skip Circularization",
-                () => MechJebProxy.GetAscentSkipCircularization(mjCore),
-                (val) => MechJebProxy.SetAscentSkipCircularization(mjCore, val));
+                () => mjCore.AscentSettings.SkipCircularization,
+                (val) => mjCore.AscentSettings.SkipCircularization = val);
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
             return menu;
@@ -710,22 +714,22 @@ namespace JSI
 
             // Actions
             AddMenuItem(menu, "Land at Target", () => LandAtTarget(),
-                () => MechJebProxy.PositionTargetExists(mjCore));
+                () => mjCore.Target.PositionTargetExists);
             AddMenuItem(menu, "Land Somewhere", () => LandSomewhere());
             AddMenuItem(menu, "STOP", () => StopLanding(),
-                () => MechJebProxy.IsLandingAutopilotEngaged(mjCore));
+                () => mjCore.Landing != null && mjCore.Landing.Enabled);
 
             AddMenuItem(menu, "------", null);
 
             // Targeting
             AddMenuItem(menu, "Pick Target on Map", () => PickTargetOnMap());
             AddNumericItem(menu, "Target Latitude",
-                () => MechJebProxy.GetTargetLatitude(mjCore),
-                (val) => MechJebProxy.SetTargetLatitude(mjCore, vessel != null ? vessel.mainBody : null, val),
+                () => mjCore.Target.targetLatitude,
+                (val) => mjCore.Target.SetPositionTarget(vessel?.mainBody, val, mjCore.Target.targetLongitude),
                 0.1, v => v.ToString("F3") + "°", null, true, -90, true, 90);
             AddNumericItem(menu, "Target Longitude",
-                () => MechJebProxy.GetTargetLongitude(mjCore),
-                (val) => MechJebProxy.SetTargetLongitude(mjCore, vessel != null ? vessel.mainBody : null, val),
+                () => mjCore.Target.targetLongitude,
+                (val) => mjCore.Target.SetPositionTarget(vessel?.mainBody, mjCore.Target.targetLatitude, val),
                 0.1, v => v.ToString("F3") + "°", null, true, -180, true, 180);
 
             AddMenuItem(menu, "------", null);
@@ -759,8 +763,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "Show Trajectory",
-                () => MechJebProxy.GetLandingShowTrajectory(mjCore),
-                (val) => MechJebProxy.SetLandingShowTrajectory(mjCore, val));
+                mjLandingPredictions, MechJebProxy.f_Landing_ShowTrajectory);
 
             AddMenuItem(menu, "------", null);
 
@@ -812,25 +815,25 @@ namespace JSI
         private void LandAtTarget()
         {
             if (mjCore == null) return;
-            MechJebProxy.LandAtPositionTarget(mjCore);
+            mjCore.Landing.LandAtPositionTarget(mjLandingGuidance);
         }
 
         private void LandSomewhere()
         {
             if (mjCore == null) return;
-            MechJebProxy.LandUntargeted(mjCore);
+            mjCore.Landing.LandUntargeted(mjLandingGuidance);
         }
 
         private void StopLanding()
         {
             if (mjCore == null) return;
-            MechJebProxy.StopLanding(mjCore);
+            mjCore.Landing.StopLanding();
         }
 
         private void PickTargetOnMap()
         {
             if (mjCore == null) return;
-            MechJebProxy.PickPositionTargetOnMap(mjCore);
+            mjCore.Target.PickPositionTargetOnMap();
         }
         #endregion
 
@@ -878,8 +881,8 @@ namespace JSI
             
             // Node execution controls (matching IMGUI bottom controls)
             AddToggleItem(menu, "Auto-warp",
-                () => MechJebProxy.GetNodeAutowarp(mjCore),
-                (val) => MechJebProxy.SetNodeAutowarp(mjCore, val));
+                () => mjCore.Node.Autowarp,
+                (val) => mjCore.Node.Autowarp = val);
             AddNumericItem(menu, "Lead time",
                 mjCore.Node.LeadTime,
                 1.0, v => v.ToString("F0") + " s", null, true, 0, false, 0);
@@ -1266,14 +1269,14 @@ namespace JSI
             CreateAdvancedTransferNode();
             if (mjCore != null)
             {
-                MechJebProxy.ExecuteOneNode(mjCore, null);
+                mjCore.Node.ExecuteOneNode(null);
             }
         }
 
         private void StartAdvancedTransferCompute()
         {
             if (mjCore == null || vessel == null) return;
-            object targetController = MechJebProxy.GetTargetController(mjCore);
+            var targetController = mjCore.Target;
             if (targetController == null || FlightGlobals.fetch.VesselTarget == null) return;
             if (!(FlightGlobals.fetch.VesselTarget is CelestialBody)) return;
 
@@ -1304,7 +1307,7 @@ namespace JSI
         private void CreateAdvancedTransferNode()
         {
             if (vessel == null || mjCore == null) return;
-            object targetController = MechJebProxy.GetTargetController(mjCore);
+            var targetController = mjCore.Target;
             if (targetController == null) return;
 
             var op = MechJebProxy.OpAdvancedTransfer;
@@ -1386,13 +1389,13 @@ namespace JSI
         private void ExecuteNode()
         {
             if (mjCore == null) return;
-            if (MechJebProxy.IsNodeExecutorRunning(mjCore))
+            if (mjCore.Node != null && mjCore.Node.Enabled)
             {
-                MechJebProxy.AbortNode(mjCore);
+                mjCore.Node.Abort();
             }
             else
             {
-                MechJebProxy.ExecuteOneNode(mjCore, null);
+                mjCore.Node.ExecuteOneNode(null);
             }
         }
         #endregion
@@ -1406,7 +1409,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "ENGAGE Rendezvous Autopilot",
-                () => MechJebProxy.IsRendezvousAutopilotEngaged(mjCore),
+                () => mjRendezvousAutopilot?.Enabled == true,
                 (val) => MechJebProxy.SetRendezvousAutopilotEngaged(mjCore, val));
 
             AddMenuItem(menu, "------", null);
@@ -1433,7 +1436,7 @@ namespace JSI
                 item = rendezvousStatus,
                 id = "RendezvousStatus",
                 isEnabled = null,
-                getLabel = () => "Status: " + MechJebProxy.GetRendezvousStatus(mjCore)
+                getLabel = () => "Status: " + mjRendezvousAutopilot?.status ?? ""
             });
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
@@ -1451,8 +1454,8 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddToggleItem(menu, "ENGAGE Docking Autopilot",
-                () => MechJebProxy.IsDockingAutopilotEngaged(mjCore),
-                (val) => MechJebProxy.SetDockingAutopilotEngaged(mjCore, val));
+                () => mjDockingAutoPilot?.Enabled == true,
+                (val) => mjDockingAutoPilot.Enabled = val);
 
             AddMenuItem(menu, "------", null);
 
@@ -1475,7 +1478,8 @@ namespace JSI
                 mjDockingAutoPilot.overridenTargetSize,
                 0.1, v => v.ToString("F1") + " m", () => mjDockingAutoPilot.overrideTargetSize, true, 0, false, 0);
 
-            AddToggleItem(menu, "Draw Bounding Box", mjDockingAutoPilot, MechJebProxy.f_Docking_DrawBoundingBox);
+            AddToggleItem(menu, "Draw Bounding Box",
+                mjDockingAutoPilot, MechJebProxy.f_Docking_DrawBoundingBox);
 
             AddMenuItem(menu, "------", null);
 
@@ -1488,7 +1492,7 @@ namespace JSI
                 item = dockingStatus,
                 id = "DockingStatus",
                 isEnabled = null,
-                getLabel = () => "  " + MechJebProxy.GetDockingStatus(mjCore)
+                getLabel = () => "  " + mjDockingAutoPilot?.status ?? ""
             });
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
@@ -1521,12 +1525,12 @@ namespace JSI
                 0.1, v => v.ToString("F1") + " m/s", null, true, 0, false, 0);
 
             AddToggleItem(menu, "Kill Horizontal",
-                () => MechJebProxy.GetTranslatronKillH(mjCore),
-                (val) => MechJebProxy.SetTranslatronKillH(mjCore, val));
+                () => mjCore.Thrust.TransKillH,
+                (val) => mjCore.Thrust.TransKillH = val);
 
             AddMenuItem(menu, "------", null);
 
-            AddMenuItem(menu, "!! PANIC !!", () => MechJebProxy.PanicSwitch(mjCore));
+            AddMenuItem(menu, "!! PANIC !!", () => mjTranslatron?.PanicSwitch());
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -1543,7 +1547,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddMenuItem(menu, "Drive to Target", () => DriveToTarget(),
-                () => MechJebProxy.PositionTargetExists(mjCore));
+                () => mjCore.Target.PositionTargetExists);
             AddMenuItem(menu, "STOP", () => StopRover());
 
             AddMenuItem(menu, "------", null);
@@ -1560,10 +1564,14 @@ namespace JSI
 
             AddMenuItem(menu, "------", null);
 
-            AddToggleItem(menu, "Stability Control", mjCore.Rover, MechJebProxy.f_Rover_StabilityControl);
-            AddToggleItem(menu, "Brake on Eject", mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEject);
-            AddToggleItem(menu, "Brake on Energy Depletion", mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEnergyDepletion);
-            AddToggleItem(menu, "Warp to Daylight", mjCore.Rover, MechJebProxy.f_Rover_WarpToDaylight);
+            AddToggleItem(menu, "Stability Control",
+                mjCore.Rover, MechJebProxy.f_Rover_StabilityControl);
+            AddToggleItem(menu, "Brake on Eject",
+                mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEject);
+            AddToggleItem(menu, "Brake on Energy Depletion",
+                mjCore.Rover, MechJebProxy.f_Rover_BrakeOnEnergyDepletion);
+            AddToggleItem(menu, "Warp to Daylight",
+                mjCore.Rover, MechJebProxy.f_Rover_WarpToDaylight);
 
             AddMenuItem(menu, "------", null);
 
@@ -1592,25 +1600,25 @@ namespace JSI
         private void DriveToTarget()
         {
             if (mjCore == null) return;
-            MechJebProxy.DriveToTarget(mjCore);
+            { mjCore.Rover.ControlHeading = true; mjCore.Rover.ControlSpeed = true; };
         }
 
         private void StopRover()
         {
             if (mjCore == null) return;
-            MechJebProxy.StopRover(mjCore);
+            { mjCore.Rover.ControlHeading = false; mjCore.Rover.ControlSpeed = false; };
         }
 
         private void AddRoverWaypoint()
         {
             if (mjCore == null || vessel == null) return;
-            MechJebProxy.AddRoverWaypointAtCurrentPosition(mjCore, vessel);
+            mjCore.Rover.Waypoints.Add(new MechJebWaypoint(vessel.latitude, vessel.longitude));
         }
 
         private void ClearRoverWaypoints()
         {
             if (mjCore == null) return;
-            MechJebProxy.ClearRoverWaypoints(mjCore);
+            mjCore.Rover.Waypoints.Clear();
         }
         #endregion
 
@@ -1676,7 +1684,7 @@ namespace JSI
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
             AddMenuItem(menu, "Autoland", () => mjSpacePlaneAutopilot.Autoland(null));
-            AddMenuItem(menu, "Hold Heading & Altitude", () => MechJebProxy.SpaceplaneHoldHeadingAndAltitude(mjSpacePlaneAutopilot));
+            AddMenuItem(menu, "Hold Heading & Altitude", () => { var ap = mjSpacePlaneAutopilot?.Autopilot; if (ap != null) { ap.HeadingHoldEnabled = true; ap.AltitudeHoldEnabled = true; } });
             AddMenuItem(menu, "Autopilot OFF", mjSpacePlaneAutopilot.AutopilotOff);
 
             AddMenuItem(menu, "------", null);
@@ -1703,7 +1711,8 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
-            AddToggleItem(menu, "Autostage", mjCore.Staging, MechJebProxy.f_Staging_Autostage);
+            AddToggleItem(menu, "Autostage",
+                mjCore.Staging, MechJebProxy.f_Staging_Autostage);
             AddNumericItem(menu, "Stop at Stage", mjCore.Staging.AutostageLimit,
                 1.0, v => v.ToString("F0"), null, true, 0, false, 0);
             AddMenuItem(menu, "Stage Once", () => StageOnce());
@@ -1813,7 +1822,7 @@ namespace JSI
         private void StageOnce()
         {
             if (mjCore == null) return;
-            MechJebProxy.AutostageOnce(mjCore);
+            mjCore.Staging.AutostageOnce(null);
         }
         #endregion
 
@@ -1977,7 +1986,7 @@ namespace JSI
 
             AddMenuItem(menu, "-- THRUST LIMITS --", null);
             AddToggleItem(menu, "Prevent Overheats", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToPreventOverheats);
-            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToMaxDynamicPressure);
+            AddToggleItem(menu, "Limit by Max Q", mjCore.Thrust, MechJebProxy.f_Thrust_LimitDynamicPressure);
             AddToggleItem(menu, "Limit to Terminal Velocity", mjCore.Thrust, MechJebProxy.f_Thrust_LimitToTerminalVelocity);
             AddToggleItem(menu, "Limit Acceleration", mjCore.Thrust, MechJebProxy.f_Thrust_LimitAcceleration);
             AddToggleItem(menu, "Limit Throttle", mjCore.Thrust, MechJebProxy.f_Thrust_LimitThrottle);
@@ -1995,8 +2004,8 @@ namespace JSI
 
             AddMenuItem(menu, "-- NODE EXECUTION --", null);
             AddToggleItem(menu, "Auto-Warp",
-                () => MechJebProxy.GetNodeAutowarp(mjCore),
-                (val) => MechJebProxy.SetNodeAutowarp(mjCore, val));
+                () => mjCore.Node.Autowarp,
+                (val) => mjCore.Node.Autowarp = val);
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
 
@@ -2055,6 +2064,10 @@ namespace JSI
                 mjRendezvousAutopilot = null;
                 mjTranslatron = null;
                 mjSpacePlaneAutopilot = null;
+                mjLandingPredictions = null;
+                mjLandingGuidance = null;
+                mjWarpController = null;
+                mjStageStats = null;
 
 				activeVessel = vessel;
                 mjCore = vessel.GetMasterMechJeb();
@@ -2065,6 +2078,10 @@ namespace JSI
 					mjRendezvousAutopilot = mjCore.GetComputerModule<MechJebModuleRendezvousAutopilot>();
                     mjTranslatron = mjCore.GetComputerModule<MechJebModuleTranslatron>();
                     mjSpacePlaneAutopilot = mjCore.GetComputerModule<MechJebModuleSpaceplaneAutopilot>();
+                    mjLandingPredictions = mjCore.GetComputerModule<MechJebModuleLandingPredictions>();
+                    mjLandingGuidance = mjCore.GetComputerModule<MechJebModuleLandingGuidance>();
+                    mjWarpController = mjCore.GetComputerModule<MechJebModuleWarpController>();
+                    mjStageStats = mjCore.GetComputerModule<MechJebModuleStageStats>();
 				}
             }
 
@@ -2080,7 +2097,7 @@ namespace JSI
             double ut = Planetarium.GetUniversalTime();
             if (ut - lastStageStatsUpdateUT > 1.0)
             {
-                MechJebProxy.RequestStageStatsUpdate(mjCore, this);
+                mjStageStats?.RequestUpdate();
                 lastStageStatsUpdateUT = ut;
             }
         }
@@ -2160,14 +2177,14 @@ namespace JSI
         {
             if (vessel == null) return;
             double ut = vessel.orbit.NextApoapsisTime(Planetarium.GetUniversalTime());
-            MechJebProxy.WarpToUT(mjCore, ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToPeriapsis()
         {
             if (vessel == null) return;
             double ut = vessel.orbit.NextPeriapsisTime(Planetarium.GetUniversalTime());
-            MechJebProxy.WarpToUT(mjCore, ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToNode()
@@ -2175,7 +2192,7 @@ namespace JSI
             if (vessel == null || vessel.patchedConicSolver == null) return;
             if (vessel.patchedConicSolver.maneuverNodes.Count == 0) return;
             double ut = vessel.patchedConicSolver.maneuverNodes[0].UT;
-            MechJebProxy.WarpToUT(mjCore, ut);
+            mjWarpController?.WarpToUT(ut);
         }
 
         private void WarpToSOI()
@@ -2183,43 +2200,43 @@ namespace JSI
             if (vessel == null) return;
             if (vessel.orbit.patchEndTransition == Orbit.PatchTransitionType.FINAL) return;
             double ut = vessel.orbit.EndUT;
-            MechJebProxy.WarpToUT(mjCore, ut);
+            mjWarpController?.WarpToUT(ut);
         }
         #endregion
 
         #region Landing Prediction Helpers
         private string GetLandingPredLatitude(object core)
         {
-            var result = MechJebProxy.GetLandingPredictionResult(mjCore);
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double lat, lon;
-            MechJebProxy.GetLandingEndPosition(result, out lat, out lon);
+            { lat = result.EndPosition.Latitude; lon = result.EndPosition.Longitude; };
             return lat.ToString("F3") + "°";
         }
 
         private string GetLandingPredLongitude(object core)
         {
-            var result = MechJebProxy.GetLandingPredictionResult(mjCore);
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
             double lat, lon;
-            MechJebProxy.GetLandingEndPosition(result, out lat, out lon);
+            { lat = result.EndPosition.Latitude; lon = result.EndPosition.Longitude; };
             return lon.ToString("F3") + "°";
         }
 
         private string GetLandingPredTime(object core)
         {
-            var result = MechJebProxy.GetLandingPredictionResult(mjCore);
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
-            double ut = MechJebProxy.GetLandingEndUT(result);
+            double ut = result.EndUT;
             double dt = ut - Planetarium.GetUniversalTime();
             return FormatTime(dt);
         }
 
         private string GetLandingPredGees(object core)
         {
-            var result = MechJebProxy.GetLandingPredictionResult(mjCore);
+            var result = mjLandingPredictions?.Result;
             if (result == null) return "---";
-            double gees = MechJebProxy.GetLandingMaxDragGees(result);
+            double gees = (result?.MaxDragGees ?? 0);
             return gees.ToString("F2");
         }
         #endregion
@@ -2275,7 +2292,7 @@ namespace JSI
         {
             var stats = vacuum ? MechJebProxy.GetVacuumStageStats(mjCore) : MechJebProxy.GetAtmoStageStats(mjCore);
             if (stats == null || stats.Count == 0) return "---";
-            double dv = MechJebProxy.GetStageDeltaV(stats[0]);
+            double dv = stats[0].DeltaV;
             return FormatDeltaV(dv);
         }
 

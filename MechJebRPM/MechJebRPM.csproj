@@ -13,6 +13,10 @@
       <CKANIdentifier>MechJeb2</CKANIdentifier>
       <KSPAssemblyVersion>2.5</KSPAssemblyVersion>
     </Reference>
+    <Reference Include="MechJebLib">
+      <HintPath>$(KSPRoot)\GameData\MechJeb2\Plugins\MechJebLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <ProjectReference Include="..\RasterPropMonitor\RasterPropMonitor.csproj">
       <Name>RasterPropMonitor</Name>
       <!-- this isn't working yet, not sure why.  It's meant to add the ksp assembly dependency attribute, but we'll just do it manually for now
@@ -24,6 +28,7 @@
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" />
     <Publicize Include="MechJeb2" />
+    <Publicize Include="MechJebLib" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="KSPBuildTools" Version="0.0.4" />

@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace JSI
 {
-    public class JSINumericInput : InternalModule
+    class JSINumericInput : InternalModule
     {
         [SerializeReference] ConfigNodeHolder moduleConfig;
 
