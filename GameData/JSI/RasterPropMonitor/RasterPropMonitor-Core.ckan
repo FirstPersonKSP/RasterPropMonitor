@@ -1,17 +1,37 @@
-{
-	"spec_version": "v1.34",
-	"identifier": "RasterPropMonitor-Core",
-	"name": "RasterPropMonitor-Core",
-	"conflicts": [
-		{
-			"name": "MechJeb2",
-			"min_version": "2.15.0.0"
-		}
-	],
-	"suggests": [
-		{
-			"name": "MechJeb2",
-			"max_version": "2.14.3.0"
-		}
-	]
-}
+---
+spec_version: v1.34
+identifier: RasterPropMonitor-Core
+name: RasterPropMonitor-Core
+depends:
+- name: ModuleManager
+recommends:
+- name: DE-IVAExtension
+- name: FreeIva
+suggests:
+- name: Astrogator
+- name: DockingPortAlignmentIndicator
+- name: NavUtilities
+- name: SCANsat
+- name: MechJeb2
+  max_version: 2.14.3.0
+- name: VesselView
+- name: ProbeControlRoomRecontrolled
+- name: kOSPropMonitor
+- name: Chatterer
+- name: Reviva
+- name: Mk1LanderCanIVAReplbyASET
+- name: MK12PodIVAReplacementbyASET
+- name: ALCOR
+- name: ThroughTheEyesOfaKerbal
+- name: QuickIVA
+- name: KSAIVAUpgrade
+conflicts:
+- name: MechJeb2
+  min_version: 2.15.0.0
+install:
+- find: JSI/RasterPropMonitor
+  install_to: GameData/JSI
+- find: JSI/RPMPodPatches/BasicMFD
+  install_to: GameData/JSI/RPMPodPatches
+  comment: This folder contains the multi-function display props, which belong in
+    this module along with the other props

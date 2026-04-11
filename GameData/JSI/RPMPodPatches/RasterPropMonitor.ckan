@@ -1,17 +1,36 @@
-{
-	"spec_version": "v1.34",
-	"identifier": "RasterPropMonitor",
-	"name": "RasterPropMonitor",
-	"conflicts": [
-		{
-			"name": "MechJeb2",
-			"min_version": "2.15.0.0"
-		}
-	],
-	"suggests": [
-		{
-			"name": "MechJeb2",
-			"max_version": "2.14.3.0"
-		}
-	]
-}
+---
+spec_version: v1.34
+identifier: RasterPropMonitor
+name: RasterPropMonitor
+depends:
+- name: ModuleManager
+- name: RasterPropMonitor-Core
+recommends:
+- name: DE-IVAExtension
+- name: FreeIva
+suggests:
+- name: Astrogator
+- name: DockingPortAlignmentIndicator
+- name: NavUtilities
+- name: SCANsat
+- name: MechJeb2
+  max_version: 2.14.3.0
+- name: VesselView
+- name: ProbeControlRoomRecontrolled
+- name: kOSPropMonitor
+- name: Chatterer
+- name: Reviva
+- name: Mk1LanderCanIVAReplbyASET
+- name: MK12PodIVAReplacementbyASET
+- name: ALCOR
+- name: ThroughTheEyesOfaKerbal
+- name: QuickIVA
+- name: KSAIVAUpgrade
+conflicts:
+- name: MechJeb2
+  min_version: 2.15.0.0
+install:
+- find: JSI/RPMPodPatches
+  install_to: GameData/JSI
+  filter:
+  - BasicMFD
