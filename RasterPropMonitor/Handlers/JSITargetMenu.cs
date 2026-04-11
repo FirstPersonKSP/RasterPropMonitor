@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FinePrint;
 using UnityEngine;
 
 namespace JSI
@@ -73,6 +74,7 @@ namespace JSI
         private readonly TextMenu topMenu = new TextMenu();
         private TextMenu activeMenu;
         private TextMenu.Item clearTarget;
+        private TextMenu.Item clearWaypoint;
         private TextMenu.Item removeNode;
         private TextMenu.Item undockMenuItem;
         private TextMenu.Item grappleMenuItem;
@@ -85,15 +87,18 @@ namespace JSI
         private const string armGrappleText = "Arm Grapple";
         private const string crewEvaText = "Crew EVA";
         private const string removeNodeItemText = "Remove Node";
+        private const string clearWaypointText = "Clear Waypoint";
         private readonly List<string> rootMenu = new List<string> {
             "Celestials",
             "Vessels",
             "Space Objects",
             "Reference part",
+            "Waypoints",
             undockItemText,
             armGrappleText,
             "Filters",
             clearTargetItemText,
+            clearWaypointText,
             crewEvaText,
             removeNodeItemText,
         };
@@ -125,6 +130,7 @@ namespace JSI
             Undock,
             Filters,
             CrewEVA,
+            Waypoints
         };
 
         private enum SortMode
@@ -144,6 +150,7 @@ namespace JSI
         private readonly List<PartModule> undockablesList = new List<PartModule>();
         private List<ModuleDockingNode> portsList = new List<ModuleDockingNode>();
         private readonly List<PartModule> referencePoints = new List<PartModule>();
+        private readonly List<(Waypoint, double)> waypointsList = new List<(Waypoint, double)>();
         private readonly List<uint> unavailablePorts = new List<uint>();
         private int partCount;
         private SortMode sortMode;
@@ -195,10 +202,12 @@ namespace JSI
                     activeMenu.menuTitle = string.Format(fp, menuTitleFormatString, "Decouple ports");
                     break;
                 case MenuList.Root:
+                    NavWaypoint waypoint = NavWaypoint.fetch;
                     activeMenu.menuTitle = MakeMenuTitle("Root menu");
                     grappleMenuItem.isDisabled = UpdateReferencePartAsClaw();
-                    clearTarget.isDisabled = (currentTarget == null);
-                    undockMenuItem.isDisabled = (undockablesList.Count == 0);
+                    clearTarget.isDisabled = currentTarget == null;
+                    clearWaypoint.isDisabled = waypoint != null && waypoint.IsActive;
+                    undockMenuItem.isDisabled = undockablesList.Count == 0;
                     removeNode.isDisabled = vessel.patchedConicSolver == null || vessel.patchedConicSolver.maneuverNodes.Count == 0;
                     break;
                 case MenuList.Filters:
@@ -215,6 +224,9 @@ namespace JSI
                     break;
                 case MenuList.Reference:
                     activeMenu.menuTitle = string.Format(fp, menuTitleFormatString, "Select reference");
+                    break;
+                case MenuList.Waypoints:
+                    activeMenu.menuTitle = MakeMenuTitle("Waypoints");
                     break;
                 case MenuList.Ports:
                     // sanity check:
@@ -422,7 +434,6 @@ namespace JSI
 
         private void UpdateLists()
         {
-
             switch (currentMenu)
             {
                 case MenuList.Undock:
@@ -460,7 +471,6 @@ namespace JSI
                     foreach (Celestial body in celestialsList)
                         body.UpdateDistance(vessel.transform.position);
 
-                    CelestialBody currentBody = celestialsList[activeMenu.GetCurrentIndex()].body;
                     switch (sortMode)
                     {
                         case SortMode.Alphabetic:
@@ -513,6 +523,36 @@ namespace JSI
                         }
 
                         tmi.isSelected = (currentReference == referencePoint.part);
+                        activeMenu.Add(tmi);
+                    }
+                    break;
+                case MenuList.Waypoints:
+                    waypointsList.Clear();
+                    foreach (Waypoint waypoint in WaypointManager.Instance().Waypoints)
+                    {
+                        if (waypoint.celestialBody == vessel.mainBody)
+                        {
+                            waypointsList.Add((waypoint, WaypointDistance(waypoint, vessel)));
+                        }
+                    }
+
+                    if (sortMode == SortMode.Alphabetic)
+                    {
+                        waypointsList.Sort((a, b) => a.Item1.name.CompareTo(b.Item1.name));
+                    }
+                    else if (sortMode == SortMode.Distance)
+                    {
+                        waypointsList.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+                    }
+
+                    activeMenu.Clear();
+                    foreach ((Waypoint waypoint, double distance) in waypointsList)
+                    {
+                        TextMenu.Item tmi = new TextMenu.Item();
+                        tmi.action = SelectWaypoint;
+                        tmi.labelText = waypoint.name;
+                        tmi.rightText = string.Format(fp, distanceFormatString.UnMangleConfigText(), distance);
+                        tmi.isSelected = vessel.navigationWaypoint == waypoint;
                         activeMenu.Add(tmi);
                     }
                     break;
@@ -625,7 +665,6 @@ namespace JSI
                     }
                     break;
             }
-
         }
 
         private static string GetPortName(ModuleDockingNode port)
@@ -728,17 +767,21 @@ namespace JSI
             FindReferencePoints();
             UpdateUndockablesList();
 
-            var menuActions = new List<Action<int, TextMenu.Item>>();
-            menuActions.Add(ShowCelestialMenu);
-            menuActions.Add(ShowVesselMenu);
-            menuActions.Add(ShowSpaceObjectMenu);
-            menuActions.Add(ShowReferenceMenu);
-            menuActions.Add(ShowUndockMenu);
-            menuActions.Add(ArmGrapple);
-            menuActions.Add(ShowFiltersMenu);
-            menuActions.Add(ClearTarget);
-            menuActions.Add(ShowCrewEVA);
-            menuActions.Add(RemoveNode);
+            var menuActions = new List<Action<int, TextMenu.Item>>
+            {
+                ShowCelestialMenu,
+                ShowVesselMenu,
+                ShowSpaceObjectMenu,
+                ShowReferenceMenu,
+                ShowWaypointsMenu,
+                ShowUndockMenu,
+                ArmGrapple,
+                ShowFiltersMenu,
+                ClearTarget,
+                ClearWaypoint,
+                ShowCrewEVA,
+                RemoveNode
+            };
 
             for (int i = 0; i < rootMenu.Count; ++i)
             {
@@ -750,6 +793,9 @@ namespace JSI
                 {
                     case clearTargetItemText:
                         clearTarget = topMenu[i];
+                        break;
+                    case clearWaypointText:
+                        clearWaypoint = topMenu[i];
                         break;
                     case undockItemText:
                         undockMenuItem = topMenu[i];
@@ -946,6 +992,22 @@ namespace JSI
             activeMenu.currentSelection = referencePoints.FindIndex(x => x.part == vessel.GetReferenceTransformPart());
         }
 
+        private void ShowWaypointsMenu(int index, TextMenu.Item ti)
+        {
+            currentMenu = MenuList.Waypoints;
+
+            activeMenu = new TextMenu();
+            activeMenu.rightColumnWidth = distanceColumnWidth;
+            activeMenu.labelColor = nameColorTag;
+            activeMenu.selectedColor = selectedColorTag;
+            activeMenu.disabledColor = unavailableColorTag;
+            activeMenu.rightTextColor = distanceColorTag;
+
+            UpdateLists();
+
+            activeMenu.currentSelection = waypointsList.FindIndex(waypoint => waypoint.Item1 == vessel.navigationWaypoint);
+        }
+
         private void ShowUndockMenu(int index, TextMenu.Item ti)
         {
             currentMenu = MenuList.Undock;
@@ -1010,6 +1072,13 @@ namespace JSI
         private static void ClearTarget(int index, TextMenu.Item ti)
         {
             FlightGlobals.fetch.SetVesselTarget((ITargetable)null);
+        }
+
+        private static void ClearWaypoint(int index, TextMenu.Item ti)
+        {
+            NavWaypoint navWaypoint = NavWaypoint.fetch;
+            navWaypoint.Clear();
+            navWaypoint.Deactivate();
         }
 
         private void RemoveNode(int index, TextMenu.Item ti)
@@ -1100,6 +1169,18 @@ namespace JSI
                 activeMenu.SetSelected(index, true);
             }
         }
+
+        private void SelectWaypoint(int index, TextMenu.Item ti)
+        {
+            NavWaypoint navWaypoint = NavWaypoint.fetch;
+            navWaypoint.Clear();
+            navWaypoint.Deactivate();
+            navWaypoint.Setup(waypointsList[index].Item1);
+            navWaypoint.Activate();
+
+            activeMenu.SetSelected(index, true);
+        }
+
         // Space Object Menu
         private void TargetSpaceObject(int index, TextMenu.Item ti)
         {
@@ -1226,6 +1307,12 @@ namespace JSI
                     }
                 }
             }
+        }
+
+        private static double WaypointDistance(Waypoint waypoint, Vessel vessel)
+        {
+            Vector3d waypointPosition = waypoint.celestialBody.GetWorldSurfacePosition(waypoint.latitude, waypoint.longitude, waypoint.altitude);
+            return Vector3d.Distance(waypointPosition, vessel.CoM);
         }
 
         private class Celestial
