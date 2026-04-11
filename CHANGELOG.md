@@ -4,7 +4,7 @@ Discord support server: https://discord.gg/vBDzZAq3AF.
 
 Please always post your [KSP.log file](https://gist.github.com/JonnyOThan/04c2074b56f78e56d115621effee30f9) when reporting issues.
 
-## Unreleased
+## 1.0.3.1 - 2026-04-11
 
 NOTE: this version of RPM is not compatible with MJ 2.15
 
