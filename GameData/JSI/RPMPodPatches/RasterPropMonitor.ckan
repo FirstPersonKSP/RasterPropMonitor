@@ -1,0 +1,17 @@
+{
+	"spec_version": "v1.34",
+	"identifier": "RasterPropMonitor",
+	"name": "RasterPropMonitor",
+	"conflicts": [
+		{
+			"name": "MechJeb2",
+			"min_version": "2.15.0.0"
+		}
+	],
+	"suggests": [
+		{
+			"name": "MechJeb2",
+			"max_version": "2.14.3.0"
+		}
+	]
+}
