@@ -11,7 +11,7 @@
     <KSPBT_ModPluginFolder>Plugins</KSPBT_ModPluginFolder>
   </PropertyGroup>
   <ItemGroup>
-    <KSPVersionFile Include="$(KSPBT_ModRoot)/RasterPropMonitor.version">
+    <KSPVersionFile Include="$(MSBuildProjectDirectory)/RasterPropMonitor.version">
       <Destination>$(KSPBT_ModRoot)/RasterPropMonitor.version</Destination>
       <KSP_Version_Min>1.12.3</KSP_Version_Min>
     </KSPVersionFile>
