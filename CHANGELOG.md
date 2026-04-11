@@ -6,18 +6,21 @@ Please always post your [KSP.log file](https://gist.github.com/JonnyOThan/04c207
 
 ## Unreleased
 
+NOTE: this version of RPM is not compatible with MJ 2.15
+
 ### New Features
 
-- Add support for scrolling through orbit patches on the MFD (thanks @andymac-2)
-- Allow targeting flags and landed vessels (thanks @andymac-2)
+- Add support for scrolling through orbit patches on the MFD.  This includes many new RPM variables that could be used in other props. (thanks @andymac-2) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/698b1c6cb37d43a1baa74de0a8d87148558f10c0)
+- Allow targeting flags and landed vessels (thanks @andymac-2) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/dfc9858f5cc7cca698699f556901e691995053c2)
+- ISJIModule can now be implemented in 3rd party mods to integrate with RPM [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/a476486706e4d64e36467d8d1eefe37795e05f18)
 
 ### Bug Fixes
 
-- Fix fallback evaluators for lift, drag, and terminal velocity when FAR is not installed (thanks @KlyithSA)
-- Add RPMComputer modules to a few B9 Aerospace parts that were missing them
-- Disabled some propbatching when MAS is installed because it interferes with their patches
-- Fix NRE in ExternalCameraSelector when the camera transform is missing
-- Fix possible NRE when changing vessels
+- Fix fallback evaluators for lift, drag, and terminal velocity when FAR is not installed (thanks @KlyithSA) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/6a40b2076de68c24475ec5c6f62c44408dbdc6e0)
+- Add RPMComputer modules to a few B9 Aerospace parts that were missing them [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/2ed262fb2404e7841b3f8e339388aaa17cc7624d)
+- Disabled some propbatching when MAS is installed because it interferes with their patches [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/40e6f2bba75a595e7a5636ab2f5f53b27a7a5b97)
+- Fix NRE in ExternalCameraSelector when the camera transform is missing [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/c6e7a43b70212ddce1e8324945584203315789fc)
+- Fix possible NRE when changing vessels [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/82b3f5f0c1caf5e456f450eac1d8c3b73ff5001e)
 
 
 ## 1.0.2 - 2024-09-24
