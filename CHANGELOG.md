@@ -4,7 +4,7 @@ Discord support server: https://discord.gg/vBDzZAq3AF.
 
 Please always post your [KSP.log file](https://gist.github.com/JonnyOThan/04c2074b56f78e56d115621effee30f9) when reporting issues.
 
-## 1.0.3 - 2026-04-11
+## Unreleased
 
 NOTE: this version of RPM is not compatible with MJ 2.15
 
@@ -13,6 +13,7 @@ NOTE: this version of RPM is not compatible with MJ 2.15
 - Add support for scrolling through orbit patches on the MFD.  This includes many new RPM variables that could be used in other props. (thanks @andymac-2) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/698b1c6cb37d43a1baa74de0a8d87148558f10c0)
 - Allow targeting flags and landed vessels (thanks @andymac-2) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/dfc9858f5cc7cca698699f556901e691995053c2)
 - ISJIModule can now be implemented in 3rd party mods to integrate with RPM [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/a476486706e4d64e36467d8d1eefe37795e05f18)
+- Add waypoints to navball and MFD menus (thanks @andymac-2) [commit](https://github.com/FirstPersonKSP/RasterPropMonitor/commit/b93fd4e4f818bd7676086e251837818b2c6c1e5f)
 
 ### Bug Fixes
 
