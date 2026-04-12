@@ -12,7 +12,6 @@ suggests:
 - name: NavUtilities
 - name: SCANsat
 - name: MechJeb2
-  max_version: 2.14.3.0
 - name: VesselView
 - name: ProbeControlRoomRecontrolled
 - name: kOSPropMonitor
@@ -26,7 +25,7 @@ suggests:
 - name: KSAIVAUpgrade
 conflicts:
 - name: MechJeb2
-  min_version: 2.15.0.0
+  max_version: 2.14
 install:
 - find: JSI/RasterPropMonitor
   install_to: GameData/JSI
