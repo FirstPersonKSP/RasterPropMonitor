@@ -19,7 +19,7 @@
  * along with RasterPropMonitor.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-using KSPBuildTools;
+using KSPCommunityLib.Logging;
 using MuMech;
 using System;
 using System.Collections.Generic;

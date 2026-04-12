@@ -2,8 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="RasterPropMonitor/RasterPropMonitor.version.props" />
   <PropertyGroup>
-    <BinariesOutputRelativePath>GameData\JSI\RasterPropMonitor\Plugins</BinariesOutputRelativePath>
-    <GenerateKSPAssemblyAttribute>true</GenerateKSPAssemblyAttribute>
-    <GenerateKSPAssemblyDependencyAttributes>true</GenerateKSPAssemblyDependencyAttributes>
+    <KSPBT_ModRoot>$(MSBuildProjectDirectory)/../GameData/JSI/RasterPropMonitor/</KSPBT_ModRoot>
+    <KSPBT_ModPluginFolder>Plugins</KSPBT_ModPluginFolder>
   </PropertyGroup>
 </Project>

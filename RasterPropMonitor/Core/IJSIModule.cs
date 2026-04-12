@@ -20,7 +20,7 @@
  ****************************************************************************/
 using System;
 using System.Collections.Generic;
-using Log = KSPBuildTools.Log;
+using Log = KSPCommunityLib.Logging.Log;
 
 namespace JSI
 {

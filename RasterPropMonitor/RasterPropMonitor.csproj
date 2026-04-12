@@ -6,8 +6,8 @@
     <TargetFramework>net4.8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <KSPVersionFile Include="$(RepoRootPath)\GameData\JSI\RasterPropMonitor\RasterPropMonitor.version">
-      <Destination>$(RepoRootPath)\GameData\JSI\RasterPropMonitor\RasterPropMonitor.version</Destination>
+    <KSPVersionFile Include="$(MSBuildProjectDirectory)/RasterPropMonitor.version">
+      <Destination>$(KSPBT_ModRoot)/RasterPropMonitor.version</Destination>
       <KSP_Version_Min>1.12.3</KSP_Version_Min>
     </KSPVersionFile>
   </ItemGroup>
@@ -15,7 +15,8 @@
     <Publicize Include="Assembly-CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="KSPBuildTools" Version="0.0.4" />
+    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
+    <PackageReference Include="KSPCommunityLib" Version="0.1.1" />
     <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

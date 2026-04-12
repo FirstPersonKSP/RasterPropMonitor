@@ -4,17 +4,16 @@
     <RootNamespace>MechJebRPM</RootNamespace>
     <AssemblyName>MechJebRPM</AssemblyName>
     <TargetFramework>net4.8</TargetFramework>
-	  <FileVersion>1.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MechJeb2">
-      <HintPath>$(KSPRoot)\GameData\MechJeb2\Plugins\MechJeb2.dll</HintPath>
+      <HintPath>$(KSPBT_GameRoot)\GameData\MechJeb2\Plugins\MechJeb2.dll</HintPath>
       <Private>False</Private>
       <CKANIdentifier>MechJeb2</CKANIdentifier>
       <KSPAssemblyVersion>2.5</KSPAssemblyVersion>
     </Reference>
     <Reference Include="MechJebLib">
-      <HintPath>$(KSPRoot)\GameData\MechJeb2\Plugins\MechJebLib.dll</HintPath>
+      <HintPath>$(KSPBT_GameRoot)\GameData\MechJeb2\Plugins\MechJebLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <ProjectReference Include="..\RasterPropMonitor\RasterPropMonitor.csproj">
@@ -31,7 +30,8 @@
     <Publicize Include="MechJebLib" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="KSPBuildTools" Version="0.0.4" />
+    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
+    <PackageReference Include="KSPCommunityLib" Version="0.1.1" />
     <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
