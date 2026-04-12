@@ -6,21 +6,18 @@
     <TargetFramework>net4.8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MechJeb2">
-      <HintPath>$(KSPBT_GameRoot)\GameData\MechJeb2\Plugins\MechJeb2.dll</HintPath>
-      <Private>False</Private>
+    <ModReference Include="MechJeb2">
+      <DLLPath>GameData\MechJeb2\Plugins\MechJeb2.dll</DLLPath>
       <CKANIdentifier>MechJeb2</CKANIdentifier>
       <KSPAssemblyVersion>2.5</KSPAssemblyVersion>
-    </Reference>
-    <Reference Include="MechJebLib">
-      <HintPath>$(KSPBT_GameRoot)\GameData\MechJeb2\Plugins\MechJebLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    </ModReference>
+    <ModReference Include="MechJebLib">
+      <DLLPath>GameData\MechJeb2\Plugins\MechJebLib.dll</DLLPath>
+      <CKANIdentifier>MechJeb2</CKANIdentifier>
+    </ModReference>
     <ProjectReference Include="..\RasterPropMonitor\RasterPropMonitor.csproj">
       <Name>RasterPropMonitor</Name>
-      <!-- this isn't working yet, not sure why.  It's meant to add the ksp assembly dependency attribute, but we'll just do it manually for now
       <KSPAssemblyName>RasterPropMonitor</KSPAssemblyName>
-      -->
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
