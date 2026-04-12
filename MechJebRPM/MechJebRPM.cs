@@ -876,7 +876,7 @@ namespace JSI
 
         private TextMenu CreateOperationMenu(Operation op)
         {
-            return new TextMenu
+            return new TrackedTextMenu
             {
                 labelColor = JUtil.ColorToColorTag(Color.white),
                 selectedColor = JUtil.ColorToColorTag(Color.green),
