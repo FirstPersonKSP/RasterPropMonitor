@@ -4,7 +4,7 @@ Discord support server: https://discord.gg/vBDzZAq3AF.
 
 Please always post your [KSP.log file](https://gist.github.com/JonnyOThan/04c2074b56f78e56d115621effee30f9) when reporting issues.
 
-## Unreleased
+## 1.1.0.0 - 2026-04-13
 
 Note that due to changes in MechJeb, this version of RPM is not compatible with MJ 2.14 and earlier.  If you wish to use earlier versions of MJ, please use RPM 1.0.3.
 
