@@ -4,9 +4,17 @@ Discord support server: https://discord.gg/vBDzZAq3AF.
 
 Please always post your [KSP.log file](https://gist.github.com/JonnyOThan/04c2074b56f78e56d115621effee30f9) when reporting issues.
 
+## Unreleased
+
+Note that due to changes in MechJeb, this version of RPM is not compatible with MJ 2.14 and earlier.  If you wish to use earlier versions of MJ, please use RPM 1.0.3.
+
+### New Features
+
+- Rebuilt MechJeb2 integration for MJ 2.15 (thanks @bryguy4)
+
 ## 1.0.3.2 - 2026-04-11
 
-NOTE: this version of RPM is not compatible with MJ 2.15
+Note that due to changes in MechJeb, this version (and all previous versions of RPM) are not compatible with MJ 2.15 and later. If you use MJ, please downgrade it to 2.14.3 before trying to install RPM 1.0.3 or else you will likely see conflicts in CKAN.
 
 ### New Features
 
