@@ -10,7 +10,7 @@ Note that due to changes in MechJeb, this version of RPM is not compatible with 
 
 ### New Features
 
-- Rebuilt MechJeb2 integration for MJ 2.15 (thanks @bryguy4)
+- Rebuilt MechJeb2 integration for MJ 2.15.  Nearly all features of MJ are now available on the MFD. (thanks @bryguy4 / @adventure-gpt)
 
 ## 1.0.3.2 - 2026-04-11
 
