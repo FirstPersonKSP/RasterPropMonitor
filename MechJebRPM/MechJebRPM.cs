@@ -75,6 +75,7 @@ namespace JSI
         private MechJebModuleLandingGuidance mjLandingGuidance = null;
         private MechJebModuleWarpController mjWarpController = null;
         private MechJebModuleStageStats mjStageStats = null;
+        private MechJebModuleAirplaneGuidance mjAirplaneGuidance = null;
 		private Vessel activeVessel = null;
 
         private TextMenu smartassOrbitalMenu;
@@ -1593,6 +1594,111 @@ namespace JSI
         #endregion
 
         #region Aircraft Menu
+        private bool IsAircraftAutopilotEngaged()
+        {
+            return mjCore?.Airplane?.Users != null &&
+                   mjAirplaneGuidance != null &&
+                   mjCore.Airplane.Users.Contains(mjAirplaneGuidance);
+        }
+
+        private void SetAircraftAutopilotEngaged(bool engaged)
+        {
+            if (mjCore?.Airplane?.Users == null || mjAirplaneGuidance == null) return;
+
+            if (engaged)
+            {
+                SyncAirplaneGuidanceTargetsToAutopilot();
+                if (!mjCore.Airplane.Users.Contains(mjAirplaneGuidance))
+                    mjCore.Airplane.Users.Add(mjAirplaneGuidance);
+            }
+            else
+            {
+                if (mjCore.Airplane.Users.Contains(mjAirplaneGuidance))
+                    mjCore.Airplane.Users.Remove(mjAirplaneGuidance);
+            }
+        }
+
+        private void SyncAirplaneGuidanceTargetsToAutopilot()
+        {
+            if (mjCore?.Airplane == null || mjAirplaneGuidance == null) return;
+
+            if (mjAirplaneGuidance.AltitudeTargettmp != null)
+                mjCore.Airplane.AltitudeTarget = mjAirplaneGuidance.AltitudeTargettmp.Val;
+            if (mjAirplaneGuidance.VertSpeedTargettmp != null)
+                mjCore.Airplane.VertSpeedTarget = mjAirplaneGuidance.VertSpeedTargettmp.Val;
+            if (mjAirplaneGuidance.HeadingTargettmp != null)
+                mjCore.Airplane.HeadingTarget = mjAirplaneGuidance.HeadingTargettmp.Val;
+            if (mjAirplaneGuidance.RollTargettmp != null)
+                mjCore.Airplane.RollTarget = mjAirplaneGuidance.RollTargettmp.Val;
+            if (mjAirplaneGuidance.SpeedTargettmp != null)
+                mjCore.Airplane.SpeedTarget = mjAirplaneGuidance.SpeedTargettmp.Val;
+        }
+
+        private double GetAircraftAltitudeTarget()
+        {
+            return mjAirplaneGuidance?.AltitudeTargettmp?.Val ?? mjCore?.Airplane?.AltitudeTarget ?? 0.0;
+        }
+
+        private void SetAircraftAltitudeTarget(double value)
+        {
+            if (mjAirplaneGuidance?.AltitudeTargettmp != null)
+                mjAirplaneGuidance.AltitudeTargettmp.Val = value;
+            if (mjCore?.Airplane != null)
+                mjCore.Airplane.AltitudeTarget = value;
+        }
+
+        private double GetAircraftVertSpeedTarget()
+        {
+            return mjAirplaneGuidance?.VertSpeedTargettmp?.Val ?? mjCore?.Airplane?.VertSpeedTarget ?? 0.0;
+        }
+
+        private void SetAircraftVertSpeedTarget(double value)
+        {
+            if (mjAirplaneGuidance?.VertSpeedTargettmp != null)
+                mjAirplaneGuidance.VertSpeedTargettmp.Val = value;
+            if (mjCore?.Airplane != null)
+                mjCore.Airplane.VertSpeedTarget = value;
+        }
+
+        private double GetAircraftHeadingTarget()
+        {
+            return mjAirplaneGuidance?.HeadingTargettmp?.Val ?? mjCore?.Airplane?.HeadingTarget ?? 0.0;
+        }
+
+        private void SetAircraftHeadingTarget(double value)
+        {
+            if (mjAirplaneGuidance?.HeadingTargettmp != null)
+                mjAirplaneGuidance.HeadingTargettmp.Val = value;
+            if (mjCore?.Airplane != null)
+                mjCore.Airplane.HeadingTarget = value;
+        }
+
+        private double GetAircraftRollTarget()
+        {
+            return mjAirplaneGuidance?.RollTargettmp?.Val ?? mjCore?.Airplane?.RollTarget ?? 0.0;
+        }
+
+        private void SetAircraftRollTarget(double value)
+        {
+            if (mjAirplaneGuidance?.RollTargettmp != null)
+                mjAirplaneGuidance.RollTargettmp.Val = value;
+            if (mjCore?.Airplane != null)
+                mjCore.Airplane.RollTarget = value;
+        }
+
+        private double GetAircraftSpeedTarget()
+        {
+            return mjAirplaneGuidance?.SpeedTargettmp?.Val ?? mjCore?.Airplane?.SpeedTarget ?? 0.0;
+        }
+
+        private void SetAircraftSpeedTarget(double value)
+        {
+            if (mjAirplaneGuidance?.SpeedTargettmp != null)
+                mjAirplaneGuidance.SpeedTargettmp.Val = value;
+            if (mjCore?.Airplane != null)
+                mjCore.Airplane.SpeedTarget = value;
+        }
+
         private TextMenu BuildAircraftMenu()
         {
             var menu = new TrackedTextMenu();
@@ -1600,16 +1706,45 @@ namespace JSI
             menu.selectedColor = JUtil.ColorToColorTag(Color.green);
             menu.disabledColor = JUtil.ColorToColorTag(Color.gray);
 
+            AddMenuItem(menu,
+                () => IsAircraftAutopilotEngaged() ? "Disengage Autopilot" : "Engage Autopilot",
+                () => SetAircraftAutopilotEngaged(!IsAircraftAutopilotEngaged()));
+            AddMenuItem(menu, "------", null);
+
             AddMenuItem(menu, "-- ALTITUDE --", null);
             AddToggleItem(menu, "Altitude Hold",
                 () => mjCore.Airplane.AltitudeHoldEnabled,
-                (val) => { if (val) mjCore.Airplane.EnableAltitudeHold(); else mjCore.Airplane.DisableAltitudeHold(); });
-            AddNumericItem(menu, "Target Altitude", mjCore.Airplane.AltitudeTarget,
+                (val) =>
+                {
+                    mjCore.Airplane.AltitudeHoldEnabled = val;
+                    if (val)
+                    {
+                        SyncAirplaneGuidanceTargetsToAutopilot();
+                        mjCore.Airplane.EnableAltitudeHold();
+                    }
+                    else
+                    {
+                        mjCore.Airplane.DisableAltitudeHold();
+                    }
+                });
+            AddNumericItem(menu, "Target Altitude", GetAircraftAltitudeTarget, SetAircraftAltitudeTarget,
                 50.0, v => v.ToString("F0") + " m", null, true, 0, false, 0);
             AddToggleItem(menu, "Vertical Speed Hold",
                 () => mjCore.Airplane.VertSpeedHoldEnabled,
-                (val) => { if (val) mjCore.Airplane.EnableVertSpeedHold(); else mjCore.Airplane.DisableVertSpeedHold(); });
-            AddNumericItem(menu, "Target Vert Speed", mjCore.Airplane.VertSpeedTarget,
+                (val) =>
+                {
+                    mjCore.Airplane.VertSpeedHoldEnabled = val;
+                    if (val)
+                    {
+                        SyncAirplaneGuidanceTargetsToAutopilot();
+                        mjCore.Airplane.EnableVertSpeedHold();
+                    }
+                    else
+                    {
+                        mjCore.Airplane.DisableVertSpeedHold();
+                    }
+                });
+            AddNumericItem(menu, "Target Vert Speed", GetAircraftVertSpeedTarget, SetAircraftVertSpeedTarget,
                 1.0, v => v.ToString("F1") + " m/s", null, false, 0, false, 0);
 
             AddMenuItem(menu, "------", null);
@@ -1617,15 +1752,25 @@ namespace JSI
             AddMenuItem(menu, "-- HEADING --", null);
             AddToggleItem(menu, "Heading Hold",
                 () => mjCore.Airplane.HeadingHoldEnabled,
-                (val) => { if (val) mjCore.Airplane.EnableHeadingHold(); else mjCore.Airplane.DisableHeadingHold(); });
-            AddNumericItem(menu, "Target Heading", 
-                () => mjCore.Airplane.HeadingTarget,
-                (val) => mjCore.Airplane.HeadingTarget = val,
+                (val) =>
+                {
+                    mjCore.Airplane.HeadingHoldEnabled = val;
+                    if (val)
+                    {
+                        SyncAirplaneGuidanceTargetsToAutopilot();
+                        mjCore.Airplane.EnableHeadingHold();
+                    }
+                    else
+                    {
+                        mjCore.Airplane.DisableHeadingHold();
+                    }
+                });
+            AddNumericItem(menu, "Target Heading", GetAircraftHeadingTarget, SetAircraftHeadingTarget,
                 1.0, v => v.ToString("F1") + "°", null, true, 0, true, 360);
-            AddToggleItem(menu, "Roll Hold", mjCore.Airplane, MechJebProxy.f_Airplane_RollHold);
-            AddNumericItem(menu, "Target Roll",
-                () => mjCore.Airplane.RollTarget,
-                (val) => mjCore.Airplane.RollTarget = val,
+            AddToggleItem(menu, "Roll Hold",
+                () => mjCore.Airplane.RollHoldEnabled,
+                (val) => { if (val) { SyncAirplaneGuidanceTargetsToAutopilot(); mjCore.Airplane.RollHoldEnabled = true; } else mjCore.Airplane.RollHoldEnabled = false; });
+            AddNumericItem(menu, "Target Roll", GetAircraftRollTarget, SetAircraftRollTarget,
                 1.0, v => v.ToString("F1") + "°", null, true, -180, true, 180);
 
             AddMenuItem(menu, "------", null);
@@ -1633,10 +1778,20 @@ namespace JSI
             AddMenuItem(menu, "-- SPEED --", null);
             AddToggleItem(menu, "Speed Hold",
                 () => mjCore.Airplane.SpeedHoldEnabled,
-                (val) => { if (val) mjCore.Airplane.EnableSpeedHold(); else mjCore.Airplane.DisableSpeedHold(); });
-            AddNumericItem(menu, "Target Speed",
-                () => mjCore.Airplane.SpeedTarget,
-                (val) => mjCore.Airplane.SpeedTarget = val,
+                (val) =>
+                {
+                    mjCore.Airplane.SpeedHoldEnabled = val;
+                    if (val)
+                    {
+                        SyncAirplaneGuidanceTargetsToAutopilot();
+                        mjCore.Airplane.EnableSpeedHold();
+                    }
+                    else
+                    {
+                        mjCore.Airplane.DisableSpeedHold();
+                    }
+                });
+            AddNumericItem(menu, "Target Speed", GetAircraftSpeedTarget, SetAircraftSpeedTarget,
                 1.0, v => v.ToString("F1") + " m/s", null, true, 0, false, 0);
 
             AddMenuItem(menu, "[BACK]", () => PopMenu());
@@ -2027,6 +2182,7 @@ namespace JSI
                 mjLandingGuidance = null;
                 mjWarpController = null;
                 mjStageStats = null;
+                mjAirplaneGuidance = null;
 
 				activeVessel = vessel;
                 mjCore = vessel.GetMasterMechJeb();
@@ -2041,6 +2197,7 @@ namespace JSI
                     mjLandingGuidance = mjCore.GetComputerModule<MechJebModuleLandingGuidance>();
                     mjWarpController = mjCore.GetComputerModule<MechJebModuleWarpController>();
                     mjStageStats = mjCore.GetComputerModule<MechJebModuleStageStats>();
+                    mjAirplaneGuidance = mjCore.GetComputerModule<MechJebModuleAirplaneGuidance>();
 				}
             }
 
