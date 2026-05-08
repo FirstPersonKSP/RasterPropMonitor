@@ -522,10 +522,6 @@ namespace JSI
                 gotCamera = cameraObject.PointCamera(cameras[currentCamera]);
             }
 
-            //if (rpmComp != null)
-            //{
-            //    rpmComp.SetPropVar(cameraInfoVarName + "_ID", internalProp.propID, currentCamera + 1);
-            //}
         }
 
         private void SelectNextCamera()
@@ -628,19 +624,6 @@ namespace JSI
 
             homeCrosshairMaterial = new Material(Shader.Find("KSP/Alpha/Unlit Transparent"));
             homeCrosshairMaterial.color = ConfigNode.ParseColor32(homeCrosshairColor);
-
-            if (!string.IsNullOrEmpty(cameraInfoVarName))
-            {
-                //rpmComp = RasterPropMonitorComputer.Instantiate(internalProp);
-                //if (rpmComp.HasPropVar(cameraInfoVarName + "_ID", internalProp.propID))
-                //{
-                //    currentCamera = rpmComp.GetPropVar(cameraInfoVarName + "_ID", internalProp.propID) - 1;
-                //}
-                //else
-                //{
-                //    rpmComp.SetPropVar(cameraInfoVarName + "_ID", internalProp.propID, currentCamera + 1);
-                //}
-            }
 
             if (!string.IsNullOrEmpty(cameraEffectShader))
             {
