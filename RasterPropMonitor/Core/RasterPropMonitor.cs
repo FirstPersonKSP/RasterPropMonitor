@@ -310,8 +310,11 @@ namespace JSI
             {
                 Destroy(screenMat);
             }
-            rpmComp.UnregisterResourceCallback(resourceName, ResourceDepletedCallback);
-            rpmComp.UnregisterVariableCallback("COMMNETVESSELCONTROLSTATE", CommConnectionCallback);
+            if (rpmComp != null)
+            {
+                rpmComp.UnregisterResourceCallback(resourceName, ResourceDepletedCallback);
+                rpmComp.UnregisterVariableCallback("COMMNETVESSELCONTROLSTATE", CommConnectionCallback);
+            }
         }
 
         private static void PlayClickSound(FXGroup audioOutput)
