@@ -680,7 +680,7 @@ namespace JSI
 
                 if (!string.IsNullOrEmpty(perPodMasterSwitchName))
                 {
-                    rpmComp.RegisterVariableCallback("PERSISTENT_" + perPodMasterSwitchName, PerPodMasterSwitchChangedCallback);
+                    rpmComp.UnregisterVariableCallback("PERSISTENT_" + perPodMasterSwitchName, PerPodMasterSwitchChangedCallback);
                 }
             }
 
