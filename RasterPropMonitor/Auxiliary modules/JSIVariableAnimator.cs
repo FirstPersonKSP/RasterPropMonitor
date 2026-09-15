@@ -884,7 +884,11 @@ namespace JSI
                     // MOARdV TODO: Define what this actually does
                     case Mode.Animation:
                         float lerp = (reverse) ? (1.0f - scaledValue) : scaledValue;
-                        onAnim[animationName].normalizedTime = lerp;
+                        var animState = onAnim[animationName];
+                        animState.normalizedTime = lerp;
+                        animState.weight = 1;
+                        animState.enabled = true;
+                        onAnim.Sample();
                         break;
                 }
             }
@@ -1318,7 +1322,7 @@ namespace JSI
             bool triggerCoroutine = Update(newValue);
             if (triggerCoroutine)
             {
-                varAnim.StartCoroutine(OnCoroutine());
+                varAnim.internalProp.StartCoroutine(OnCoroutine());
             }
 
             //JUtil.LogMessage(this, "{0} now {1:0.000} - coroutine request is {2}", variable.variableName, newValue, triggerCoroutine);
@@ -1529,7 +1533,11 @@ namespace JSI
                     // MOARdV TODO: Define what this actually does
                     case Mode.Animation:
                         float lerp = (reverse) ? (1.0f - scaledValue) : scaledValue;
+                        var animState = onAnim[animationName];
                         onAnim[animationName].normalizedTime = lerp;
+                        animState.weight = 1;
+                        animState.enabled = true;
+                        onAnim.Sample();
                         break;
                 }
             }
