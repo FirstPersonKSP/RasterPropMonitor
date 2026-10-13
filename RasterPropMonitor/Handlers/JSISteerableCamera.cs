@@ -508,10 +508,7 @@ namespace JSI
 
             if (!skipMissingCameras)
             {
-                //if (rpmComp != null)
-                //{
-                //    rpmComp.SetPropVar(cameraInfoVarName + "_ID", internalProp.propID, currentCamera + 1);
-                //}
+
                 return;
             }
 
@@ -525,10 +522,6 @@ namespace JSI
                 gotCamera = cameraObject.PointCamera(cameras[currentCamera]);
             }
 
-            //if (rpmComp != null)
-            //{
-            //    rpmComp.SetPropVar(cameraInfoVarName + "_ID", internalProp.propID, currentCamera + 1);
-            //}
         }
 
         private void SelectNextCamera()
@@ -632,19 +625,6 @@ namespace JSI
             homeCrosshairMaterial = new Material(Shader.Find("KSP/Alpha/Unlit Transparent"));
             homeCrosshairMaterial.color = ConfigNode.ParseColor32(homeCrosshairColor);
 
-            if (!string.IsNullOrEmpty(cameraInfoVarName))
-            {
-                //rpmComp = RasterPropMonitorComputer.Instantiate(internalProp);
-                //if (rpmComp.HasPropVar(cameraInfoVarName + "_ID", internalProp.propID))
-                //{
-                //    currentCamera = rpmComp.GetPropVar(cameraInfoVarName + "_ID", internalProp.propID) - 1;
-                //}
-                //else
-                //{
-                //    rpmComp.SetPropVar(cameraInfoVarName + "_ID", internalProp.propID, currentCamera + 1);
-                //}
-            }
-
             if (!string.IsNullOrEmpty(cameraEffectShader))
             {
                 cameraEffectMaterial = new Material(JUtil.LoadInternalShader(cameraEffectShader));
@@ -704,6 +684,30 @@ namespace JSI
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the active camera id (1-based).  Intended for plugin variable access
+        /// via VARIABLE = PLUGIN_JSISteerableCamera:GetActiveCameraID
+        /// </summary>
+        /// <returns>camera id (1-based) or -1 if none</returns>
+        public double GetActiveCameraID()
+        {
+            if (cameras == null || cameras.Count == 0) return -1.0;
+            return cameras[currentCamera].cameraId;
+        }
+
+        /// <summary>
+        /// Returns the active camera transform/name as a string.
+        /// Intended for plugin variable access via
+        /// VARIABLE = PLUGIN_JSISteerableCamera:GetActiveCameraTransform
+        /// Note: depending on evaluator support, numeric ID may be more reliable.
+        /// </summary>
+        /// <returns>camera transform/name or empty string</returns>
+        public string GetActiveCameraTransform()
+        {
+            if (cameras == null || cameras.Count == 0) return string.Empty;
+            return cameras[currentCamera].cameraTransform ?? string.Empty;
         }
     }
 
