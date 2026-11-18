@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace JSI
 {
@@ -225,8 +226,8 @@ namespace JSI
 
                     batchedTransformCount += batchList.Count;
                     
-                    Mesh mesh = new Mesh();
-                    mesh.CombineMeshes(instances);
+                    var mesh = new Mesh();
+                    CombineMeshes(mesh, instances);
                     batchList[0].GetComponent<MeshFilter>().sharedMesh = mesh;
 
                     JUtil.LogMessage(null, "PROP_BATCH: batching {0} transforms under {1}", batchList.Count, batchList[0].transform.parent.name);
@@ -346,7 +347,7 @@ namespace JSI
                 }
 
                 meshFilter.mesh.Clear();
-                meshFilter.mesh.CombineMeshes(instances);
+                CombineMeshes(meshFilter.mesh, instances);
                 meshFilter.mesh.UploadMeshData(false);
             }
         }
@@ -407,6 +408,21 @@ namespace JSI
                     }
                 }
             }
+        }
+
+        private static void CombineMeshes(Mesh mesh, CombineInstance[] instances)
+        {
+            // Unity 2019.4 silently truncates indices > 2^16 when combining meshes
+            // unless we explicitly set the index format to uint32.
+            int vertexCount = 0;
+            foreach (var instance in instances)
+                vertexCount += instance.mesh.vertexCount;
+            
+            mesh.Clear();
+            mesh.indexFormat = vertexCount <= ushort.MaxValue
+                ? IndexFormat.UInt16
+                : IndexFormat.UInt32;
+            mesh.CombineMeshes(instances);
         }
     }
 }
